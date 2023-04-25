@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.Constants;
+import frc.robot.Constants;
 import frc.robot.Robot;
-
 import java.util.Objects;
 
 public class Arm extends SubsystemBase {
@@ -66,7 +65,10 @@ public class Arm extends SubsystemBase {
 
   private final Mechanism2d mech2d = new Mechanism2d(40, 40);
   private final MechanismRoot2d root = mech2d.getRoot("root", 20, 20);
-  private final MechanismLigament2d armMech2d = root.append(new MechanismLigament2d("Arm", values.extensionLengthMeters, Math.toDegrees(values.rotationAngleRadians)));
+  private final MechanismLigament2d armMech2d =
+      root.append(
+          new MechanismLigament2d(
+              "Arm", values.extensionLengthMeters, Math.toDegrees(values.rotationAngleRadians)));
 
   /** Creates a new Arm. */
   private Arm() {

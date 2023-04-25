@@ -51,22 +51,26 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    operator.y()
-      .onTrue(Commands.runOnce(() -> arm.unlock(LockType.kBoth), arm))
-      .whileTrue(
-        Commands.run(
-          () -> { 
-            double rotationPercent = operator.getRawAxis(XboxController.Axis.kLeftY.value);
-            rotationPercent = MathUtil.applyDeadband(rotationPercent, 0.05);
-            double extensionPercent = operator.getRawAxis(XboxController.Axis.kRightY.value);
-            extensionPercent = MathUtil.applyDeadband(extensionPercent, 0.05);
-            arm.drive(-rotationPercent, -extensionPercent);
-          }, 
-          arm))
-      .onFalse(Commands.runOnce(() -> {
-        arm.drive(0, 0);
-        arm.lock(LockType.kBoth);
-      }, arm));
+    operator
+        .y()
+        .onTrue(Commands.runOnce(() -> arm.unlock(LockType.kBoth), arm))
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  double rotationPercent = operator.getRawAxis(XboxController.Axis.kLeftY.value);
+                  rotationPercent = MathUtil.applyDeadband(rotationPercent, 0.05);
+                  double extensionPercent = operator.getRawAxis(XboxController.Axis.kRightY.value);
+                  extensionPercent = MathUtil.applyDeadband(extensionPercent, 0.05);
+                  arm.drive(-rotationPercent, -extensionPercent);
+                },
+                arm))
+        .onFalse(
+            Commands.runOnce(
+                () -> {
+                  arm.drive(0, 0);
+                  arm.lock(LockType.kBoth);
+                },
+                arm));
   }
 
   /** Configures triggers for arbitrary events. */
