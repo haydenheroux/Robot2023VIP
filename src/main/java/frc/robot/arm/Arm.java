@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.Constants;
 import frc.robot.Robot;
 
 import java.util.Objects;
@@ -144,15 +145,15 @@ public class Arm extends SubsystemBase {
   public void reset(State state) {}
 
   public void drive(double rotationPercent, double extensionPercent) {
-    io.setRotationVoltage(rotationPercent * 12);
-    io.setExtensionVoltage(extensionPercent * 12);
+    io.setRotationVoltage(rotationPercent * Constants.NOMINAL_VOLTAGE);
+    io.setExtensionVoltage(extensionPercent * Constants.NOMINAL_VOLTAGE);
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
 
-    armMech2d.setLength(inputs.extensionLengthMeters);
+    armMech2d.setLength(inputs.extensionLengthMeters * 20);
     armMech2d.setAngle(Math.toDegrees(inputs.rotationAngleRadians));
 
     if (getLocked() != LockType.kNeither) {

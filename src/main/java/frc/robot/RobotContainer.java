@@ -60,7 +60,7 @@ public class RobotContainer {
             rotationPercent = MathUtil.applyDeadband(rotationPercent, 0.05);
             double extensionPercent = operator.getRawAxis(XboxController.Axis.kRightY.value);
             extensionPercent = MathUtil.applyDeadband(extensionPercent, 0.05);
-            arm.drive(rotationPercent, extensionPercent);
+            arm.drive(-rotationPercent, -extensionPercent);
           }, 
           arm))
       .onFalse(Commands.runOnce(() -> {

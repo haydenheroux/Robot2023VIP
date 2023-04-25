@@ -4,6 +4,13 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.Constants;
+
 public class ArmIOSim implements ArmIO {
 
     private double extensionLengthMeters;
@@ -12,9 +19,12 @@ public class ArmIOSim implements ArmIO {
     private double rotationAngleRadians;
     private boolean rotationBrakeIsActive;
 
-    private final double kMetersPerVolt = 0.01;
+    private final double kMetersPerVolt = 0.0025;
 
-    private final double kRadiansPerVolt = 0.01;
+    private final DCMotor simMotor = new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
+
+    private final double simLength = 1.0;
+    private final SingleJointedArmSim rotationSim = new SingleJointedArmSim(simMotor, Constants.Arm.Rotation.GEAR_RATIO, SingleJointedArmSim.estimateMOI(simLength, Constants.Arm.MASS), simLength, Constants.Arm.Rotation.MIN_ANGLE, Constants.Arm.Rotation.MAX_ANGLE, Constants.Arm.MASS, true);
 
     public ArmIOSim() {}
 
@@ -70,7 +80,12 @@ public class ArmIOSim implements ArmIO {
     @Override
     public void setRotationVoltage(double volts) {
         if (rotationBrakeIsActive) return; // Stop motor
-        rotationAngleRadians += volts * kRadiansPerVolt;
+
+        rotationSim.setInput(volts / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
+        rotationSim.update(Constants.LOOP_TIME);
+
+        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
+        rotationAngleRadians = rotationSim.getAngleRads();
     }
 
     @Override
