@@ -4,13 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.arm.Arm;
+import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
@@ -47,7 +50,16 @@ public class RobotContainer {
   private void configureAutonomous() {}
 
   /** Configures bindings for driver and operator controllers. */
-  private void configureBindings() {}
+  private void configureBindings() {
+    operator.x().onTrue(Commands.runOnce(() -> arm.lock(LockType.kBoth), arm)).onFalse(Commands.runOnce(() -> arm.unlock(LockType.kBoth), arm));
+    operator.y().whileTrue(Commands.run(() -> { 
+      double rotationPercent = operator.getRawAxis(XboxController.Axis.kLeftY.value);
+      rotationPercent = MathUtil.applyDeadband(rotationPercent, 0.05);
+      double extensionPercent = operator.getRawAxis(XboxController.Axis.kRightY.value);
+      extensionPercent = MathUtil.applyDeadband(extensionPercent, 0.05);
+      arm.drive(rotationPercent, extensionPercent);
+    }, arm));
+  }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}

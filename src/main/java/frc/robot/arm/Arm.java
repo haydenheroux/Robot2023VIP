@@ -5,6 +5,7 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
@@ -130,10 +131,18 @@ public class Arm extends SubsystemBase {
 
   public void reset(State state) {}
 
-  public void drive(double anglePercent, double extensionPercent) {}
+  public void drive(double rotationPercent, double extensionPercent) {
+    io.setRotationVoltage(rotationPercent * 12);
+    io.setExtensionVoltage(extensionPercent * 12);
+  }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    SmartDashboard.putBoolean("extensionBrakeIsActive", inputs.extensionBrakeIsActive);
+    SmartDashboard.putBoolean("rotationBrakeIsActive", inputs.rotationBrakeIsActive);
+    SmartDashboard.putNumber("extensionLengthMeters", inputs.extensionLengthMeters);
+    SmartDashboard.putNumber("rotationAngleRadians", inputs.rotationAngleRadians);
   }
 }

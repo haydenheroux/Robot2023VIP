@@ -7,14 +7,14 @@ package frc.robot.arm;
 public class ArmIOSim implements ArmIO {
 
     private double extensionLengthMeters;
-    private double extensionVoltage;
     private boolean extensionBrakeIsActive;
-    private boolean extensionIsDisabled;
 
     private double rotationAngleRadians;
-    private double rotationVoltage;
     private boolean rotationBrakeIsActive;
-    private boolean rotationIsDisabled;
+
+    private final double kMetersPerVolt = 0.01;
+
+    private final double kRadiansPerVolt = 0.01;
 
     public ArmIOSim() {}
 
@@ -37,25 +37,23 @@ public class ArmIOSim implements ArmIO {
 
     @Override
     public void setExtensionSetpoint(double lengthMeters) {
-        extensionIsDisabled = false;
+        if (extensionBrakeIsActive) return; // Stop motor
         extensionLengthMeters = lengthMeters;
     }
 
     @Override
     public void setExtensionVoltage(double volts) {
-        extensionIsDisabled = false;
-        extensionVoltage = volts;
+        if (extensionBrakeIsActive) return; // Stop motor
+        extensionLengthMeters += volts * kMetersPerVolt;
     }
 
     @Override
     public void setExtensionBrake(boolean isActive) {
-        extensionIsDisabled = true;
         extensionBrakeIsActive = isActive;
     }
 
     @Override
     public void setExtensionDisabled() {
-        extensionIsDisabled = true;
     }
 
     @Override
@@ -65,25 +63,23 @@ public class ArmIOSim implements ArmIO {
 
     @Override
     public void setRotationSetpoint(double angleRadians) {
-        rotationIsDisabled = false;
+        if (rotationBrakeIsActive) return; // Stop motor
         rotationAngleRadians = angleRadians;
     }
 
     @Override
     public void setRotationVoltage(double volts) {
-        rotationIsDisabled = false;
-        rotationVoltage = volts;
+        if (rotationBrakeIsActive) return; // Stop motor
+        rotationAngleRadians += volts * kRadiansPerVolt;
     }
 
     @Override
     public void setRotationBrake(boolean isActive) {
-        rotationIsDisabled = true;
         rotationBrakeIsActive = isActive;
     }
 
     @Override
     public void setRotationDisabled() {
-        rotationIsDisabled = true;
     }
 
 }
