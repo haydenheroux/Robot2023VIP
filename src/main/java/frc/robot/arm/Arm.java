@@ -5,7 +5,11 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
@@ -59,6 +63,10 @@ public class Arm extends SubsystemBase {
   private final ArmIO io;
   private final ArmIO.ArmIOInputs inputs = new ArmIO.ArmIOInputs();
 
+  private final Mechanism2d mech2d = new Mechanism2d(40, 40);
+  private final MechanismRoot2d root = mech2d.getRoot("root", 20, 20);
+  private final MechanismLigament2d armMech2d = root.append(new MechanismLigament2d("Arm", inputs.extensionLengthMeters, Math.toDegrees(inputs.rotationAngleRadians)));
+
   /** Creates a new Arm. */
   private Arm() {
     if (Robot.isSimulation()) {
@@ -68,6 +76,7 @@ public class Arm extends SubsystemBase {
     }
 
     io.configure();
+    SmartDashboard.putData("Mechanism", mech2d);
   }
 
   public static Arm getInstance() {
@@ -86,7 +95,10 @@ public class Arm extends SubsystemBase {
   public void enable() {}
 
   public LockType getLocked() {
-    return LockType.kBoth;
+    if (inputs.extensionBrakeIsActive && inputs.rotationBrakeIsActive) return LockType.kBoth;
+    if (inputs.extensionBrakeIsActive) return LockType.kExtension;
+    if (inputs.rotationBrakeIsActive) return LockType.kRotation;
+    return LockType.kNeither;
   }
 
   public void lock(LockType type) {
@@ -139,6 +151,15 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+
+    armMech2d.setLength(inputs.extensionLengthMeters);
+    armMech2d.setAngle(Math.toDegrees(inputs.rotationAngleRadians));
+
+    if (getLocked() != LockType.kNeither) {
+      armMech2d.setColor(new Color8Bit(255, 0, 0));
+    } else {
+      armMech2d.setColor(new Color8Bit(0, 255, 0));
+    }
 
     SmartDashboard.putBoolean("extensionBrakeIsActive", inputs.extensionBrakeIsActive);
     SmartDashboard.putBoolean("rotationBrakeIsActive", inputs.rotationBrakeIsActive);
