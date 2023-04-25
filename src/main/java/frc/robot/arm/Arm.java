@@ -6,6 +6,8 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+
 import java.util.Objects;
 
 public class Arm extends SubsystemBase {
@@ -52,8 +54,20 @@ public class Arm extends SubsystemBase {
   // Singleton instance
   private static Arm instance = null;
 
+  // ArmIO handler
+  private final ArmIO io;
+  private final ArmIO.ArmIOInputs inputs = new ArmIO.ArmIOInputs();
+
   /** Creates a new Arm. */
-  private Arm() {}
+  private Arm() {
+    if (Robot.isSimulation()) {
+      io = new ArmIOSim();
+    } else {
+      io = null;
+    }
+
+    io.configure();
+  }
 
   public static Arm getInstance() {
     if (instance == null) {
@@ -82,7 +96,21 @@ public class Arm extends SubsystemBase {
     setLocked(type, false);
   }
 
-  private void setLocked(LockType type, boolean value) {}
+  private void setLocked(LockType type, boolean value) {
+    switch (type) {
+      case kBoth:
+        io.setExtensionBrake(value);
+        io.setRotationBrake(value);
+      case kExtension:
+        io.setExtensionBrake(value);
+        break;
+      case kNeither:
+        break;
+      case kRotation:
+        io.setRotationBrake(value);
+        break;
+    }
+  }
 
   public boolean atGoal() {
     return true;
@@ -106,6 +134,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateInputs(inputs);
   }
 }
