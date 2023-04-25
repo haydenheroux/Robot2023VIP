@@ -9,22 +9,23 @@ public interface ArmIO {
         public double extensionLengthMeters = 0.0;
         public boolean extensionBrakeIsActive = true;
 
-        public double rotationAngleAbsoluteRadians = 0.0;
-        public double rotationAngleRelativeRadians = 0.0;
+        public double rotationAngleRadians = 0.0;
         public boolean rotationBrakeIsActive = true;
     }
 
-    public default void configure() {}
+    public void configure();
 
-    public default void updateInputs(ArmIOInputs inputs) {}
+    public void updateInputs(ArmIOInputs inputs);
 
-    public default void setExtensionSetpoint(double lengthMeters) {}
-    public default void setExtensionVoltage(double volts) {}
-    public default void setExtensionBrake(boolean isActive) {}
-    public default void setExtensionDisabled(boolean isDisabled) {}
+    public void setExtensionPosition(double lengthMeters);
+    public void setExtensionSetpoint(double lengthMeters);
+    public void setExtensionVoltage(double volts);
+    public void setExtensionBrake(boolean isActive);
+    public void setExtensionDisabled();
 
-    public default void setRotationSetpoint(double angleRadians) {}
-    public default void setRotationVoltage(double volts) {}
-    public default void setRotationBrake(boolean isActive) {}
-    public default void setRotationDisabled(boolean isDisabled) {}
+    public void setRotationPosition(double angleRadians);
+    public void setRotationSetpoint(double angleRadians);
+    public void setRotationVoltage(double volts);
+    public void setRotationBrake(boolean isActive);
+    public void setRotationDisabled();
 }
