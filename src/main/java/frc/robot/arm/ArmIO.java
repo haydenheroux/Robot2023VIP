@@ -5,7 +5,7 @@
 package frc.robot.arm;
 
 public interface ArmIO {
-    public static class ArmIOInputs {
+    public static class ArmIOValues {
         public double extensionLengthMeters = 0.0;
         public boolean extensionBrakeIsActive = true;
 
@@ -15,7 +15,7 @@ public interface ArmIO {
 
     public void configure();
 
-    public void updateInputs(ArmIOInputs inputs);
+    public void updateValues(ArmIOValues values);
 
     public void setExtensionPosition(double lengthMeters);
     public void setExtensionSetpoint(double lengthMeters);

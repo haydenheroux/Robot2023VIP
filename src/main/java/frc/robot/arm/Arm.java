@@ -62,11 +62,11 @@ public class Arm extends SubsystemBase {
 
   // ArmIO handler
   private final ArmIO io;
-  private final ArmIO.ArmIOInputs inputs = new ArmIO.ArmIOInputs();
+  private final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
   private final Mechanism2d mech2d = new Mechanism2d(40, 40);
   private final MechanismRoot2d root = mech2d.getRoot("root", 20, 20);
-  private final MechanismLigament2d armMech2d = root.append(new MechanismLigament2d("Arm", inputs.extensionLengthMeters, Math.toDegrees(inputs.rotationAngleRadians)));
+  private final MechanismLigament2d armMech2d = root.append(new MechanismLigament2d("Arm", values.extensionLengthMeters, Math.toDegrees(values.rotationAngleRadians)));
 
   /** Creates a new Arm. */
   private Arm() {
@@ -96,9 +96,9 @@ public class Arm extends SubsystemBase {
   public void enable() {}
 
   public LockType getLocked() {
-    if (inputs.extensionBrakeIsActive && inputs.rotationBrakeIsActive) return LockType.kBoth;
-    if (inputs.extensionBrakeIsActive) return LockType.kExtension;
-    if (inputs.rotationBrakeIsActive) return LockType.kRotation;
+    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return LockType.kBoth;
+    if (values.extensionBrakeIsActive) return LockType.kExtension;
+    if (values.rotationBrakeIsActive) return LockType.kRotation;
     return LockType.kNeither;
   }
 
@@ -151,10 +151,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
+    io.updateValues(values);
 
-    armMech2d.setLength(inputs.extensionLengthMeters * 20);
-    armMech2d.setAngle(Math.toDegrees(inputs.rotationAngleRadians));
+    armMech2d.setLength(values.extensionLengthMeters * 20);
+    armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
     if (getLocked() != LockType.kNeither) {
       armMech2d.setColor(new Color8Bit(255, 0, 0));
@@ -162,9 +162,9 @@ public class Arm extends SubsystemBase {
       armMech2d.setColor(new Color8Bit(0, 255, 0));
     }
 
-    SmartDashboard.putBoolean("extensionBrakeIsActive", inputs.extensionBrakeIsActive);
-    SmartDashboard.putBoolean("rotationBrakeIsActive", inputs.rotationBrakeIsActive);
-    SmartDashboard.putNumber("extensionLengthMeters", inputs.extensionLengthMeters);
-    SmartDashboard.putNumber("rotationAngleRadians", inputs.rotationAngleRadians);
+    SmartDashboard.putBoolean("extensionBrakeIsActive", values.extensionBrakeIsActive);
+    SmartDashboard.putBoolean("rotationBrakeIsActive", values.rotationBrakeIsActive);
+    SmartDashboard.putNumber("extensionLengthMeters", values.extensionLengthMeters);
+    SmartDashboard.putNumber("rotationAngleRadians", values.rotationAngleRadians);
   }
 }

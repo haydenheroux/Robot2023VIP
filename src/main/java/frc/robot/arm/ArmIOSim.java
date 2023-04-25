@@ -32,12 +32,12 @@ public class ArmIOSim implements ArmIO {
     public void configure() {}
 
     @Override
-    public void updateInputs(ArmIOInputs inputs) {
-        inputs.extensionLengthMeters = extensionLengthMeters;
-        inputs.extensionBrakeIsActive = extensionBrakeIsActive;
+    public void updateValues(ArmIOValues values) {
+        values.extensionLengthMeters = extensionLengthMeters;
+        values.extensionBrakeIsActive = extensionBrakeIsActive;
 
-        inputs.rotationAngleRadians = rotationAngleRadians;
-        inputs.rotationBrakeIsActive = rotationBrakeIsActive;
+        values.rotationAngleRadians = rotationAngleRadians;
+        values.rotationBrakeIsActive = rotationBrakeIsActive;
     }
 
     @Override
