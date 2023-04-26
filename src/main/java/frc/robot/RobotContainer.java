@@ -79,7 +79,7 @@ public class RobotContainer {
                 Commands.runOnce(
                     () -> {
                       arm.unlock(LockType.kBoth);
-                      arm.setGoal(new Arm.State(Units.degreesToRadians(0), 1.0));
+                      arm.setGoal(new Arm.State(1.0, Units.degreesToRadians(0)));
                       arm.enable();
                     },
                     arm),

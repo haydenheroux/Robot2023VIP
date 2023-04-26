@@ -23,30 +23,29 @@ public class Arm extends SubsystemBase {
   }
 
   public static class State {
-    public double angleRadians;
-    public double lengthMeters;
+    public double extensionLengthMeters, rotationAngleRadians;
 
     public State() {}
 
-    public State(double angleRadians, double lengthMeters) {
-      this.angleRadians = angleRadians;
-      this.lengthMeters = lengthMeters;
+    public State(double extensionLengthMeters, double rotationAngleRadians) {
+      this.extensionLengthMeters = extensionLengthMeters;
+      this.rotationAngleRadians = rotationAngleRadians;
     }
 
     @Override
     public boolean equals(Object other) {
       if (other instanceof State) {
         State rhs = (State) other;
-        boolean anglesEqual = this.angleRadians == rhs.angleRadians;
-        boolean lengthsEqual = this.lengthMeters == rhs.lengthMeters;
-        return anglesEqual && lengthsEqual;
+        boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
+        boolean rotationAnglesEqual = this.rotationAngleRadians == rhs.rotationAngleRadians;
+        return extensionLengthsEqual && rotationAnglesEqual;
       }
       return false;
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(angleRadians, lengthMeters);
+      return Objects.hash(extensionLengthMeters, rotationAngleRadians);
     }
   }
 
@@ -134,10 +133,10 @@ public class Arm extends SubsystemBase {
 
   public boolean atGoal() {
     boolean extensionInTolerance =
-        Math.abs(goal.lengthMeters - values.extensionLengthMeters)
+        Math.abs(goal.extensionLengthMeters - values.extensionLengthMeters)
             < Constants.Arm.Extension.TOLERANCE;
     boolean rotationInTolerance =
-        Math.abs(goal.angleRadians - values.rotationAngleRadians)
+        Math.abs(goal.rotationAngleRadians - values.rotationAngleRadians)
             < Constants.Arm.Rotation.TOLERANCE;
     return extensionInTolerance && rotationInTolerance;
   }
@@ -156,8 +155,8 @@ public class Arm extends SubsystemBase {
 
   public void reset(State state) {
     reset = true;
-    io.setExtensionPosition(state.lengthMeters);
-    io.setRotationPosition(state.angleRadians);
+    io.setExtensionPosition(state.extensionLengthMeters);
+    io.setRotationPosition(state.rotationAngleRadians);
   }
 
   public State getState() {
@@ -185,14 +184,15 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("rotationBrakeIsActive", values.rotationBrakeIsActive);
     SmartDashboard.putNumber("extensionLengthMeters", values.extensionLengthMeters);
     SmartDashboard.putNumber("rotationAngleRadians", values.rotationAngleRadians);
-    SmartDashboard.putNumber("extensionLengthMetersGoal", goal.lengthMeters);
-    SmartDashboard.putNumber("rotationAngleRadiansGoal", goal.angleRadians);
+    SmartDashboard.putNumber("extensionLengthMetersGoal", goal.extensionLengthMeters);
+    SmartDashboard.putNumber("rotationAngleRadiansGoal", goal.rotationAngleRadians);
     SmartDashboard.putBoolean("atGoal", atGoal());
+    SmartDashboard.putBoolean("isEnabled", isEnabled());
   }
 
   private void updateSetpoints() {
-    io.setExtensionSetpoint(goal.lengthMeters);
-    io.setRotationSetpoint(goal.angleRadians);
+    io.setExtensionSetpoint(goal.extensionLengthMeters);
+    io.setRotationSetpoint(goal.rotationAngleRadians);
   }
 
   @Override
