@@ -17,6 +17,8 @@ public class Constants {
 
     public static class Extension {
       public static final double TOLERANCE = 0.01;
+      public static final double MIN_LENGTH = 0;
+      public static final double MAX_LENGTH = 1.0;
     }
 
     public static class Rotation {

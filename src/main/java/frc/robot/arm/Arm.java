@@ -163,9 +163,30 @@ public class Arm extends SubsystemBase {
     return new State(values.rotationAngleRadians, values.extensionLengthMeters);
   }
 
-  public void drive(double rotationPercent, double extensionPercent) {
-    io.setRotationVoltage(rotationPercent * Constants.NOMINAL_VOLTAGE);
-    io.setExtensionVoltage(extensionPercent * Constants.NOMINAL_VOLTAGE);
+  public void drive(double extensionPercent, double rotationPercent) {
+    boolean extensionAtMin = values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
+    boolean extensionIncreasing = extensionPercent > 0;
+    boolean extensionAtMax = values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
+    boolean extensionDecreasing = extensionPercent < 0;
+
+    boolean extensionPastMin = extensionAtMin && extensionDecreasing;
+    boolean extensionPastMax = extensionAtMax && extensionIncreasing;
+
+    if (!extensionPastMin && !extensionPastMax) {
+      io.setExtensionVoltage(extensionPercent * Constants.NOMINAL_VOLTAGE);
+    }
+
+    boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
+    boolean rotationIncreasing = rotationPercent > 0;
+    boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
+    boolean rotationDecreasing = rotationPercent < 0;
+
+    boolean rotationPastMin = rotationAtMin && rotationDecreasing;
+    boolean rotationPastMax = rotationAtMax && rotationIncreasing;
+
+    if (!rotationPastMin && !rotationPastMax) {
+      io.setRotationVoltage(rotationPercent * Constants.NOMINAL_VOLTAGE);
+    }
   }
 
   private void updateMechanism() {
