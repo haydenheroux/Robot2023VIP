@@ -4,6 +4,9 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -36,6 +39,11 @@ public class ArmIOSim implements ArmIO {
           Constants.Arm.MASS,
           true);
 
+  private final PIDController extensionPID = new PIDController(48, 0, 0);
+
+  private final PIDController rotationPID = new PIDController(3, 0, 0);
+  private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
+
   public ArmIOSim() {}
 
   @Override
@@ -58,12 +66,17 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setExtensionSetpoint(double lengthMeters) {
     if (extensionBrakeIsActive) return; // Stop motor
-    extensionLengthMeters = lengthMeters;
+
+    double volts = extensionPID.calculate(extensionLengthMeters, lengthMeters);
+    setExtensionVoltage(volts);
   }
 
   @Override
   public void setExtensionVoltage(double volts) {
     if (extensionBrakeIsActive) return; // Stop motor
+
+    volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
+
     extensionLengthMeters += volts * kMetersPerVolt;
   }
 
@@ -83,12 +96,17 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setRotationSetpoint(double angleRadians) {
     if (rotationBrakeIsActive) return; // Stop motor
-    rotationAngleRadians = angleRadians;
+
+    double volts = rotationPID.calculate(rotationAngleRadians, angleRadians);
+    volts = volts + rotationFeedforward.calculate(angleRadians, 0);
+    setRotationVoltage(volts);
   }
 
   @Override
   public void setRotationVoltage(double volts) {
     if (rotationBrakeIsActive) return; // Stop motor
+
+    volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
 
     rotationSim.setInput(volts / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
     rotationSim.update(Constants.LOOP_TIME);

@@ -15,12 +15,16 @@ public class Constants {
 
     public static final double MASS = 4.5;
 
-    public static class Extension {}
+    public static class Extension {
+      public static final double TOLERANCE = 0.01;
+    }
 
     public static class Rotation {
       public static final double GEAR_RATIO = 812.0 / 11.0;
       public static final double MIN_ANGLE = Units.degreesToRadians(-45);
       public static final double MAX_ANGLE = Units.degreesToRadians(60);
+
+      public static final double TOLERANCE = Units.degreesToRadians(1);
     }
   }
 }

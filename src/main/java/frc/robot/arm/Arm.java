@@ -4,7 +4,6 @@
 
 package frc.robot.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -24,27 +23,22 @@ public class Arm extends SubsystemBase {
   }
 
   public static class State {
-    public Rotation2d angle;
-    public double length;
+    public double angleRadians;
+    public double lengthMeters;
 
     public State() {}
 
-    public State(Rotation2d angle, double length) {
-      this.angle = angle;
-      this.length = length;
-    }
-
-    public State(double degrees, double length) {
-      this.angle = Rotation2d.fromDegrees(degrees);
-      this.length = length;
+    public State(double angleRadians, double lengthMeters) {
+      this.angleRadians = angleRadians;
+      this.lengthMeters = lengthMeters;
     }
 
     @Override
     public boolean equals(Object other) {
       if (other instanceof State) {
         State rhs = (State) other;
-        boolean anglesEqual = this.angle.equals(rhs.angle);
-        boolean lengthsEqual = this.length == rhs.length;
+        boolean anglesEqual = this.angleRadians == rhs.angleRadians;
+        boolean lengthsEqual = this.lengthMeters == rhs.lengthMeters;
         return anglesEqual && lengthsEqual;
       }
       return false;
@@ -52,7 +46,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public int hashCode() {
-      return Objects.hash(angle, length);
+      return Objects.hash(angleRadians, lengthMeters);
     }
   }
 
@@ -69,6 +63,12 @@ public class Arm extends SubsystemBase {
       root.append(
           new MechanismLigament2d(
               "Arm", values.extensionLengthMeters, Math.toDegrees(values.rotationAngleRadians)));
+
+  private boolean enabled = false;
+
+  private State goal = new State();
+
+  private boolean reset = false;
 
   /** Creates a new Arm. */
   private Arm() {
@@ -89,13 +89,17 @@ public class Arm extends SubsystemBase {
     return instance;
   }
 
-  public boolean isDisabled() {
-    return false;
+  public boolean isEnabled() {
+    return enabled;
   }
 
-  public void disable() {}
+  public void disable() {
+    enabled = false;
+  }
 
-  public void enable() {}
+  public void enable() {
+    enabled = true;
+  }
 
   public LockType getLocked() {
     if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return LockType.kBoth;
@@ -129,32 +133,43 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    return true;
+    boolean extensionInTolerance =
+        Math.abs(goal.lengthMeters - values.extensionLengthMeters)
+            < Constants.Arm.Extension.TOLERANCE;
+    boolean rotationInTolerance =
+        Math.abs(goal.angleRadians - values.rotationAngleRadians)
+            < Constants.Arm.Rotation.TOLERANCE;
+    return extensionInTolerance && rotationInTolerance;
   }
 
   public State getGoal() {
-    return new State();
+    return goal;
   }
 
-  public State getError() {
-    return new State();
+  public void setGoal(State state) {
+    goal = state;
   }
 
   public boolean isReset() {
-    return false;
+    return reset;
   }
 
-  public void reset(State state) {}
+  public void reset(State state) {
+    reset = true;
+    io.setExtensionPosition(state.lengthMeters);
+    io.setRotationPosition(state.angleRadians);
+  }
+
+  public State getState() {
+    return new State(values.rotationAngleRadians, values.extensionLengthMeters);
+  }
 
   public void drive(double rotationPercent, double extensionPercent) {
     io.setRotationVoltage(rotationPercent * Constants.NOMINAL_VOLTAGE);
     io.setExtensionVoltage(extensionPercent * Constants.NOMINAL_VOLTAGE);
   }
 
-  @Override
-  public void periodic() {
-    io.updateValues(values);
-
+  private void updateMechanism() {
     armMech2d.setLength(values.extensionLengthMeters * 20);
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
@@ -163,10 +178,30 @@ public class Arm extends SubsystemBase {
     } else {
       armMech2d.setColor(new Color8Bit(0, 255, 0));
     }
+  }
 
+  private void updateTelemetry() {
     SmartDashboard.putBoolean("extensionBrakeIsActive", values.extensionBrakeIsActive);
     SmartDashboard.putBoolean("rotationBrakeIsActive", values.rotationBrakeIsActive);
     SmartDashboard.putNumber("extensionLengthMeters", values.extensionLengthMeters);
     SmartDashboard.putNumber("rotationAngleRadians", values.rotationAngleRadians);
+    SmartDashboard.putNumber("extensionLengthMetersGoal", goal.lengthMeters);
+    SmartDashboard.putNumber("rotationAngleRadiansGoal", goal.angleRadians);
+    SmartDashboard.putBoolean("atGoal", atGoal());
+  }
+
+  private void updateSetpoints() {
+    io.setExtensionSetpoint(goal.lengthMeters);
+    io.setRotationSetpoint(goal.angleRadians);
+  }
+
+  @Override
+  public void periodic() {
+    io.updateValues(values);
+
+    updateMechanism();
+    updateTelemetry();
+
+    if (isEnabled()) updateSetpoints();
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
@@ -71,6 +72,24 @@ public class RobotContainer {
                   arm.lock(LockType.kBoth);
                 },
                 arm));
+    operator
+        .x()
+        .whileTrue(
+            Commands.sequence(
+                Commands.runOnce(
+                    () -> {
+                      arm.unlock(LockType.kBoth);
+                      arm.setGoal(new Arm.State(Units.degreesToRadians(0), 1.0));
+                      arm.enable();
+                    },
+                    arm),
+                Commands.waitUntil(arm::atGoal),
+                Commands.runOnce(
+                    () -> {
+                      arm.disable();
+                      arm.lock(LockType.kBoth);
+                    },
+                    arm)));
   }
 
   /** Configures triggers for arbitrary events. */
