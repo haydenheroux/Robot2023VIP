@@ -89,7 +89,8 @@ public class RobotContainer {
                       arm.disable();
                       arm.lock(LockType.kBoth);
                     },
-                    arm)));
+                    arm)))
+        .onFalse(Commands.runOnce(arm::disable, arm));
   }
 
   /** Configures triggers for arbitrary events. */
