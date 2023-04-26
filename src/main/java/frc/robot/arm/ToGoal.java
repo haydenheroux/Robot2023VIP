@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.arm.Arm.LockType;
 
 public class ToGoal extends CommandBase {
-  
+
   private final Arm arm;
 
   private final Arm.State goal;

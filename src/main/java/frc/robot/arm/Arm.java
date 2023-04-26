@@ -90,30 +90,28 @@ public class Arm extends SubsystemBase {
 
   /**
    * Returns whether the arm is under positional control.
-   * @return whether the arm is under positional control. 
+   *
+   * @return whether the arm is under positional control.
    */
   public boolean isEnabled() {
     return enabled;
   }
 
-  /**
-   * Disables positional control.
-   */
+  /** Disables positional control. */
   public void disable() {
     enabled = false;
     io.setExtensionDisabled();
     io.setRotationDisabled();
   }
 
-  /**
-   * Enables positional control.
-   */
+  /** Enables positional control. */
   public void enable() {
     enabled = true;
   }
 
   /**
    * Returns which brakes are active.
+   *
    * @return which brakes are active.
    */
   public LockType getLocked() {
@@ -125,6 +123,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Locks the specified brakes.
+   *
    * @param type which brakes to lock.
    */
   public void lock(LockType type) {
@@ -133,6 +132,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Unlocks the specified brakes.
+   *
    * @param type which brakes to unlock.
    */
   public void unlock(LockType type) {
@@ -141,8 +141,9 @@ public class Arm extends SubsystemBase {
 
   /**
    * Sets the specified brakes.
+   *
    * @param type which brakes to set.
-   * @param value what to set to. 
+   * @param value what to set to.
    */
   private void setLocked(LockType type, boolean value) {
     switch (type) {
@@ -161,7 +162,8 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Returns if the error is in tolerance. 
+   * Returns if the error is in tolerance.
+   *
    * @return if the error is in tolerance.
    */
   public boolean atGoal() {
@@ -176,6 +178,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Returns the goal state of positional control.
+   *
    * @return the goal state of positional control.
    */
   public State getGoal() {
@@ -184,6 +187,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Sets the goal state for positional control.
+   *
    * @param state the goal state.
    */
   public void setGoal(State state) {
@@ -192,6 +196,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Returns if the arm position has been reset.
+   *
    * @return if the arm position has been reset.
    */
   public boolean isReset() {
@@ -199,7 +204,8 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Resets the position of the arm to the state. 
+   * Resets the position of the arm to the state.
+   *
    * @param state the state.
    */
   public void reset(State state) {
@@ -210,6 +216,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Returns the current position of the arm.
+   *
    * @return the current position of the arm.
    */
   public State getState() {
@@ -218,6 +225,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * Drives the arm with the specified speeds.
+   *
    * @param extensionPercent speed to run extension motor at.
    * @param rotationPercent speed to run rotation motor at.
    */
@@ -247,9 +255,7 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  /**
-   * Updates the arm's mechanism representation with updated data.
-   */
+  /** Updates the arm's mechanism representation with updated data. */
   private void updateMechanism() {
     armMech2d.setLength(values.extensionLengthMeters * 20);
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
@@ -261,9 +267,7 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  /**
-   * Updates the arm's telemetry with updated data.
-   */
+  /** Updates the arm's telemetry with updated data. */
   private void updateTelemetry() {
     SmartDashboard.putBoolean("extensionBrakeIsActive", values.extensionBrakeIsActive);
     SmartDashboard.putBoolean("rotationBrakeIsActive", values.rotationBrakeIsActive);
@@ -275,9 +279,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putBoolean("isEnabled", isEnabled());
   }
 
-  /**
-   * Update's the arm's setpoints depending on the goal.
-   */
+  /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoints() {
     io.setExtensionSetpoint(goal.extensionLengthMeters);
     io.setRotationSetpoint(goal.rotationAngleRadians);

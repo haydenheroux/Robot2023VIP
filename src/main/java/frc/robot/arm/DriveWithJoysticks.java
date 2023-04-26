@@ -4,17 +4,17 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
 public class DriveWithJoysticks extends CommandBase {
-  
+
   private final Arm arm;
 
   private final DoubleSupplier extensionPercentSupplier, rotationPercentSupplier;
 
-  public DriveWithJoysticks(DoubleSupplier extensionPercentSupplier, DoubleSupplier rotationPercentSupplier) {
+  public DriveWithJoysticks(
+      DoubleSupplier extensionPercentSupplier, DoubleSupplier rotationPercentSupplier) {
     arm = Arm.getInstance();
     addRequirements(arm);
 
