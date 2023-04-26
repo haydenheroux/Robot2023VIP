@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.arm.Arm;
+import frc.robot.arm.ToGoal;
 import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
@@ -73,24 +74,12 @@ public class RobotContainer {
                 },
                 arm));
     operator
-        .x()
-        .whileTrue(
-            Commands.sequence(
-                Commands.runOnce(
-                    () -> {
-                      arm.unlock(LockType.kBoth);
-                      arm.setGoal(new Arm.State(1.0, Units.degreesToRadians(0)));
-                      arm.enable();
-                    },
-                    arm),
-                Commands.waitUntil(arm::atGoal),
-                Commands.runOnce(
-                    () -> {
-                      arm.disable();
-                      arm.lock(LockType.kBoth);
-                    },
-                    arm)))
-        .onFalse(Commands.runOnce(arm::disable, arm));
+        .a()
+        .whileTrue(new ToGoal(new Arm.State(1.0, 0)));
+
+    operator
+        .b()
+        .whileTrue(new ToGoal(new Arm.State(1.5, Units.degreesToRadians(40))));
   }
 
   /** Configures triggers for arbitrary events. */
