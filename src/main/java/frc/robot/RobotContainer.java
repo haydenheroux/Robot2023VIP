@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.LockType;
 import frc.robot.arm.DriveWithJoysticks;
-import frc.robot.arm.ToGoal;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
@@ -57,7 +56,7 @@ public class RobotContainer {
   private void configureBindings() {
     operator
         .y()
-        .onTrue(Commands.runOnce(() -> arm.unlock(LockType.kBoth), arm))
+        .onTrue(arm.unlock(LockType.kBoth))
         .whileTrue(
             new DriveWithJoysticks(
                 () ->
@@ -66,11 +65,17 @@ public class RobotContainer {
                 () ->
                     MathUtil.applyDeadband(
                         operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05)))
-        .onFalse(Commands.runOnce(() -> arm.lock(LockType.kBoth), arm));
+        .onFalse(arm.lock(LockType.kBoth));
 
-    operator.a().whileTrue(new ToGoal(new Arm.State(1.0, 0)));
+    operator.a().whileTrue(
+        arm.setGoal(new Arm.State(1.0, 0))
+        .andThen(arm.toGoal())
+      );
 
-    operator.b().whileTrue(new ToGoal(new Arm.State(1.5, Units.degreesToRadians(40))));
+    operator.b().whileTrue(
+        arm.setGoal(new Arm.State(1.5, Units.degreesToRadians(40)))
+        .andThen(arm.toGoal())
+      );
 
     operator
         .leftTrigger(0.5)

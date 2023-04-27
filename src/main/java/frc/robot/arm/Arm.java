@@ -9,10 +9,14 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class Arm extends SubsystemBase {
   public enum LockType {
@@ -98,15 +102,19 @@ public class Arm extends SubsystemBase {
   }
 
   /** Disables positional control. */
-  public void disable() {
-    enabled = false;
-    io.setExtensionDisabled();
-    io.setRotationDisabled();
+  public Command disable() {
+    return this.runOnce(() -> {
+      enabled = false;
+      io.setExtensionDisabled();
+      io.setRotationDisabled();
+    });
   }
 
   /** Enables positional control. */
-  public void enable() {
-    enabled = true;
+  public Command enable() {
+    return this.runOnce(() -> {
+      enabled = true;
+    });
   }
 
   /**
@@ -126,8 +134,8 @@ public class Arm extends SubsystemBase {
    *
    * @param type which brakes to lock.
    */
-  public void lock(LockType type) {
-    setLocked(type, true);
+  public Command lock(LockType type) {
+    return setLocked(type, true);
   }
 
   /**
@@ -135,8 +143,8 @@ public class Arm extends SubsystemBase {
    *
    * @param type which brakes to unlock.
    */
-  public void unlock(LockType type) {
-    setLocked(type, false);
+  public Command unlock(LockType type) {
+    return setLocked(type, false);
   }
 
   /**
@@ -145,20 +153,22 @@ public class Arm extends SubsystemBase {
    * @param type which brakes to set.
    * @param value what to set to.
    */
-  private void setLocked(LockType type, boolean value) {
-    switch (type) {
-      case kBoth:
-        io.setExtensionBrake(value);
-        io.setRotationBrake(value);
-      case kExtension:
-        io.setExtensionBrake(value);
-        break;
-      case kNeither:
-        break;
-      case kRotation:
-        io.setRotationBrake(value);
-        break;
-    }
+  private Command setLocked(LockType type, boolean value) {
+    return this.runOnce(() -> {
+      switch (type) {
+        case kBoth:
+          io.setExtensionBrake(value);
+          io.setRotationBrake(value);
+        case kExtension:
+          io.setExtensionBrake(value);
+          break;
+        case kNeither:
+          break;
+        case kRotation:
+          io.setRotationBrake(value);
+          break;
+      }
+    });
   }
 
   /**
@@ -190,8 +200,8 @@ public class Arm extends SubsystemBase {
    *
    * @param state the goal state.
    */
-  public void setGoal(State state) {
-    goal = state;
+  public Command setGoal(State state) {
+    return this.runOnce(() -> this.goal = state);
   }
 
   /**
@@ -201,6 +211,16 @@ public class Arm extends SubsystemBase {
    */
   public boolean isReset() {
     return reset;
+  }
+
+  public Command toGoal() {
+    return Commands.sequence(
+      this.unlock(LockType.kBoth),
+      this.enable(), 
+      Commands.waitUntil(this::atGoal),
+      this.disable(),
+      this.lock(LockType.kBoth)
+    );
   }
 
   /**
