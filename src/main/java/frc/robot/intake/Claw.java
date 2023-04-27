@@ -26,10 +26,11 @@ public class Claw extends SubsystemBase {
   private final ClawIO io;
   private final ClawIO.ClawIOValues values = new ClawIO.ClawIOValues();
 
+  // Moving average filter for motorCurrent
   private final LinearFilter motorCurrentFilter =
       LinearFilter.movingAverage(
           (int) (Constants.Intake.Claw.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
-  private double estimatedMotorCurrentAmps = 0.0;
+  private double filteredMotorCurrentAmps = 0.0;
 
   private State state = State.kDisabled;
 
@@ -49,12 +50,30 @@ public class Claw extends SubsystemBase {
     return instance;
   }
 
+  /**
+   * Returns if the claw is currently holding a cone.
+   * @return if the claw is currently holding a cone.
+   */
   public boolean isHoldingCone() {
-    return values.motorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
+    if (state == State.kAccepting) {
+      // If we are unsure if the cone has been accepted, test the current
+      return filteredMotorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
+    }
+    // Returns true if already holding cone
+    return state == State.kHoldingCone;
   }
 
+  /**
+   * Returns if the claw is currently holding a cube.
+   * @return if the claw is currently holding a cube.
+   */
   public boolean isHoldingCube() {
-    return values.motorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
+    if (state == State.kAccepting) {
+      // If we are unsure if the cube has been accepted, test the current
+      return filteredMotorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
+    }
+    // Returns true if already holding cube
+    return state == State.kHoldingCube;
   }
 
   public void accept() {
@@ -70,8 +89,12 @@ public class Claw extends SubsystemBase {
   }
 
   public void holdOrDisable() {
-    if (state == State.kHoldingCone || state == State.kHoldingCube) return;
-    setState(State.kDisabled);
+    if (state == State.kHoldingCone || state == State.kHoldingCube) {
+      // If already holding, keep holding
+      return;
+    }
+    // Otherwise (if accepting and not holding, or ejecting), disable
+    disable();
   }
 
   public void setState(State state) {
@@ -81,7 +104,7 @@ public class Claw extends SubsystemBase {
   public void updateTelemetry() {
     SmartDashboard.putString("state", state.toString());
     SmartDashboard.putNumber("motorCurrentAmps", values.motorCurrentAmps);
-    SmartDashboard.putNumber("estimatedMotorCurrentAmps", estimatedMotorCurrentAmps);
+    SmartDashboard.putNumber("estimatedMotorCurrentAmps", filteredMotorCurrentAmps);
     SmartDashboard.putBoolean("isHoldingCone", isHoldingCone());
     SmartDashboard.putBoolean("isHoldingCube", isHoldingCube());
   }
@@ -90,7 +113,7 @@ public class Claw extends SubsystemBase {
   public void periodic() {
     io.updateValues(values);
 
-    estimatedMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
+    filteredMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
 
     updateTelemetry();
 
