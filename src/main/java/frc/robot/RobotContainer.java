@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Compressor;
@@ -13,9 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.LockType;
-import frc.robot.arm.DriveWithJoysticks;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
@@ -54,18 +57,15 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    operator
-        .y()
-        .onTrue(arm.unlock(LockType.kBoth))
-        .whileTrue(
-            new DriveWithJoysticks(
-                () ->
-                    MathUtil.applyDeadband(
-                        operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05),
-                () ->
-                    MathUtil.applyDeadband(
-                        operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05)))
-        .onFalse(arm.lock(LockType.kBoth));
+    DoubleSupplier extensionAxis = () -> {return MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);};
+    BooleanSupplier extensionAxisNonZero = () -> { return extensionAxis.getAsDouble() != 0; };
+
+    new Trigger(extensionAxisNonZero).onTrue(arm.unlock(LockType.kExtension)).whileTrue(arm.driveExtension(extensionAxis)).onFalse(arm.lock(LockType.kExtension));
+
+    DoubleSupplier rotationAxis = () -> {return MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);};
+    BooleanSupplier rotationAxisNonZero = () -> { return rotationAxis.getAsDouble() != 0; };
+
+    new Trigger(rotationAxisNonZero).onTrue(arm.unlock(LockType.kRotation)).whileTrue(arm.driveRotation(rotationAxis)).onFalse(arm.lock(LockType.kRotation));
 
     operator.a().whileTrue(
         arm.setGoal(new Arm.State(1.0, 0))

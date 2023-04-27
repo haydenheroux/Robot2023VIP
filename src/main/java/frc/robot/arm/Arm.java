@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase {
   public enum LockType {
@@ -214,13 +214,9 @@ public class Arm extends SubsystemBase {
   }
 
   public Command toGoal() {
-    return Commands.sequence(
-      this.unlock(LockType.kBoth),
-      this.enable(), 
-      Commands.waitUntil(this::atGoal),
-      this.disable(),
-      this.lock(LockType.kBoth)
-    );
+    return this.unlock(LockType.kBoth).andThen(this.enable()).andThen(Commands.waitUntil(this::atGoal)).finallyDo(interrupted -> {
+      this.disable().andThen(this.lock(LockType.kBoth)).schedule();
+    });
   }
 
   /**
@@ -244,35 +240,45 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Drives the arm with the specified speeds.
+   * Drives arm extension with the specified speed.
    *
-   * @param extensionPercent speed to run extension motor at.
-   * @param rotationPercent speed to run rotation motor at.
+   * @param percent speed to run extension motor at.
    */
-  public void drive(double extensionPercent, double rotationPercent) {
-    boolean extensionAtMin = values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
-    boolean extensionIncreasing = extensionPercent > 0;
-    boolean extensionAtMax = values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
-    boolean extensionDecreasing = extensionPercent < 0;
+  public Command driveExtension(DoubleSupplier percent) {
+    return this.run(() -> {
+      boolean extensionAtMin = values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
+      boolean extensionIncreasing = -percent.getAsDouble() > 0;
+      boolean extensionAtMax = values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
+      boolean extensionDecreasing = -percent.getAsDouble() < 0;
 
-    boolean extensionPastMin = extensionAtMin && extensionDecreasing;
-    boolean extensionPastMax = extensionAtMax && extensionIncreasing;
+      boolean extensionPastMin = extensionAtMin && extensionDecreasing;
+      boolean extensionPastMax = extensionAtMax && extensionIncreasing;
 
-    if (!extensionPastMin && !extensionPastMax) {
-      io.setExtensionVoltage(extensionPercent * Constants.NOMINAL_VOLTAGE);
-    }
+      if (!extensionPastMin && !extensionPastMax) {
+        io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+      }
+    });
+  }
 
-    boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
-    boolean rotationIncreasing = rotationPercent > 0;
-    boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
-    boolean rotationDecreasing = rotationPercent < 0;
+  /**
+   * Drives arm rotation with the specified speed.
+   *
+   * @param percent speed to run rotation motor at.
+   */
+  public Command driveRotation(DoubleSupplier percent) {
+    return this.run(() -> {
+      boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
+      boolean rotationIncreasing = -percent.getAsDouble() > 0;
+      boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
+      boolean rotationDecreasing = -percent.getAsDouble() < 0;
 
-    boolean rotationPastMin = rotationAtMin && rotationDecreasing;
-    boolean rotationPastMax = rotationAtMax && rotationIncreasing;
+      boolean rotationPastMin = rotationAtMin && rotationDecreasing;
+      boolean rotationPastMax = rotationAtMax && rotationIncreasing;
 
-    if (!rotationPastMin && !rotationPastMax) {
-      io.setRotationVoltage(rotationPercent * Constants.NOMINAL_VOLTAGE);
-    }
+      if (!rotationPastMin && !rotationPastMax) {
+        io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+      }
+    });
   }
 
   /** Updates the arm's mechanism representation with updated data. */
@@ -280,10 +286,21 @@ public class Arm extends SubsystemBase {
     armMech2d.setLength(values.extensionLengthMeters * 20);
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
-    if (getLocked() != LockType.kNeither) {
-      armMech2d.setColor(new Color8Bit(255, 0, 0));
-    } else {
-      armMech2d.setColor(new Color8Bit(0, 255, 0));
+    switch(getLocked()) {
+      case kBoth:
+        armMech2d.setColor(new Color8Bit(Color.kGreen));
+        break;
+      case kExtension:
+        // TODO Pick a different color
+        armMech2d.setColor(new Color8Bit(Color.kRed));
+        break;
+      case kNeither:
+        armMech2d.setColor(new Color8Bit(Color.kRed));
+        break;
+      case kRotation:
+        // TODO Pick a different color
+        armMech2d.setColor(new Color8Bit(Color.kRed));
+        break;
     }
   }
 
