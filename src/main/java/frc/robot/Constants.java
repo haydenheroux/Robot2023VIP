@@ -47,5 +47,20 @@ public class Constants {
       public static final double HOLDING_CONE_VOLTAGE = -8;
       public static final double HOLDING_CUBE_VOLTAGE = -4;
     }
+
+    public static class SideIntake {
+      public static final double MECHANISM_ANGLE = Units.degreesToRadians(45);
+      public static final double ACCEPT_ANGLE = Units.degreesToRadians(60);
+      public static final double EJECT_ANGLE = Units.degreesToRadians(30);
+
+      public static final double CURRENT_PERIOD = 1.0;
+      public static final double BOTTOM_CURRENT_THRESHOLD = 30.0;
+      public static final double TOP_CURRENT_THRESHOLD = 30.0;
+
+      public static final double RELATIVE_BIAS_FACTOR = 1.0;
+      public static final double BASE_ACCEPTING_VOLTAGE = -10.0;
+      public static final double BASE_EJECTING_VOLTAGE = 10.0;
+      public static final double HOLDING_VOLTAGE = -8;
+    }
   }
 }
