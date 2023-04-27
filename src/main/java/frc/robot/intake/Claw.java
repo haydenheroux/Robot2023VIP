@@ -52,6 +52,7 @@ public class Claw extends SubsystemBase {
 
   /**
    * Returns if the claw is currently holding a cone.
+   *
    * @return if the claw is currently holding a cone.
    */
   public boolean isHoldingCone() {
@@ -60,6 +61,7 @@ public class Claw extends SubsystemBase {
 
   /**
    * Returns if the claw is currently holding a cube.
+   *
    * @return if the claw is currently holding a cube.
    */
   public boolean isHoldingCube() {

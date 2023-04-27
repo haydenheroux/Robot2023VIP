@@ -27,11 +27,15 @@ public class SideIntake extends SubsystemBase {
   private final SideIntakeIO.SideIntakeIOValues values = new SideIntakeIO.SideIntakeIOValues();
 
   // Moving average filter for bottomMotorCurrent
-  private final LinearFilter bottomMotorCurrentFilter = LinearFilter.movingAverage((int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+  private final LinearFilter bottomMotorCurrentFilter =
+      LinearFilter.movingAverage(
+          (int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
   private double filteredBottomMotorCurrentAmps = 0.0;
 
   // Moving average filter for topMotorCurrent
-  private final LinearFilter topMotorCurrentFilter = LinearFilter.movingAverage((int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+  private final LinearFilter topMotorCurrentFilter =
+      LinearFilter.movingAverage(
+          (int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
   private double filteredTopMotorCurrentAmps = 0.0;
 
   private State state = State.kDisabled;
@@ -53,8 +57,10 @@ public class SideIntake extends SubsystemBase {
   }
 
   public boolean isHolding() {
-    boolean isBottomHolding = filteredBottomMotorCurrentAmps >= Constants.Intake.SideIntake.BOTTOM_CURRENT_THRESHOLD;
-    boolean isTopHolding = filteredTopMotorCurrentAmps >= Constants.Intake.SideIntake.TOP_CURRENT_THRESHOLD;
+    boolean isBottomHolding =
+        filteredBottomMotorCurrentAmps >= Constants.Intake.SideIntake.BOTTOM_CURRENT_THRESHOLD;
+    boolean isTopHolding =
+        filteredTopMotorCurrentAmps >= Constants.Intake.SideIntake.TOP_CURRENT_THRESHOLD;
     return isBottomHolding && isTopHolding;
   }
 
@@ -62,7 +68,7 @@ public class SideIntake extends SubsystemBase {
     double betaRelativeToAlphaRadians = (alphaRadians - Units.degreesToRadians(90.0)) + betaRadians;
     return getBiasFor(betaRelativeToAlphaRadians);
   }
-  
+
   private double getBiasFor(double betaRelativeToAlphaRadians) {
     return Constants.Intake.SideIntake.RELATIVE_BIAS_FACTOR * Math.sin(betaRelativeToAlphaRadians);
   }
@@ -87,27 +93,33 @@ public class SideIntake extends SubsystemBase {
   }
 
   private void doAccept() {
-        double bias = getBiasFor(Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.ACCEPT_ANGLE);
-        double bottomMotorVoltage = bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
-        double topMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
-        io.setBottomMotorVoltage(bottomMotorVoltage);
-        io.setTopMotorVoltage(topMotorVoltage);
+    double bias =
+        getBiasFor(
+            Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.ACCEPT_ANGLE);
+    double bottomMotorVoltage = bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
+    double topMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
+    io.setBottomMotorVoltage(bottomMotorVoltage);
+    io.setTopMotorVoltage(topMotorVoltage);
   }
 
   private void doEject() {
-        double bias = getBiasFor(Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.EJECT_ANGLE);
-        double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
-        double topMotorVoltage = bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
-        io.setBottomMotorVoltage(bottomMotorVoltage);
-        io.setTopMotorVoltage(topMotorVoltage);
+    double bias =
+        getBiasFor(
+            Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.EJECT_ANGLE);
+    double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
+    double topMotorVoltage = bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
+    io.setBottomMotorVoltage(bottomMotorVoltage);
+    io.setTopMotorVoltage(topMotorVoltage);
   }
 
   public void updateTelemetry() {
     SmartDashboard.putString("sideIntake/state", state.toString());
     SmartDashboard.putNumber("sideIntake/bottomMotorCurrentAmps", values.bottomMotorCurrentAmps);
     SmartDashboard.putNumber("sideIntake/topMotorCurrentAmps", values.topMotorCurrentAmps);
-    SmartDashboard.putNumber("sideIntake/estimatedBottomMotorCurrentAmps", filteredBottomMotorCurrentAmps);
-    SmartDashboard.putNumber("sideIntake/estimatedTopMotorCurrentAmps", filteredTopMotorCurrentAmps);
+    SmartDashboard.putNumber(
+        "sideIntake/estimatedBottomMotorCurrentAmps", filteredBottomMotorCurrentAmps);
+    SmartDashboard.putNumber(
+        "sideIntake/estimatedTopMotorCurrentAmps", filteredTopMotorCurrentAmps);
     SmartDashboard.putBoolean("sideIntake/isHolding", isHolding());
   }
 
@@ -115,7 +127,8 @@ public class SideIntake extends SubsystemBase {
   public void periodic() {
     io.updateValues(values);
 
-    filteredBottomMotorCurrentAmps = bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
+    filteredBottomMotorCurrentAmps =
+        bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
     filteredTopMotorCurrentAmps = topMotorCurrentFilter.calculate(values.topMotorCurrentAmps);
 
     updateTelemetry();

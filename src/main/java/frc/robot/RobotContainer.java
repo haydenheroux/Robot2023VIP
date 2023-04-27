@@ -82,9 +82,13 @@ public class RobotContainer {
         .onFalse(Commands.runOnce(claw::disable, claw));
 
     operator
-      .leftBumper().onTrue(Commands.runOnce(sideIntake::accept, sideIntake)).onFalse(Commands.runOnce(sideIntake::holdOrDisable, sideIntake));
+        .leftBumper()
+        .onTrue(Commands.runOnce(sideIntake::accept, sideIntake))
+        .onFalse(Commands.runOnce(sideIntake::holdOrDisable, sideIntake));
     operator
-      .rightBumper().onTrue(Commands.runOnce(sideIntake::eject, sideIntake)).onFalse(Commands.runOnce(sideIntake::disable, sideIntake));
+        .rightBumper()
+        .onTrue(Commands.runOnce(sideIntake::eject, sideIntake))
+        .onFalse(Commands.runOnce(sideIntake::disable, sideIntake));
   }
 
   /** Configures default commands for each subsystem. */
