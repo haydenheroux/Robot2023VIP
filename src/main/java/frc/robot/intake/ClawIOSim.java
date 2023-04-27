@@ -4,38 +4,35 @@
 
 package frc.robot.intake;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import frc.robot.Constants;
-
 public class ClawIOSim implements ClawIO {
 
-  private final DCMotor simMotor = DCMotor.getVex775Pro(1);
+    private double simMotorCurrent; 
 
-  private final double flywheelEstimatedMOI =
-      1 * Constants.Intake.Claw.MASS * Math.pow(Constants.Intake.Claw.RADIUS, 2);
-  private final FlywheelSim flywheelSim =
-      new FlywheelSim(simMotor, Constants.Intake.Claw.GEAR_RATIO, flywheelEstimatedMOI);
+    public boolean isHoldingCone, isHoldingCube;
+    public double holdingConeCurrent, holdingCubeCurrent;
+
+    private final double kResistance = 1.0;
+
+    public ClawIOSim() {
+    }
 
   @Override
   public void configure() {}
 
   @Override
   public void updateValues(ClawIOValues values) {
-    values.motorCurrentAmps = flywheelSim.getCurrentDrawAmps();
+    values.motorCurrentAmps = simMotorCurrent;
   }
 
   @Override
   public void setMotorVoltage(double volts) {
-    flywheelSim.setInputVoltage(
-        (volts / Constants.NOMINAL_VOLTAGE) * RobotController.getBatteryVoltage());
-    flywheelSim.update(Constants.LOOP_TIME);
-
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+    if (isHoldingCone) {
+        simMotorCurrent = holdingConeCurrent;
+    } else if (isHoldingCube) {
+        simMotorCurrent = holdingCubeCurrent;
+    } else {
+        simMotorCurrent = volts * kResistance;
+    }
   }
 
   @Override
