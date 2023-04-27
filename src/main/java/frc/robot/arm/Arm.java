@@ -4,6 +4,10 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -13,12 +17,13 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
-public class Arm extends SubsystemBase {
+public class Arm extends SubsystemBase implements TelemetryOutputter {
   public enum LockType {
     kBoth,
     kExtension,
@@ -315,18 +320,6 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  /** Updates the arm's telemetry with updated data. */
-  private void updateTelemetry() {
-    SmartDashboard.putBoolean("extensionBrakeIsActive", values.extensionBrakeIsActive);
-    SmartDashboard.putBoolean("rotationBrakeIsActive", values.rotationBrakeIsActive);
-    SmartDashboard.putNumber("extensionLengthMeters", values.extensionLengthMeters);
-    SmartDashboard.putNumber("rotationAngleRadians", values.rotationAngleRadians);
-    SmartDashboard.putNumber("extensionLengthMetersGoal", goal.extensionLengthMeters);
-    SmartDashboard.putNumber("rotationAngleRadiansGoal", goal.rotationAngleRadians);
-    SmartDashboard.putBoolean("atGoal", atGoal());
-    SmartDashboard.putBoolean("isEnabled", isEnabled());
-  }
-
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoints() {
     io.setExtensionSetpoint(goal.extensionLengthMeters);
@@ -338,8 +331,27 @@ public class Arm extends SubsystemBase {
     io.updateValues(values);
 
     updateMechanism();
-    updateTelemetry();
 
     if (isEnabled()) updateSetpoints();
   }
+
+  @Override
+  public void initializeDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab(getName());
+
+    ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
+    valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
+    valuesLayout.addNumber("Rotation Angle (rad)", () -> values.rotationAngleRadians);
+    valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
+    valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
+
+    ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
+    goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
+    goalLayout.addNumber("Rotation Angle Goal (rad)", () -> goal.rotationAngleRadians);
+    goalLayout.addBoolean("At Goal?", this::atGoal);
+    goalLayout.addBoolean("Is Enabled?", this::isEnabled);
+  }
+
+  @Override
+  public void outputTelemetry() {}
 }

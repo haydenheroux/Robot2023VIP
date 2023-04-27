@@ -5,13 +5,18 @@
 package frc.robot.intake;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-public class Claw extends SubsystemBase {
+public class Claw extends SubsystemBase implements TelemetryOutputter {
   public enum State {
     kAccepting,
     kDisabled,
@@ -91,11 +96,6 @@ public class Claw extends SubsystemBase {
   }
 
   public void updateTelemetry() {
-    SmartDashboard.putString("state", state.toString());
-    SmartDashboard.putNumber("motorCurrentAmps", values.motorCurrentAmps);
-    SmartDashboard.putNumber("estimatedMotorCurrentAmps", filteredMotorCurrentAmps);
-    SmartDashboard.putBoolean("isHoldingCone", isHoldingCone());
-    SmartDashboard.putBoolean("isHoldingCube", isHoldingCube());
   }
 
   @Override
@@ -131,5 +131,26 @@ public class Claw extends SubsystemBase {
         io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CUBE_VOLTAGE);
         break;
     }
+  }
+
+  @Override
+  public void initializeDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab(getName());
+
+    tab.addString("State", state::toString);
+    tab.addBoolean("Is Holding Cone?", this::isHoldingCone);
+    tab.addBoolean("Is Holding Cube?", this::isHoldingCube);
+
+    ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
+    valuesLayout.addNumber("Motor Current (A)", () -> values.motorCurrentAmps);
+
+    ShuffleboardLayout filteredValuesLayout = tab.getLayout("Filtered Values", BuiltInLayouts.kList);
+    filteredValuesLayout.addNumber("Filtered Motor Current (A)", () -> filteredMotorCurrentAmps);
+  }
+
+  @Override
+  public void outputTelemetry() {
+    // TODO Auto-generated method stub
+    
   }
 }

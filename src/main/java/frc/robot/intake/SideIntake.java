@@ -6,13 +6,18 @@ package frc.robot.intake;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
-public class SideIntake extends SubsystemBase {
+public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   public enum State {
     kAccepting,
     kDisabled,
@@ -115,17 +120,6 @@ public class SideIntake extends SubsystemBase {
     io.setTopMotorVoltage(topMotorVoltage);
   }
 
-  public void updateTelemetry() {
-    SmartDashboard.putString("sideIntake/state", state.toString());
-    SmartDashboard.putNumber("sideIntake/bottomMotorCurrentAmps", values.bottomMotorCurrentAmps);
-    SmartDashboard.putNumber("sideIntake/topMotorCurrentAmps", values.topMotorCurrentAmps);
-    SmartDashboard.putNumber(
-        "sideIntake/estimatedBottomMotorCurrentAmps", filteredBottomMotorCurrentAmps);
-    SmartDashboard.putNumber(
-        "sideIntake/estimatedTopMotorCurrentAmps", filteredTopMotorCurrentAmps);
-    SmartDashboard.putBoolean("sideIntake/isHolding", isHolding());
-  }
-
   @Override
   public void periodic() {
     io.updateValues(values);
@@ -133,8 +127,6 @@ public class SideIntake extends SubsystemBase {
     filteredBottomMotorCurrentAmps =
         bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
     filteredTopMotorCurrentAmps = topMotorCurrentFilter.calculate(values.topMotorCurrentAmps);
-
-    updateTelemetry();
 
     if (state != State.kDisabled && state != State.kEjecting) {
       if (isHolding()) {
@@ -158,5 +150,29 @@ public class SideIntake extends SubsystemBase {
         io.setTopMotorVoltage(Constants.Intake.SideIntake.HOLDING_VOLTAGE);
         break;
     }
+  }
+
+  @Override
+  public void initializeDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab(getName());
+
+    tab.addString("State", state::toString);
+    tab.addBoolean("Is Holding?", this::isHolding);
+
+    ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
+    valuesLayout.addNumber("Bottom Motor Current (A)", () -> values.bottomMotorCurrentAmps);
+    valuesLayout.addNumber("Top Motor Current (A)", () -> values.topMotorCurrentAmps);
+
+    ShuffleboardLayout filteredValuesLayout = tab.getLayout("Filtered Values", BuiltInLayouts.kList);
+    filteredValuesLayout.addNumber(
+        "Filtered Bottom Motor Current (A)", () -> filteredBottomMotorCurrentAmps);
+    filteredValuesLayout.addNumber(
+        "Filtered Top Motor Current (A)", () -> filteredTopMotorCurrentAmps);
+  }
+
+  @Override
+  public void outputTelemetry() {
+    // TODO Auto-generated method stub
+    
   }
 }

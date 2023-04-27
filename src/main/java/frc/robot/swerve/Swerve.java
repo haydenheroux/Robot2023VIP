@@ -5,8 +5,9 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.telemetry.TelemetryOutputter;
 
-public class Swerve extends SubsystemBase {
+public class Swerve extends SubsystemBase implements TelemetryOutputter {
   // Singleton instance
   private static Swerve instance = null;
 
@@ -23,5 +24,17 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void initializeDashboard() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void outputTelemetry() {
+    // TODO Auto-generated method stub
+    
   }
 }

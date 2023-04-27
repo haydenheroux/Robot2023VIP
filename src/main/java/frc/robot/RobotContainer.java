@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
@@ -44,6 +45,16 @@ public class RobotContainer {
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
+
+    TelemetryManager.getInstance().register(
+      arm,
+      // compressor,
+      claw,
+      sideIntake,
+      swerve
+    );
+
+    TelemetryManager.getInstance().initializeDashboard();
 
     configureAutonomous();
     configureBindings();
