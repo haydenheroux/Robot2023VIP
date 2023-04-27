@@ -4,14 +4,43 @@
 
 package frc.robot.intake;
 
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class Claw extends SubsystemBase {
+  public enum State {
+    kAccepting,
+    kDisabled,
+    kEjecting,
+    kHoldingCone,
+    kHoldingCube,
+  }
+
   // Singleton instance
   private static Claw instance = null;
 
+  // ClawIO handler
+  private final ClawIO io;
+  private final ClawIO.ClawIOValues values = new ClawIO.ClawIOValues();
+
+  private final LinearFilter motorCurrentFilter =
+      LinearFilter.movingAverage(
+          (int) (Constants.Intake.Claw.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+  private double estimatedMotorCurrentAmps = 0.0;
+
+  private State state = State.kDisabled;
+
   /** Creates a new Claw. */
-  private Claw() {}
+  private Claw() {
+    if (Robot.isSimulation()) {
+      io = new ClawIOSim();
+    } else {
+      io = null;
+    }
+  }
 
   public static Claw getInstance() {
     if (instance == null) {
@@ -20,8 +49,73 @@ public class Claw extends SubsystemBase {
     return instance;
   }
 
+  public boolean isHoldingCone() {
+    return values.motorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
+  }
+
+  public boolean isHoldingCube() {
+    return values.motorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
+  }
+
+  public void accept() {
+    setState(State.kAccepting);
+  }
+
+  public void disable() {
+    setState(State.kDisabled);
+  }
+
+  public void eject() {
+    setState(State.kEjecting);
+  }
+
+  public void holdOrDisable() {
+    if (state == State.kHoldingCone || state == State.kHoldingCube) return;
+    setState(State.kDisabled);
+  }
+
+  public void setState(State state) {
+    this.state = state;
+  }
+
+  public void updateTelemetry() {
+    SmartDashboard.putString("state", state.toString());
+    SmartDashboard.putNumber("motorCurrentAmps", values.motorCurrentAmps);
+    SmartDashboard.putNumber("estimatedMotorCurrentAmps", estimatedMotorCurrentAmps);
+    SmartDashboard.putBoolean("isHoldingCone", isHoldingCone());
+    SmartDashboard.putBoolean("isHoldingCube", isHoldingCube());
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    io.updateValues(values);
+
+    estimatedMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
+
+    updateTelemetry();
+
+    if (state == State.kAccepting) {
+      if (isHoldingCone()) {
+        state = State.kHoldingCone;
+      } else if (isHoldingCube()) {
+        state = State.kHoldingCube;
+      }
+    }
+
+    switch (state) {
+      case kAccepting:
+        io.setMotorVoltage(Constants.Intake.Claw.ACCEPTING_VOLTAGE);
+      case kDisabled:
+        io.setMotorDisabled();
+      case kEjecting:
+        io.setMotorVoltage(Constants.Intake.Claw.EJECTING_VOLTAGE);
+        break;
+      case kHoldingCone:
+        io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CONE_VOLTAGE);
+        break;
+      case kHoldingCube:
+        io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CUBE_VOLTAGE);
+        break;
+    }
   }
 }

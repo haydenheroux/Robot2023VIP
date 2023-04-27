@@ -71,6 +71,15 @@ public class RobotContainer {
     operator.a().whileTrue(new ToGoal(new Arm.State(1.0, 0)));
 
     operator.b().whileTrue(new ToGoal(new Arm.State(1.5, Units.degreesToRadians(40))));
+
+    operator
+        .leftTrigger(0.5)
+        .onTrue(Commands.runOnce(claw::accept, claw))
+        .onFalse(Commands.runOnce(claw::holdOrDisable, claw));
+    operator
+        .rightTrigger(0.5)
+        .onTrue(Commands.runOnce(claw::eject, claw))
+        .onFalse(Commands.runOnce(claw::disable, claw));
   }
 
   /** Configures default commands for each subsystem. */
