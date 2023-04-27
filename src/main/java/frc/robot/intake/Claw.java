@@ -128,8 +128,10 @@ public class Claw extends SubsystemBase {
     switch (state) {
       case kAccepting:
         io.setMotorVoltage(Constants.Intake.Claw.ACCEPTING_VOLTAGE);
+        break;
       case kDisabled:
         io.setMotorDisabled();
+        break;
       case kEjecting:
         io.setMotorVoltage(Constants.Intake.Claw.EJECTING_VOLTAGE);
         break;
