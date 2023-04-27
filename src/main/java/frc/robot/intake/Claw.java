@@ -55,12 +55,7 @@ public class Claw extends SubsystemBase {
    * @return if the claw is currently holding a cone.
    */
   public boolean isHoldingCone() {
-    if (state == State.kAccepting) {
-      // If we are unsure if the cone has been accepted, test the current
-      return filteredMotorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
-    }
-    // Returns true if already holding cone
-    return state == State.kHoldingCone;
+    return filteredMotorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
   }
 
   /**
@@ -68,12 +63,7 @@ public class Claw extends SubsystemBase {
    * @return if the claw is currently holding a cube.
    */
   public boolean isHoldingCube() {
-    if (state == State.kAccepting) {
-      // If we are unsure if the cube has been accepted, test the current
-      return filteredMotorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
-    }
-    // Returns true if already holding cube
-    return state == State.kHoldingCube;
+    return filteredMotorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
   }
 
   public void accept() {
@@ -117,7 +107,7 @@ public class Claw extends SubsystemBase {
 
     updateTelemetry();
 
-    if (state == State.kAccepting) {
+    if (state != State.kDisabled && state != State.kEjecting) {
       if (isHoldingCone()) {
         state = State.kHoldingCone;
       } else if (isHoldingCube()) {
