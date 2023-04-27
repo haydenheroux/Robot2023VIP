@@ -74,21 +74,21 @@ public class RobotContainer {
 
     operator
         .leftTrigger(0.5)
-        .onTrue(Commands.runOnce(claw::accept, claw))
-        .onFalse(Commands.runOnce(claw::holdOrDisable, claw));
+        .onTrue(claw.accept())
+        .onFalse(claw.holdOrDisable());
     operator
         .rightTrigger(0.5)
-        .onTrue(Commands.runOnce(claw::eject, claw))
-        .onFalse(Commands.runOnce(claw::disable, claw));
+        .onTrue(claw.eject())
+        .onFalse(claw.disable());
 
     operator
         .leftBumper()
-        .onTrue(Commands.runOnce(sideIntake::accept, sideIntake))
-        .onFalse(Commands.runOnce(sideIntake::holdOrDisable, sideIntake));
+        .onTrue(sideIntake.accept())
+        .onFalse(sideIntake.holdOrDisable());
     operator
         .rightBumper()
-        .onTrue(Commands.runOnce(sideIntake::eject, sideIntake))
-        .onFalse(Commands.runOnce(sideIntake::disable, sideIntake));
+        .onTrue(sideIntake.eject())
+        .onFalse(sideIntake.disable());
   }
 
   /** Configures default commands for each subsystem. */

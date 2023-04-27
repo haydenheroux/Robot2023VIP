@@ -6,6 +6,7 @@ package frc.robot.intake;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -68,29 +69,24 @@ public class Claw extends SubsystemBase {
     return filteredMotorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
   }
 
-  public void accept() {
-    setState(State.kAccepting);
+  public Command accept() {
+    return this.runOnce(() -> state = State.kAccepting);
   }
 
-  public void disable() {
-    setState(State.kDisabled);
+  public Command disable() {
+    return this.runOnce(() -> state = State.kDisabled);
   }
 
-  public void eject() {
-    setState(State.kEjecting);
+  public Command eject() {
+    return this.runOnce(() -> state = State.kEjecting);
   }
 
-  public void holdOrDisable() {
-    if (state == State.kHoldingCone || state == State.kHoldingCube) {
-      // If already holding, keep holding
-      return;
-    }
-    // Otherwise (if accepting and not holding, or ejecting), disable
-    disable();
-  }
-
-  public void setState(State state) {
-    this.state = state;
+  public Command holdOrDisable() {
+    return this.runOnce(() -> {
+      if (state != State.kHoldingCone && state != State.kHoldingCube) {
+        state = State.kDisabled;
+      }
+    });
   }
 
   public void updateTelemetry() {

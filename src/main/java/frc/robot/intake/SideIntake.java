@@ -7,6 +7,7 @@ package frc.robot.intake;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -73,23 +74,24 @@ public class SideIntake extends SubsystemBase {
     return Constants.Intake.SideIntake.RELATIVE_BIAS_FACTOR * Math.sin(betaRelativeToAlphaRadians);
   }
 
-  public void accept() {
-    state = State.kAccepting;
+  public Command accept() {
+    return this.runOnce(() -> state = State.kAccepting);
   }
 
-  public void disable() {
-    state = State.kDisabled;
+  public Command disable() {
+    return this.runOnce(() -> state = State.kDisabled);
   }
 
-  public void eject() {
-    state = State.kEjecting;
+  public Command eject() {
+    return this.runOnce(() -> state = State.kEjecting);
   }
 
-  public void holdOrDisable() {
-    if (state == State.kHolding) {
-      return;
-    }
-    state = State.kDisabled;
+  public Command holdOrDisable() {
+    return this.runOnce(() -> {
+      if (state != State.kHolding) {
+        state = State.kDisabled;
+      }
+    });
   }
 
   private void doAccept() {
