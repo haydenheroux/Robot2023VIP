@@ -82,11 +82,12 @@ public class Claw extends SubsystemBase {
   }
 
   public Command holdOrDisable() {
-    return this.runOnce(() -> {
-      if (state != State.kHoldingCone && state != State.kHoldingCube) {
-        state = State.kDisabled;
-      }
-    });
+    return this.runOnce(
+        () -> {
+          if (state != State.kHoldingCone && state != State.kHoldingCube) {
+            state = State.kDisabled;
+          }
+        });
   }
 
   public void updateTelemetry() {

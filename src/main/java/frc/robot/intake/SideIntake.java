@@ -87,11 +87,12 @@ public class SideIntake extends SubsystemBase {
   }
 
   public Command holdOrDisable() {
-    return this.runOnce(() -> {
-      if (state != State.kHolding) {
-        state = State.kDisabled;
-      }
-    });
+    return this.runOnce(
+        () -> {
+          if (state != State.kHolding) {
+            state = State.kDisabled;
+          }
+        });
   }
 
   private void doAccept() {

@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Compressor;
@@ -22,6 +19,8 @@ import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   // Subsystems
@@ -57,43 +56,48 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    DoubleSupplier extensionAxis = () -> {return MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);};
-    BooleanSupplier extensionAxisNonZero = () -> { return extensionAxis.getAsDouble() != 0; };
+    DoubleSupplier extensionAxis =
+        () -> {
+          return MathUtil.applyDeadband(
+              operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
+        };
+    BooleanSupplier extensionAxisNonZero =
+        () -> {
+          return extensionAxis.getAsDouble() != 0;
+        };
 
-    new Trigger(extensionAxisNonZero).onTrue(arm.unlock(LockType.kExtension)).whileTrue(arm.driveExtension(extensionAxis)).onFalse(arm.lock(LockType.kExtension));
+    new Trigger(extensionAxisNonZero)
+        .onTrue(arm.unlock(LockType.kExtension))
+        .whileTrue(arm.driveExtension(extensionAxis))
+        .onFalse(arm.lock(LockType.kExtension));
 
-    DoubleSupplier rotationAxis = () -> {return MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);};
-    BooleanSupplier rotationAxisNonZero = () -> { return rotationAxis.getAsDouble() != 0; };
+    DoubleSupplier rotationAxis =
+        () -> {
+          return MathUtil.applyDeadband(
+              operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
+        };
+    BooleanSupplier rotationAxisNonZero =
+        () -> {
+          return rotationAxis.getAsDouble() != 0;
+        };
 
-    new Trigger(rotationAxisNonZero).onTrue(arm.unlock(LockType.kRotation)).whileTrue(arm.driveRotation(rotationAxis)).onFalse(arm.lock(LockType.kRotation));
+    new Trigger(rotationAxisNonZero)
+        .onTrue(arm.unlock(LockType.kRotation))
+        .whileTrue(arm.driveRotation(rotationAxis))
+        .onFalse(arm.lock(LockType.kRotation));
 
-    operator.a().whileTrue(
-        arm.setGoal(new Arm.State(1.0, 0))
-        .andThen(arm.toGoal())
-      );
-
-    operator.b().whileTrue(
-        arm.setGoal(new Arm.State(1.5, Units.degreesToRadians(40)))
-        .andThen(arm.toGoal())
-      );
+    operator.a().whileTrue(arm.setGoal(new Arm.State(1.0, 0)).andThen(arm.toGoal()));
 
     operator
-        .leftTrigger(0.5)
-        .onTrue(claw.accept())
-        .onFalse(claw.holdOrDisable());
-    operator
-        .rightTrigger(0.5)
-        .onTrue(claw.eject())
-        .onFalse(claw.disable());
+        .b()
+        .whileTrue(
+            arm.setGoal(new Arm.State(1.5, Units.degreesToRadians(40))).andThen(arm.toGoal()));
 
-    operator
-        .leftBumper()
-        .onTrue(sideIntake.accept())
-        .onFalse(sideIntake.holdOrDisable());
-    operator
-        .rightBumper()
-        .onTrue(sideIntake.eject())
-        .onFalse(sideIntake.disable());
+    operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
+    operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
+
+    operator.leftBumper().onTrue(sideIntake.accept()).onFalse(sideIntake.holdOrDisable());
+    operator.rightBumper().onTrue(sideIntake.eject()).onFalse(sideIntake.disable());
   }
 
   /** Configures default commands for each subsystem. */

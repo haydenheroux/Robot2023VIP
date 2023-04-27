@@ -103,18 +103,20 @@ public class Arm extends SubsystemBase {
 
   /** Disables positional control. */
   public Command disable() {
-    return this.runOnce(() -> {
-      enabled = false;
-      io.setExtensionDisabled();
-      io.setRotationDisabled();
-    });
+    return this.runOnce(
+        () -> {
+          enabled = false;
+          io.setExtensionDisabled();
+          io.setRotationDisabled();
+        });
   }
 
   /** Enables positional control. */
   public Command enable() {
-    return this.runOnce(() -> {
-      enabled = true;
-    });
+    return this.runOnce(
+        () -> {
+          enabled = true;
+        });
   }
 
   /**
@@ -154,21 +156,22 @@ public class Arm extends SubsystemBase {
    * @param value what to set to.
    */
   private Command setLocked(LockType type, boolean value) {
-    return this.runOnce(() -> {
-      switch (type) {
-        case kBoth:
-          io.setExtensionBrake(value);
-          io.setRotationBrake(value);
-        case kExtension:
-          io.setExtensionBrake(value);
-          break;
-        case kNeither:
-          break;
-        case kRotation:
-          io.setRotationBrake(value);
-          break;
-      }
-    });
+    return this.runOnce(
+        () -> {
+          switch (type) {
+            case kBoth:
+              io.setExtensionBrake(value);
+              io.setRotationBrake(value);
+            case kExtension:
+              io.setExtensionBrake(value);
+              break;
+            case kNeither:
+              break;
+            case kRotation:
+              io.setRotationBrake(value);
+              break;
+          }
+        });
   }
 
   /**
@@ -214,9 +217,13 @@ public class Arm extends SubsystemBase {
   }
 
   public Command toGoal() {
-    return this.unlock(LockType.kBoth).andThen(this.enable()).andThen(Commands.waitUntil(this::atGoal)).finallyDo(interrupted -> {
-      this.disable().andThen(this.lock(LockType.kBoth)).schedule();
-    });
+    return this.unlock(LockType.kBoth)
+        .andThen(this.enable())
+        .andThen(Commands.waitUntil(this::atGoal))
+        .finallyDo(
+            interrupted -> {
+              this.disable().andThen(this.lock(LockType.kBoth)).schedule();
+            });
   }
 
   /**
@@ -245,19 +252,22 @@ public class Arm extends SubsystemBase {
    * @param percent speed to run extension motor at.
    */
   public Command driveExtension(DoubleSupplier percent) {
-    return this.run(() -> {
-      boolean extensionAtMin = values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
-      boolean extensionIncreasing = -percent.getAsDouble() > 0;
-      boolean extensionAtMax = values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
-      boolean extensionDecreasing = -percent.getAsDouble() < 0;
+    return this.run(
+        () -> {
+          boolean extensionAtMin =
+              values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
+          boolean extensionIncreasing = -percent.getAsDouble() > 0;
+          boolean extensionAtMax =
+              values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
+          boolean extensionDecreasing = -percent.getAsDouble() < 0;
 
-      boolean extensionPastMin = extensionAtMin && extensionDecreasing;
-      boolean extensionPastMax = extensionAtMax && extensionIncreasing;
+          boolean extensionPastMin = extensionAtMin && extensionDecreasing;
+          boolean extensionPastMax = extensionAtMax && extensionIncreasing;
 
-      if (!extensionPastMin && !extensionPastMax) {
-        io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-      }
-    });
+          if (!extensionPastMin && !extensionPastMax) {
+            io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+          }
+        });
   }
 
   /**
@@ -266,19 +276,20 @@ public class Arm extends SubsystemBase {
    * @param percent speed to run rotation motor at.
    */
   public Command driveRotation(DoubleSupplier percent) {
-    return this.run(() -> {
-      boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
-      boolean rotationIncreasing = -percent.getAsDouble() > 0;
-      boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
-      boolean rotationDecreasing = -percent.getAsDouble() < 0;
+    return this.run(
+        () -> {
+          boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
+          boolean rotationIncreasing = -percent.getAsDouble() > 0;
+          boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
+          boolean rotationDecreasing = -percent.getAsDouble() < 0;
 
-      boolean rotationPastMin = rotationAtMin && rotationDecreasing;
-      boolean rotationPastMax = rotationAtMax && rotationIncreasing;
+          boolean rotationPastMin = rotationAtMin && rotationDecreasing;
+          boolean rotationPastMax = rotationAtMax && rotationIncreasing;
 
-      if (!rotationPastMin && !rotationPastMax) {
-        io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-      }
-    });
+          if (!rotationPastMin && !rotationPastMax) {
+            io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+          }
+        });
   }
 
   /** Updates the arm's mechanism representation with updated data. */
@@ -286,7 +297,7 @@ public class Arm extends SubsystemBase {
     armMech2d.setLength(values.extensionLengthMeters * 20);
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
-    switch(getLocked()) {
+    switch (getLocked()) {
       case kBoth:
         armMech2d.setColor(new Color8Bit(Color.kGreen));
         break;
