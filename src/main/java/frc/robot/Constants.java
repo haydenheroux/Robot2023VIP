@@ -34,9 +34,9 @@ public class Constants {
 
     public static class Constraints {
       public static final double HEIGHT_OFFSET = Units.inchesToMeters(28.72);
-      public static final double BOTTOM_SECTION_LENGTH = Units.inchesToMeters(13);
+      public static final double STATIC_LENGTH = Units.inchesToMeters(13);
       public static final double CLAW_LENGTH = Units.inchesToMeters(12);
-      public static final double LENGTH_OFFSET = BOTTOM_SECTION_LENGTH + CLAW_LENGTH;
+      public static final double LENGTH_OFFSET = STATIC_LENGTH + CLAW_LENGTH;
 
       public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
       public static final double MIN_HEIGHT = Units.inchesToMeters(4);
@@ -85,8 +85,8 @@ public class Constants {
       public static final double BASE_ACCEPTING_VOLTAGE = -10.0;
       public static final double BASE_EJECTING_VOLTAGE = 10.0;
       public static final double HOLDING_VOLTAGE = -8;
-    public static final int TOP_CAN_ID = 0;
-    public static final int BOTTOM_CAN_ID = 0;
+      public static final int TOP_CAN_ID = 0;
+      public static final int BOTTOM_CAN_ID = 0;
     }
   }
 }

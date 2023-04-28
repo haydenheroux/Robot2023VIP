@@ -8,15 +8,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.mechanism.ArmMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -37,24 +32,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private final ArmIO io;
   private final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
-  private static double metersToPixels(double meters) {
-    return meters * 20;
-  }
-
-  private final Mechanism2d mech2d =
-      new Mechanism2d(
-          metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2),
-          metersToPixels(Constants.Arm.Constraints.MAX_HEIGHT));
-  private final MechanismRoot2d root =
-      mech2d.getRoot(
-          "root",
-          metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH),
-          metersToPixels(Constants.Arm.Constraints.HEIGHT_OFFSET));
-  private final MechanismLigament2d armMech2d =
-      root.append(
-          new MechanismLigament2d(
-              "Arm", values.extensionLengthMeters, Math.toDegrees(values.rotationAngleRadians)));
-
   private boolean enabled = false;
 
   private ArmPosition goal = new ArmPosition();
@@ -72,7 +49,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
 
     io.configure();
-    SmartDashboard.putData("Mechanism", mech2d);
   }
 
   public static Arm getInstance() {
@@ -279,34 +255,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         });
   }
 
-  /** Updates the arm's mechanism representation with updated data. */
-  private void updateMechanism() {
-    armMech2d.setLength(
-        metersToPixels(values.extensionLengthMeters + Constants.Arm.Constraints.LENGTH_OFFSET));
-    armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
-
-    switch (getLocked()) {
-      case kBoth:
-        armMech2d.setColor(new Color8Bit(Color.kGreen));
-        break;
-      case kExtension:
-        // TODO Pick a different color
-        armMech2d.setColor(new Color8Bit(Color.kRed));
-        break;
-      case kNeither:
-        armMech2d.setColor(new Color8Bit(Color.kRed));
-        break;
-      case kRotation:
-        // TODO Pick a different color
-        armMech2d.setColor(new Color8Bit(Color.kRed));
-        break;
-    }
-
-    if (ArmConstraintsSolver.isWithinRuleZone(position) == false) {
-      armMech2d.setColor(new Color8Bit(Color.kOrange));
-    }
-  }
-
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoints() {
     io.setExtensionSetpoint(goal.extensionLengthMeters);
@@ -319,7 +267,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position = new ArmPosition(values.extensionLengthMeters, values.rotationAngleRadians);
 
-    updateMechanism();
+    ArmMechanism.getInstance().update(position, getLocked());
 
     if (isEnabled()) updateSetpoints();
   }
@@ -327,6 +275,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
+
+    tab.addString("Is Locked?", () -> getLocked().toString());
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
