@@ -4,6 +4,7 @@
 
 package frc.robot.arm;
 
+import frc.robot.Constants;
 import java.util.Objects;
 
 public class ArmPosition {
@@ -15,6 +16,16 @@ public class ArmPosition {
   public ArmPosition(double extensionLengthMeters, double rotationAngleRadians) {
     this.extensionLengthMeters = extensionLengthMeters;
     this.rotationAngleRadians = rotationAngleRadians;
+  }
+
+  public boolean approximatelyEquals(ArmPosition other) {
+    boolean extensionInTolerance =
+        Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
+            < Constants.Arm.Extension.TOLERANCE;
+    boolean rotationInTolerance =
+        Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
+            < Constants.Arm.Rotation.TOLERANCE;
+    return extensionInTolerance && rotationInTolerance;
   }
 
   @Override

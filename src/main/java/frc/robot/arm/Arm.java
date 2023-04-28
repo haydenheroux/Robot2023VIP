@@ -170,13 +170,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return if the error is in tolerance.
    */
   public boolean atGoal() {
-    boolean extensionInTolerance =
-        Math.abs(goal.extensionLengthMeters - values.extensionLengthMeters)
-            < Constants.Arm.Extension.TOLERANCE;
-    boolean rotationInTolerance =
-        Math.abs(goal.rotationAngleRadians - values.rotationAngleRadians)
-            < Constants.Arm.Rotation.TOLERANCE;
-    return extensionInTolerance && rotationInTolerance;
+    return position.approximatelyEquals(goal);
   }
 
   /**
