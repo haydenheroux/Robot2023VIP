@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.mechanism.ArmMechanism;
+import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.LockType;
@@ -56,7 +56,7 @@ public class RobotContainer {
 
     TelemetryManager.getInstance().initializeDashboard();
 
-    SmartDashboard.putData("Mechanism", ArmMechanism.getInstance().getMechanism());
+    SmartDashboard.putData("Mechanism", SuperstructureMechanism.getInstance().getMechanism());
 
     configureAutonomous();
     configureBindings();

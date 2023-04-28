@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -151,6 +152,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
         io.setTopMotorVoltage(Constants.Intake.SideIntake.HOLDING_VOLTAGE);
         break;
     }
+
+    SuperstructureMechanism.getInstance().updateSideIntake(state);
   }
 
   @Override

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.mechanism.ArmMechanism;
+import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -267,9 +267,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position = new ArmPosition(values.extensionLengthMeters, values.rotationAngleRadians);
 
-    ArmMechanism.getInstance().update(position, getLocked());
-
     if (isEnabled()) updateSetpoints();
+
+    SuperstructureMechanism.getInstance().updateArm(position, getLocked());
   }
 
   @Override

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -96,15 +97,11 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
         });
   }
 
-  public void updateTelemetry() {}
-
   @Override
   public void periodic() {
     io.updateValues(values);
 
     filteredMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
-
-    updateTelemetry();
 
     if (state != State.kDisabled && state != State.kEjecting) {
       if (isHoldingCone()) {
@@ -131,6 +128,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
         io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CUBE_VOLTAGE);
         break;
     }
+
+    SuperstructureMechanism.getInstance().updateClaw(state);
   }
 
   @Override
