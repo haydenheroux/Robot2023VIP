@@ -37,8 +37,12 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private final ArmIO io;
   private final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
-  private final Mechanism2d mech2d = new Mechanism2d(40, 40);
-  private final MechanismRoot2d root = mech2d.getRoot("root", 20, 20);
+  private static double metersToPixels(double meters) {
+    return meters * 20;
+  }
+
+  private final Mechanism2d mech2d = new Mechanism2d(metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2), metersToPixels(Constants.Arm.Constraints.MAX_HEIGHT));
+  private final MechanismRoot2d root = mech2d.getRoot("root", metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH), metersToPixels(Constants.Arm.Constraints.HEIGHT_OFFSET));
   private final MechanismLigament2d armMech2d =
       root.append(
           new MechanismLigament2d(
@@ -49,6 +53,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private ArmPosition goal = new ArmPosition();
 
   private boolean reset = false;
+
+  private ArmPosition position = new ArmPosition();
 
   /** Creates a new Arm. */
   private Arm() {
@@ -241,7 +247,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
           boolean extensionPastMin = extensionAtMin && extensionDecreasing;
           boolean extensionPastMax = extensionAtMax && extensionIncreasing;
 
-          if (!extensionPastMin && !extensionPastMax) {
+          boolean isWithinRuleZone = ArmConstraintsSolver.isWithinRuleZone(position);
+          boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
+
+          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone) {
             io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
           }
         });
@@ -271,7 +280,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Updates the arm's mechanism representation with updated data. */
   private void updateMechanism() {
-    armMech2d.setLength(values.extensionLengthMeters * 20);
+    armMech2d.setLength(metersToPixels(values.extensionLengthMeters + Constants.Arm.Constraints.LENGTH_OFFSET));
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
     switch (getLocked()) {
@@ -290,6 +299,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         armMech2d.setColor(new Color8Bit(Color.kRed));
         break;
     }
+
+    if (ArmConstraintsSolver.isWithinRuleZone(position) == false) {
+      armMech2d.setColor(new Color8Bit(Color.kOrange));
+    }
   }
 
   /** Update's the arm's setpoints depending on the goal. */
@@ -301,6 +314,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void periodic() {
     io.updateValues(values);
+
+    position = new ArmPosition(values.extensionLengthMeters, values.rotationAngleRadians);
 
     updateMechanism();
 
