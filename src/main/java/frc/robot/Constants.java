@@ -34,21 +34,25 @@ public class Constants {
 
     public static class Constraints {
       public static final double HEIGHT_OFFSET = Units.inchesToMeters(28.72);
-      public static final double LENGTH_OFFSET = Units.inchesToMeters(13) + Units.inchesToMeters(12);
+      public static final double BOTTOM_SECTION_LENGTH = Units.inchesToMeters(13);
+      public static final double CLAW_LENGTH = Units.inchesToMeters(12);
+      public static final double LENGTH_OFFSET = BOTTOM_SECTION_LENGTH + CLAW_LENGTH;
 
       public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
       public static final double MIN_HEIGHT = Units.inchesToMeters(4);
-      public static final double MAX_OUT_LENGTH = Units.inchesToMeters(14) + Units.inchesToMeters(48);
+      public static final double MAX_OUT_LENGTH =
+          Units.inchesToMeters(14) + Units.inchesToMeters(48);
     }
 
     public static class Setpoints {
       public static final ArmPosition STOWED = new ArmPosition(0.05, Rotation.MAX_ANGLE);
       public static final ArmPosition TOP_ROW = new ArmPosition(1.15, Units.degreesToRadians(30));
-      public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.45, Units.degreesToRadians(20));
-      public static final ArmPosition DOUBLE_SUBSTATION = new ArmPosition(0.0, Units.degreesToRadians(0));
+      public static final ArmPosition MIDDLE_ROW =
+          new ArmPosition(0.45, Units.degreesToRadians(20));
+      public static final ArmPosition DOUBLE_SUBSTATION =
+          new ArmPosition(0.0, Units.degreesToRadians(0));
       public static final ArmPosition HYRBID = new ArmPosition(0.1, Units.degreesToRadians(0));
     }
-
   }
 
   public static class Intake {

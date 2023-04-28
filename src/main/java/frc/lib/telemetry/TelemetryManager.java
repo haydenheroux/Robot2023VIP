@@ -9,30 +9,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TelemetryManager {
-    // Singleton instance
-    private static TelemetryManager instance = null;
+  // Singleton instance
+  private static TelemetryManager instance = null;
 
-    private List<TelemetryOutputter> telemetryOutputters = new ArrayList<>();
+  private List<TelemetryOutputter> telemetryOutputters = new ArrayList<>();
 
-    private TelemetryManager() {}
+  private TelemetryManager() {}
 
-    public static TelemetryManager getInstance() {
-        if (instance == null) {
-            instance = new TelemetryManager();
-        }
-        return instance;
+  public static TelemetryManager getInstance() {
+    if (instance == null) {
+      instance = new TelemetryManager();
     }
+    return instance;
+  }
 
-    public void register(TelemetryOutputter... telemetryOutputters) {
-        this.telemetryOutputters = Arrays.asList(telemetryOutputters);
-    }
+  public void register(TelemetryOutputter... telemetryOutputters) {
+    this.telemetryOutputters = Arrays.asList(telemetryOutputters);
+  }
 
-    public void initializeDashboard() {
-        telemetryOutputters.forEach(TelemetryOutputter::initializeDashboard);
-    }
+  public void initializeDashboard() {
+    telemetryOutputters.forEach(TelemetryOutputter::initializeDashboard);
+  }
 
-    public void outputTelemetry() {
-        telemetryOutputters.forEach(TelemetryOutputter::outputTelemetry);
-    }
-
+  public void outputTelemetry() {
+    telemetryOutputters.forEach(TelemetryOutputter::outputTelemetry);
+  }
 }

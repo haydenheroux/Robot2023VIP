@@ -41,8 +41,15 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     return meters * 20;
   }
 
-  private final Mechanism2d mech2d = new Mechanism2d(metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2), metersToPixels(Constants.Arm.Constraints.MAX_HEIGHT));
-  private final MechanismRoot2d root = mech2d.getRoot("root", metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH), metersToPixels(Constants.Arm.Constraints.HEIGHT_OFFSET));
+  private final Mechanism2d mech2d =
+      new Mechanism2d(
+          metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2),
+          metersToPixels(Constants.Arm.Constraints.MAX_HEIGHT));
+  private final MechanismRoot2d root =
+      mech2d.getRoot(
+          "root",
+          metersToPixels(Constants.Arm.Constraints.MAX_OUT_LENGTH),
+          metersToPixels(Constants.Arm.Constraints.HEIGHT_OFFSET));
   private final MechanismLigament2d armMech2d =
       root.append(
           new MechanismLigament2d(
@@ -280,7 +287,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Updates the arm's mechanism representation with updated data. */
   private void updateMechanism() {
-    armMech2d.setLength(metersToPixels(values.extensionLengthMeters + Constants.Arm.Constraints.LENGTH_OFFSET));
+    armMech2d.setLength(
+        metersToPixels(values.extensionLengthMeters + Constants.Arm.Constraints.LENGTH_OFFSET));
     armMech2d.setAngle(Math.toDegrees(values.rotationAngleRadians));
 
     switch (getLocked()) {

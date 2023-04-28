@@ -29,12 +29,12 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void initializeDashboard() {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
   public void outputTelemetry() {
     // TODO Auto-generated method stub
-    
+
   }
 }

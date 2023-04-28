@@ -5,14 +5,9 @@
 package frc.lib.telemetry;
 
 public interface TelemetryOutputter {
-    /**
-     * Initializes the subsystem's dashboard tab.
-     */
-    public void initializeDashboard();
+  /** Initializes the subsystem's dashboard tab. */
+  public void initializeDashboard();
 
-    /**
-     * Outputs the subsystem's telemetry.
-     */
-    public void outputTelemetry();
-
+  /** Outputs the subsystem's telemetry. */
+  public void outputTelemetry();
 }
