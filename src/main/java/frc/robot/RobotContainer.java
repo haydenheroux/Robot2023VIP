@@ -46,13 +46,13 @@ public class RobotContainer {
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
 
-    TelemetryManager.getInstance().register(
-      arm,
-      // compressor,
-      claw,
-      sideIntake,
-      swerve
-    );
+    TelemetryManager.getInstance()
+        .register(
+            arm,
+            // compressor,
+            claw,
+            sideIntake,
+            swerve);
 
     TelemetryManager.getInstance().initializeDashboard();
 
@@ -97,12 +97,10 @@ public class RobotContainer {
         .whileTrue(arm.driveRotation(rotationAxis))
         .onFalse(arm.lock(LockType.kRotation));
 
-    operator.a().whileTrue(arm.setGoal(new Arm.State(1.0, 0)).andThen(arm.toGoal()));
-
-    operator
-        .b()
-        .whileTrue(
-            arm.setGoal(new Arm.State(1.5, Units.degreesToRadians(40))).andThen(arm.toGoal()));
+    operator.a().whileTrue(arm.setGoal(Constants.Arm.Setpoints.HYRBID).andThen(arm.toGoal()));
+    operator.b().whileTrue(arm.setGoal(Constants.Arm.Setpoints.STOWED).andThen(arm.toGoal()));
+    operator.x().whileTrue(arm.setGoal(Constants.Arm.Setpoints.TOP_ROW).andThen(arm.toGoal()));
+    operator.y().whileTrue(arm.setGoal(Constants.Arm.Setpoints.MIDDLE_ROW).andThen(arm.toGoal()));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());

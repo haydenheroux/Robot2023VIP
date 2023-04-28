@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase implements TelemetryOutputter {
@@ -29,33 +28,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     kExtension,
     kNeither,
     kRotation,
-  }
-
-  public static class State {
-    public double extensionLengthMeters, rotationAngleRadians;
-
-    public State() {}
-
-    public State(double extensionLengthMeters, double rotationAngleRadians) {
-      this.extensionLengthMeters = extensionLengthMeters;
-      this.rotationAngleRadians = rotationAngleRadians;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      if (other instanceof State) {
-        State rhs = (State) other;
-        boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
-        boolean rotationAnglesEqual = this.rotationAngleRadians == rhs.rotationAngleRadians;
-        return extensionLengthsEqual && rotationAnglesEqual;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(extensionLengthMeters, rotationAngleRadians);
-    }
   }
 
   // Singleton instance
@@ -74,7 +46,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   private boolean enabled = false;
 
-  private State goal = new State();
+  private ArmPosition goal = new ArmPosition();
 
   private boolean reset = false;
 
@@ -199,7 +171,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the goal state of positional control.
    */
-  public State getGoal() {
+  public ArmPosition getGoal() {
     return goal;
   }
 
@@ -208,7 +180,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param state the goal state.
    */
-  public Command setGoal(State state) {
+  public Command setGoal(ArmPosition state) {
     return this.runOnce(() -> this.goal = state);
   }
 
@@ -236,7 +208,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param state the state.
    */
-  public void reset(State state) {
+  public void reset(ArmPosition state) {
     reset = true;
     io.setExtensionPosition(state.extensionLengthMeters);
     io.setRotationPosition(state.rotationAngleRadians);
@@ -247,8 +219,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the current position of the arm.
    */
-  public State getState() {
-    return new State(values.rotationAngleRadians, values.extensionLengthMeters);
+  public ArmPosition getState() {
+    return new ArmPosition(values.rotationAngleRadians, values.extensionLengthMeters);
   }
 
   /**

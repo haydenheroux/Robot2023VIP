@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.arm.ArmPosition;
 
 public class Constants {
 
@@ -16,6 +17,14 @@ public class Constants {
   public static class Arm {
 
     public static final double MASS = 4.5;
+
+    public static class Setpoints {
+      public static final ArmPosition STOWED = new ArmPosition(0.05, Rotation.MAX_ANGLE);
+      public static final ArmPosition TOP_ROW = new ArmPosition(1.15, Units.degreesToRadians(30));
+      public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.45, Units.degreesToRadians(20));
+      public static final ArmPosition DOUBLE_SUBSTATION = new ArmPosition(0.0, Units.degreesToRadians(0));
+      public static final ArmPosition HYRBID = new ArmPosition(0.1, Units.degreesToRadians(0));
+    };
 
     public static class Extension {
       public static final double TOLERANCE = 0.01;
