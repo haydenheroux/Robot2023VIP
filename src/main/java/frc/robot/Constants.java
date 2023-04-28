@@ -69,6 +69,7 @@ public class Constants {
       public static final double EJECTING_VOLTAGE = 12.0;
       public static final double HOLDING_CONE_VOLTAGE = -8;
       public static final double HOLDING_CUBE_VOLTAGE = -4;
+      public static final int CAN_ID = 0;
     }
 
     public static class SideIntake {
@@ -84,6 +85,8 @@ public class Constants {
       public static final double BASE_ACCEPTING_VOLTAGE = -10.0;
       public static final double BASE_EJECTING_VOLTAGE = 10.0;
       public static final double HOLDING_VOLTAGE = -8;
+    public static final int TOP_CAN_ID = 0;
+    public static final int BOTTOM_CAN_ID = 0;
     }
   }
 }

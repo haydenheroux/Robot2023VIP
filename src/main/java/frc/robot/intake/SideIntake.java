@@ -50,8 +50,10 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       io = new SideIntakeIOSim();
     } else {
-      io = null;
+      io = new SideIntakeIOTalonSRX();
     }
+
+    io.configure();
   }
 
   public static SideIntake getInstance() {
