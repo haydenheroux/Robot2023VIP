@@ -106,6 +106,8 @@ public class RobotContainer {
 
     operator.leftBumper().onTrue(sideIntake.accept()).onFalse(sideIntake.holdOrDisable());
     operator.rightBumper().onTrue(sideIntake.eject()).onFalse(sideIntake.disable());
+
+    operator.start().onTrue(Commands.runOnce(compressor::enableDigital)).onFalse(Commands.runOnce(compressor::disable));
   }
 
   /** Configures default commands for each subsystem. */
