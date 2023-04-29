@@ -35,6 +35,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private boolean enabled = false;
 
   private ArmPosition goal = new ArmPosition();
+  private ArmPosition setpoint = new ArmPosition();
 
   private boolean reset = false;
 
@@ -256,9 +257,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   }
 
   /** Update's the arm's setpoints depending on the goal. */
-  private void updateSetpoints() {
-    io.setExtensionSetpoint(goal.extensionLengthMeters);
-    io.setRotationSetpoint(goal.rotationAngleRadians);
+  private void updateSetpoint() {
+    setpoint = ArmSetpoint.calculate(position, goal);
+    io.setExtensionSetpoint(setpoint.extensionLengthMeters);
+    io.setRotationSetpoint(setpoint.rotationAngleRadians);
   }
 
   @Override
@@ -267,7 +269,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position = new ArmPosition(values.extensionLengthMeters, values.rotationAngleRadians);
 
-    if (isEnabled()) updateSetpoints();
+    if (isEnabled()) updateSetpoint();
 
     SuperstructureMechanism.getInstance().updateArm(position, getLocked());
   }
@@ -287,6 +289,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
     goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
     goalLayout.addNumber("Rotation Angle Goal (rad)", () -> goal.rotationAngleRadians);
+    goalLayout.addNumber("Extension Length Setpoint (m)", () -> setpoint.extensionLengthMeters);
+    goalLayout.addNumber("Rotation Angle Setpoint (rad)", () -> setpoint.rotationAngleRadians);
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }
