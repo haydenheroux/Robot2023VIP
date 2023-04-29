@@ -9,9 +9,7 @@ import java.util.Objects;
 
 public class ArmPosition {
 
-  public double extensionLengthMeters, rotationAngleRadians;
-
-  public ArmPosition() {}
+  public final double extensionLengthMeters, rotationAngleRadians;
 
   public ArmPosition(double extensionLengthMeters, double rotationAngleRadians) {
     this.extensionLengthMeters = extensionLengthMeters;

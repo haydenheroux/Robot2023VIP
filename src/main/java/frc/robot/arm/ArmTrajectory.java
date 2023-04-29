@@ -6,17 +6,15 @@ package frc.robot.arm;
 
 import frc.robot.Constants;
 
-public class ArmSetpoint {
+public class ArmTrajectory {
 
     private static ArmPosition calculateUpwards(ArmPosition position, ArmPosition goal) {
-        ArmPosition setpoint = new ArmPosition();
-
-        setpoint.rotationAngleRadians = goal.rotationAngleRadians;
+        double rotationAngleRadians = goal.rotationAngleRadians;
 
         double maximumLength = ArmConstraintsSolver.calculateMaximumExtensionLength(position.rotationAngleRadians);
-        setpoint.extensionLengthMeters = Math.min(goal.extensionLengthMeters, maximumLength);
+        double extensionLengthMeters = Math.min(goal.extensionLengthMeters, maximumLength);
 
-        return setpoint;
+        return new ArmPosition(extensionLengthMeters, rotationAngleRadians);
     }
 
     private static ArmPosition calculateDownwards(ArmPosition position, ArmPosition goal) {
@@ -27,7 +25,7 @@ public class ArmSetpoint {
         return Constants.Arm.Setpoints.STOWED;
     }
 
-    public static ArmPosition calculate(ArmPosition position, ArmPosition goal) {
+    public static ArmPosition next(ArmPosition position, ArmPosition setpoint, ArmPosition goal) {
         if (position.rotationAngleRadians < goal.rotationAngleRadians) {
             return calculateUpwards(position, goal);
         }

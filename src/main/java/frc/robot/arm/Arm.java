@@ -35,12 +35,12 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   private boolean enabled = false;
 
-  private ArmPosition goal = new ArmPosition();
-  private ArmPosition setpoint = new ArmPosition();
+  private ArmPosition goal = new ArmPosition(0, 0);
+  private ArmPosition setpoint = new ArmPosition(0, 0);
 
   private boolean reset = false;
 
-  private ArmPosition position = new ArmPosition();
+  private ArmPosition position = new ArmPosition(0, 0);
 
   /** Creates a new Arm. */
   private Arm() {
@@ -259,7 +259,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoint() {
-    setpoint = ArmSetpoint.calculate(position, goal);
+    setpoint = ArmTrajectory.next(position, setpoint, goal);
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
   }
