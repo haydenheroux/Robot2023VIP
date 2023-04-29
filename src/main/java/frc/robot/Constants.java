@@ -48,7 +48,7 @@ public class Constants {
       public static final double HYBRID_ANGLE = Units.degreesToRadians(5);
       public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
 
-      public static final double MIDDLE_ANGLE = Units.degreesToRadians(18);
+      public static final double MIDDLE_ANGLE = Units.degreesToRadians(16);
       public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75);
     }
 
