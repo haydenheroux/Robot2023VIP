@@ -49,7 +49,7 @@ public class Constants {
       public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
 
       public static final double MIDDLE_ANGLE = Units.degreesToRadians(16);
-      public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75);
+      public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH / 2;
     }
 
     public static class Setpoints {

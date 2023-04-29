@@ -4,6 +4,8 @@
 
 package frc.robot.arm;
 
+import frc.robot.Constants;
+
 public class ArmSetpoint {
 
     private static ArmPosition calculateUpwards(ArmPosition position, ArmPosition goal) {
@@ -19,7 +21,10 @@ public class ArmSetpoint {
 
     private static ArmPosition calculateDownwards(ArmPosition position, ArmPosition goal) {
         // TODO
-        return goal;
+        if (position.extensionLengthMeters <= goal.extensionLengthMeters) {
+            return goal;
+        }
+        return Constants.Arm.Setpoints.STOWED;
     }
 
     public static ArmPosition calculate(ArmPosition position, ArmPosition goal) {
