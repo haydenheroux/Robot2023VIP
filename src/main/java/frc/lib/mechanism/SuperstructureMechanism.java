@@ -29,7 +29,8 @@ public class SuperstructureMechanism {
     return 8 * metersToMechanism(meters);
   }
 
-  private final double kMechanismWidth = metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2);
+  private final double kMechanismWidth =
+      metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2);
   private final double kMechanismHeight = metersToMechanism(Constants.Arm.Constraints.MAX_HEIGHT);
 
   private final Color8Bit kDefaultColor = new Color8Bit(Color.kGray);
@@ -58,10 +59,7 @@ public class SuperstructureMechanism {
   private final MechanismLigament2d bumpers;
 
   private SuperstructureMechanism() {
-    mechanism =
-        new Mechanism2d(
-            kMechanismWidth,
-            kMechanismHeight);
+    mechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
 
     armRoot =
         mechanism.getRoot(
@@ -99,8 +97,7 @@ public class SuperstructureMechanism {
     sideIntakeRoot =
         mechanism.getRoot(
             "sideIntakeRoot",
-            kMechanismWidth / 2
-                - metersToMechanism(Units.inchesToMeters(12)) / 2,
+            kMechanismWidth / 2 - metersToMechanism(Units.inchesToMeters(12)) / 2,
             metersToMechanism(Units.inchesToMeters(18)));
 
     sideIntake =
@@ -112,9 +109,20 @@ public class SuperstructureMechanism {
                 metersToMechanismThickness(Units.inchesToMeters(4)),
                 kIntakeDisabledColor));
 
-    bumpersRoot = mechanism.getRoot("bumpersRoot", (kMechanismWidth / 2) - metersToMechanism(Constants.Physical.BUMPER_DISTANCE), metersToMechanism(Units.inchesToMeters(7.5)) / 2);
+    bumpersRoot =
+        mechanism.getRoot(
+            "bumpersRoot",
+            (kMechanismWidth / 2) - metersToMechanism(Constants.Physical.BUMPER_DISTANCE),
+            metersToMechanism(Units.inchesToMeters(7.5)) / 2);
 
-    bumpers = bumpersRoot.append(new MechanismLigament2d("bumpers", metersToMechanism(2 * Constants.Physical.BUMPER_DISTANCE), 0, metersToMechanismThickness(Units.inchesToMeters(7.5)), kBumpersColor));
+    bumpers =
+        bumpersRoot.append(
+            new MechanismLigament2d(
+                "bumpers",
+                metersToMechanism(2 * Constants.Physical.BUMPER_DISTANCE),
+                0,
+                metersToMechanismThickness(Units.inchesToMeters(7.5)),
+                kBumpersColor));
   }
 
   public static SuperstructureMechanism getInstance() {

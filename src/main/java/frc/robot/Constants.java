@@ -55,8 +55,7 @@ public class Constants {
     public static class Setpoints {
       public static final ArmPosition STOWED = new ArmPosition(0.0, Rotation.MAX_ANGLE);
       public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(18));
-      public static final ArmPosition MIDDLE_ROW =
-          new ArmPosition(0.45, Units.degreesToRadians(7));
+      public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.45, Units.degreesToRadians(7));
       public static final ArmPosition DOUBLE_SUBSTATION =
           new ArmPosition(0.0, Units.degreesToRadians(13));
       public static final ArmPosition HYRBID = new ArmPosition(0.1, Units.degreesToRadians(0));
