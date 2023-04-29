@@ -14,6 +14,14 @@ public class Constants {
 
   public static final double NOMINAL_VOLTAGE = 12.0;
 
+  public static class Physical {
+    public static final double ARM_SHOULDER_HEIGHT = Units.inchesToMeters(28.72);
+    public static final double STATIC_LENGTH = Units.inchesToMeters(13);
+    public static final double CLAW_LENGTH = Units.inchesToMeters(12);
+    public static final double LENGTH_OFFSET = STATIC_LENGTH + CLAW_LENGTH;
+    public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
+  }
+
   public static class Arm {
 
     public static final double MASS = 4.5;
@@ -33,12 +41,6 @@ public class Constants {
     }
 
     public static class Constraints {
-      public static final double HEIGHT_OFFSET = Units.inchesToMeters(28.72);
-      public static final double STATIC_LENGTH = Units.inchesToMeters(13);
-      public static final double CLAW_LENGTH = Units.inchesToMeters(12);
-      public static final double LENGTH_OFFSET = STATIC_LENGTH + CLAW_LENGTH;
-      public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
-
       public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
       public static final double MIN_HEIGHT = Units.inchesToMeters(4);
       public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);

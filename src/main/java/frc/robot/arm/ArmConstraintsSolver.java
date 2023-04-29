@@ -33,24 +33,23 @@ public class ArmConstraintsSolver {
   public static double calculateMaximumExtensionLength(double angleRadians) {
     ArrayList<Double> maximumLengths = new ArrayList<Double>();
 
-    maximumLengths.add(calculateVertical(Constants.Arm.Constraints.MIN_HEIGHT - Constants.Arm.Constraints.HEIGHT_OFFSET, angleRadians));
-    maximumLengths.add(calculateVertical(Constants.Arm.Constraints.MAX_HEIGHT - Constants.Arm.Constraints.HEIGHT_OFFSET, angleRadians));
+    maximumLengths.add(calculateVertical(Constants.Arm.Constraints.MIN_HEIGHT - Constants.Physical.ARM_SHOULDER_HEIGHT, angleRadians));
+    maximumLengths.add(calculateVertical(Constants.Arm.Constraints.MAX_HEIGHT - Constants.Physical.ARM_SHOULDER_HEIGHT, angleRadians));
 
-    maximumLengths.add(calculateHorizontal(Constants.Arm.Constraints.BUMPER_DISTANCE + Constants.Arm.Constraints.MAX_OUT_LENGTH, angleRadians));
+    maximumLengths.add(calculateHorizontal(Constants.Physical.BUMPER_DISTANCE + Constants.Arm.Constraints.MAX_OUT_LENGTH, angleRadians));
     
     if (angleRadians <= Constants.Arm.Constraints.HYBRID_ANGLE) {
-      maximumLengths.add(calculateHorizontal(Constants.Arm.Constraints.BUMPER_DISTANCE + Constants.Arm.Constraints.HYBRID_DISTANCE, angleRadians));
+      maximumLengths.add(calculateHorizontal(Constants.Physical.BUMPER_DISTANCE + Constants.Arm.Constraints.HYBRID_DISTANCE, angleRadians));
     } else if (angleRadians <= Constants.Arm.Constraints.MIDDLE_ANGLE) {
-      maximumLengths.add(calculateHorizontal(Constants.Arm.Constraints.BUMPER_DISTANCE + Constants.Arm.Constraints.MIDDLE_DISTANCE, angleRadians));
+      maximumLengths.add(calculateHorizontal(Constants.Physical.BUMPER_DISTANCE + Constants.Arm.Constraints.MIDDLE_DISTANCE, angleRadians));
     }
 
     maximumLengths.removeIf(x -> x < 0);
 
-    return Collections.min(maximumLengths) - Constants.Arm.Constraints.LENGTH_OFFSET;
+    return Collections.min(maximumLengths) - Constants.Physical.LENGTH_OFFSET;
   } 
 
   public static boolean isWithinRuleZone(ArmPosition position) {
-    double maximumExtensionLength = calculateMaximumExtensionLength(position.rotationAngleRadians);
-    return position.extensionLengthMeters < maximumExtensionLength;
+    return position.extensionLengthMeters < calculateMaximumExtensionLength(position.rotationAngleRadians);
   }
 }

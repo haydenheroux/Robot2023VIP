@@ -29,6 +29,9 @@ public class SuperstructureMechanism {
     return 8 * metersToMechanism(meters);
   }
 
+  private final double kMechanismWidth = metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2);
+  private final double kMechanismHeight = metersToMechanism(Constants.Arm.Constraints.MAX_HEIGHT);
+
   private final Color8Bit kDefaultColor = new Color8Bit(Color.kGray);
 
   private final Color8Bit kLockedColor = kDefaultColor;
@@ -57,20 +60,20 @@ public class SuperstructureMechanism {
   private SuperstructureMechanism() {
     mechanism =
         new Mechanism2d(
-            metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2),
-            metersToMechanism(Constants.Arm.Constraints.MAX_HEIGHT));
+            kMechanismWidth,
+            kMechanismHeight);
 
     armRoot =
         mechanism.getRoot(
             "armRoot",
-            metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH),
-            metersToMechanism(Constants.Arm.Constraints.HEIGHT_OFFSET));
+            kMechanismWidth / 2,
+            metersToMechanism(Constants.Physical.ARM_SHOULDER_HEIGHT));
 
     armRotation =
         armRoot.append(
             new MechanismLigament2d(
                 "armRotation",
-                metersToMechanism(Constants.Arm.Constraints.STATIC_LENGTH),
+                metersToMechanism(Constants.Physical.STATIC_LENGTH),
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(2)),
                 kLockedColor));
@@ -88,7 +91,7 @@ public class SuperstructureMechanism {
         armExtension.append(
             new MechanismLigament2d(
                 "claw",
-                metersToMechanism(Constants.Arm.Constraints.CLAW_LENGTH),
+                metersToMechanism(Constants.Physical.CLAW_LENGTH),
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(4.717)),
                 kIntakeDisabledColor));
@@ -96,7 +99,7 @@ public class SuperstructureMechanism {
     sideIntakeRoot =
         mechanism.getRoot(
             "sideIntakeRoot",
-            metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH)
+            kMechanismWidth / 2
                 - metersToMechanism(Units.inchesToMeters(12)) / 2,
             metersToMechanism(Units.inchesToMeters(18)));
 
@@ -109,9 +112,9 @@ public class SuperstructureMechanism {
                 metersToMechanismThickness(Units.inchesToMeters(4)),
                 kIntakeDisabledColor));
 
-    bumpersRoot = mechanism.getRoot("bumpersRoot", metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH) - metersToMechanism(Units.inchesToMeters(14)), metersToMechanism(Units.inchesToMeters(7.5)) / 2);
+    bumpersRoot = mechanism.getRoot("bumpersRoot", (kMechanismWidth / 2) - metersToMechanism(Constants.Physical.BUMPER_DISTANCE), metersToMechanism(Units.inchesToMeters(7.5)) / 2);
 
-    bumpers = bumpersRoot.append(new MechanismLigament2d("bumpers", metersToMechanism(Units.inchesToMeters(28)), 0, metersToMechanismThickness(Units.inchesToMeters(7.5)), kBumpersColor));
+    bumpers = bumpersRoot.append(new MechanismLigament2d("bumpers", metersToMechanism(2 * Constants.Physical.BUMPER_DISTANCE), 0, metersToMechanismThickness(Units.inchesToMeters(7.5)), kBumpersColor));
   }
 
   public static SuperstructureMechanism getInstance() {
