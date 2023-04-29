@@ -37,11 +37,17 @@ public class Constants {
       public static final double STATIC_LENGTH = Units.inchesToMeters(13);
       public static final double CLAW_LENGTH = Units.inchesToMeters(12);
       public static final double LENGTH_OFFSET = STATIC_LENGTH + CLAW_LENGTH;
+      public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
 
       public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
       public static final double MIN_HEIGHT = Units.inchesToMeters(4);
-      public static final double MAX_OUT_LENGTH =
-          Units.inchesToMeters(14) + Units.inchesToMeters(48);
+      public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);
+
+      public static final double HYBRID_ANGLE = Units.degreesToRadians(5);
+      public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
+
+      public static final double MIDDLE_ANGLE = Units.degreesToRadians(18);
+      public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75);
     }
 
     public static class Setpoints {
