@@ -4,6 +4,7 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -282,15 +283,15 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
-    valuesLayout.addNumber("Rotation Angle (rad)", () -> values.rotationAngleRadians);
+    valuesLayout.addNumber("Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
     goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
-    goalLayout.addNumber("Rotation Angle Goal (rad)", () -> goal.rotationAngleRadians);
+    goalLayout.addNumber("Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
     goalLayout.addNumber("Extension Length Setpoint (m)", () -> setpoint.extensionLengthMeters);
-    goalLayout.addNumber("Rotation Angle Setpoint (rad)", () -> setpoint.rotationAngleRadians);
+    goalLayout.addNumber("Rotation Angle Setpoint (deg)", () -> Units.radiansToDegrees(setpoint.rotationAngleRadians));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }

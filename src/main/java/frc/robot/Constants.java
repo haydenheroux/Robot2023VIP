@@ -49,16 +49,14 @@ public class Constants {
       public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
 
       public static final double MIDDLE_ANGLE = Units.degreesToRadians(16);
-      public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH / 2;
+      public static final double MIDDLE_DISTANCE = Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH;
     }
 
     public static class Setpoints {
       public static final ArmPosition STOWED = new ArmPosition(0.0, Rotation.MAX_ANGLE);
-      public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(18));
-      public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.45, Units.degreesToRadians(7));
-      public static final ArmPosition DOUBLE_SUBSTATION =
-          new ArmPosition(0.0, Units.degreesToRadians(13));
-      public static final ArmPosition HYRBID = new ArmPosition(0.1, Units.degreesToRadians(0));
+      public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(25));
+      public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.55, Units.degreesToRadians(14));
+      public static final ArmPosition HYRBID = new ArmPosition(0.05, Rotation.MIN_ANGLE);
     }
   }
 
