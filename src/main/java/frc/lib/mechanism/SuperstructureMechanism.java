@@ -41,6 +41,8 @@ public class SuperstructureMechanism {
   private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLimeGreen);
   private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kTomato);
 
+  private final Color8Bit kBumpersColor = new Color8Bit(Color.kRed);
+
   private final Mechanism2d mechanism;
 
   private final MechanismRoot2d armRoot;
@@ -48,6 +50,9 @@ public class SuperstructureMechanism {
 
   private final MechanismRoot2d sideIntakeRoot;
   private final MechanismLigament2d sideIntake;
+
+  private final MechanismRoot2d bumpersRoot;
+  private final MechanismLigament2d bumpers;
 
   private SuperstructureMechanism() {
     mechanism =
@@ -103,6 +108,10 @@ public class SuperstructureMechanism {
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(4)),
                 kIntakeDisabledColor));
+
+    bumpersRoot = mechanism.getRoot("bumpersRoot", metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH) - metersToMechanism(Units.inchesToMeters(14)), metersToMechanism(Units.inchesToMeters(7.5)) / 2);
+
+    bumpers = bumpersRoot.append(new MechanismLigament2d("bumpers", metersToMechanism(Units.inchesToMeters(28)), 0, metersToMechanismThickness(Units.inchesToMeters(7.5)), kBumpersColor));
   }
 
   public static SuperstructureMechanism getInstance() {
