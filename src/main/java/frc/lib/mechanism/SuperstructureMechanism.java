@@ -39,13 +39,13 @@ public class SuperstructureMechanism {
   private final Color8Bit kUnlockedColor = new Color8Bit(Color.kHotPink);
   private final Color8Bit kConstraintColor = new Color8Bit(Color.kOrange);
 
-  private final Color8Bit kIntakeDisabledColor = kDefaultColor;
+  private final Color8Bit kIntakeDisabledColor = new Color8Bit(Color.kLimeGreen);
   private final Color8Bit kIntakeHoldingConeColor = new Color8Bit(Color.kYellow);
   private final Color8Bit kIntakeHoldingCubeColor = new Color8Bit(Color.kPurple);
-  private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLimeGreen);
-  private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kTomato);
+  private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLawnGreen);
+  private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kOrangeRed);
 
-  private final Color8Bit kBumpersColor = new Color8Bit(Color.kRed);
+  private final Color8Bit kBumpersColor = new Color8Bit(Color.kFirstRed);
 
   private final Mechanism2d mechanism;
 
