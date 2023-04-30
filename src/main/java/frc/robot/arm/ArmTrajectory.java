@@ -8,32 +8,24 @@ import frc.robot.Constants;
 
 public class ArmTrajectory {
 
-    private static ArmPosition calculateUpwards(ArmPosition position, ArmPosition goal) {
-        double rotationAngleRadians = goal.rotationAngleRadians;
+    public static ArmPosition next(ArmPosition position, ArmPosition goal) {
+        // An angle where, no matter what, it is safe to control the length of the arm
+        final double safeAngleRadians = Constants.Arm.Setpoints.SAFE.rotationAngleRadians;
 
-        double maximumLength = ArmConstraintsSolver.calculateMaximumExtensionLength(position.rotationAngleRadians);
-        double extensionLengthMeters = Math.min(goal.extensionLengthMeters, maximumLength);
+        final boolean atGoalLength = position.lengthEquals(goal);
 
-        return new ArmPosition(extensionLengthMeters, rotationAngleRadians);
-    }
+        final boolean aboveSafeAngle = position.rotationAngleRadians >= safeAngleRadians;
+        final boolean isSafeToExtend = aboveSafeAngle;
 
-    private static ArmPosition calculateDownwards(ArmPosition position, ArmPosition goal) {
-        // TODO
-        if (position.extensionLengthMeters <= goal.extensionLengthMeters) {
-            return goal;
-        }
-        return Constants.Arm.Setpoints.STOWED;
-    }
+        // If at the goal length, pivot down to the goal angle
+        if (atGoalLength) return goal;
 
-    public static ArmPosition next(ArmPosition position, ArmPosition setpoint, ArmPosition goal) {
-        if (position.rotationAngleRadians < goal.rotationAngleRadians) {
-            return calculateUpwards(position, goal);
-        }
+        // Otherwise, the goal length needs to be extended to
 
-        if (position.rotationAngleRadians > goal.rotationAngleRadians) {
-            return calculateDownwards(position, goal);
-        }
-        
-        return goal;
+        // If possible to safely extend to the goal length now, extend to the goal length now
+        if (isSafeToExtend) return new ArmPosition(goal.extensionLengthMeters, safeAngleRadians);
+
+        // Otherwise, pivot to an angle where it is safe to extend
+        return new ArmPosition(position.extensionLengthMeters, Constants.Arm.Rotation.MAX_ANGLE);
     }
 }

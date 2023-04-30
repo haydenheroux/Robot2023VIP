@@ -17,13 +17,19 @@ public class ArmPosition {
   }
 
   public boolean approximatelyEquals(ArmPosition other) {
-    boolean extensionInTolerance =
+    return lengthEquals(other) && rotationEquals(other);
+  }
+
+  public boolean lengthEquals(ArmPosition other) {
+    return
         Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
             < Constants.Arm.Extension.TOLERANCE;
-    boolean rotationInTolerance =
+  }
+
+  public boolean rotationEquals(ArmPosition other) {
+    return
         Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
             < Constants.Arm.Rotation.TOLERANCE;
-    return extensionInTolerance && rotationInTolerance;
   }
 
   @Override

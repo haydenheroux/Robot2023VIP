@@ -259,7 +259,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoint() {
-    setpoint = ArmTrajectory.next(position, setpoint, goal);
+    setpoint = ArmTrajectory.next(position, goal);
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
   }

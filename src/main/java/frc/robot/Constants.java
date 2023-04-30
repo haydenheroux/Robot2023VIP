@@ -57,6 +57,7 @@ public class Constants {
       public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(25));
       public static final ArmPosition MIDDLE_ROW = new ArmPosition(0.55, Units.degreesToRadians(14));
       public static final ArmPosition HYRBID = new ArmPosition(0.05, Rotation.MIN_ANGLE);
+      public static final ArmPosition SAFE = new ArmPosition(0, Units.degreesToRadians(30));
     }
   }
 
