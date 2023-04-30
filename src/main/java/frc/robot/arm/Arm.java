@@ -226,10 +226,13 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
           boolean extensionPastMin = extensionAtMin && extensionDecreasing;
           boolean extensionPastMax = extensionAtMax && extensionIncreasing;
 
-          boolean isWithinRuleZone = ArmConstraintsSolver.isWithinRuleZone(position);
+          boolean isWithinRuleZone = ArmKinematics.isWithinRuleZone(position);
           boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
 
-          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone) {
+          boolean isAvoidingGrid = ArmKinematics.isAvoidingGrid(position);
+          boolean isHittingGrid = !isAvoidingGrid && extensionIncreasing;
+
+          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone && !isHittingGrid) {
             io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
           }
         });

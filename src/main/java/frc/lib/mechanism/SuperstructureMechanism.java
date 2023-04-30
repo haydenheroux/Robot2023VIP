@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
 import frc.robot.arm.Arm;
-import frc.robot.arm.ArmConstraintsSolver;
+import frc.robot.arm.ArmKinematics;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
@@ -167,7 +167,7 @@ public class SuperstructureMechanism {
   }
 
   private void setConstraint(ArmPosition position) {
-    if (ArmConstraintsSolver.isWithinRuleZone(position) == false) {
+    if (ArmKinematics.isWithinRuleZone(position) == false || ArmKinematics.isAvoidingGrid(position) == false) {
       armExtension.setColor(kConstraintColor);
     }
   }
