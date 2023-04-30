@@ -163,6 +163,12 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     tab.addString("State", state::toString);
     tab.addBoolean("Is Holding?", this::isHolding);
 
+    ShuffleboardLayout stateOverridesLayout = tab.getLayout("State Overrides", BuiltInLayouts.kList);
+    stateOverridesLayout.add(this.runOnce(() -> state = State.kAccepting).withName("Accepting"));
+    stateOverridesLayout.add(this.runOnce(() -> state = State.kDisabled).withName("Disabled"));
+    stateOverridesLayout.add(this.runOnce(() -> state = State.kEjecting).withName("Ejecting"));
+    stateOverridesLayout.add(this.runOnce(() -> state = State.kHolding).withName("Holding"));
+
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Bottom Motor Current (A)", () -> values.bottomMotorCurrentAmps);
     valuesLayout.addNumber("Top Motor Current (A)", () -> values.topMotorCurrentAmps);
