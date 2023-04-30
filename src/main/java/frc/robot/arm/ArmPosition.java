@@ -16,16 +16,16 @@ public class ArmPosition {
     this.rotationAngleRadians = rotationAngleRadians;
   }
 
-  public boolean approximatelyEquals(ArmPosition other) {
-    return lengthEquals(other) && rotationEquals(other);
+  public boolean at(ArmPosition other) {
+    return atLengthOf(other) && atRotationOf(other);
   }
 
-  public boolean lengthEquals(ArmPosition other) {
+  public boolean atLengthOf(ArmPosition other) {
     return Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
         < Constants.Arm.Extension.TOLERANCE;
   }
 
-  public boolean rotationEquals(ArmPosition other) {
+  public boolean atRotationOf(ArmPosition other) {
     return Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
         < Constants.Arm.Rotation.TOLERANCE;
   }

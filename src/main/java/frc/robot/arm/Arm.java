@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private boolean enabled = false;
 
   private ArmPosition goal = new ArmPosition(0, 0);
-  private ArmPosition setpoint = new ArmPosition(0, 0);
+  private ArmTrajectory trajectory;
 
   private boolean reset = false;
 
@@ -148,7 +148,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return if the error is in tolerance.
    */
   public boolean atGoal() {
-    return position.approximatelyEquals(goal);
+    return position.at(goal);
   }
 
   /**
@@ -166,7 +166,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param state the goal state.
    */
   public Command setGoal(ArmPosition state) {
-    return this.runOnce(() -> this.goal = state);
+    return this.runOnce(() -> {
+      this.goal = state;
+      this.trajectory = new ArmTrajectory(state);
+    });
   }
 
   /**
@@ -262,7 +265,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoint() {
-    setpoint = ArmTrajectory.next(position, goal);
+    ArmPosition setpoint = trajectory.next(position);
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
   }
@@ -295,10 +298,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
     goalLayout.addNumber(
         "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
-    goalLayout.addNumber("Extension Length Setpoint (m)", () -> setpoint.extensionLengthMeters);
-    goalLayout.addNumber(
-        "Rotation Angle Setpoint (deg)",
-        () -> Units.radiansToDegrees(setpoint.rotationAngleRadians));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }

@@ -8,11 +8,22 @@ import frc.robot.Constants;
 
 public class ArmTrajectory {
 
-  public static ArmPosition next(ArmPosition position, ArmPosition goal) {
+  final private ArmPosition goal;
+
+  public ArmTrajectory(ArmPosition goal) {
+    this.goal = goal;
+  }
+
+  public ArmPosition next(ArmPosition position) {
+    return fallbackNext(position);
+  }
+
+
+  private ArmPosition fallbackNext(ArmPosition position) {
     // An angle where, no matter what, it is safe to control the length of the arm
     final double safeAngleRadians = Constants.Arm.Setpoints.SAFE.rotationAngleRadians;
 
-    final boolean atGoalLength = position.lengthEquals(goal);
+    final boolean atGoalLength = position.atLengthOf(goal);
 
     final boolean aboveSafeAngle = position.rotationAngleRadians >= safeAngleRadians;
     final boolean isSafeToExtend = aboveSafeAngle;
