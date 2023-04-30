@@ -21,15 +21,13 @@ public class ArmPosition {
   }
 
   public boolean lengthEquals(ArmPosition other) {
-    return
-        Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
-            < Constants.Arm.Extension.TOLERANCE;
+    return Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
+        < Constants.Arm.Extension.TOLERANCE;
   }
 
   public boolean rotationEquals(ArmPosition other) {
-    return
-        Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
-            < Constants.Arm.Rotation.TOLERANCE;
+    return Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
+        < Constants.Arm.Rotation.TOLERANCE;
   }
 
   @Override

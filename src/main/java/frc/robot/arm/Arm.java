@@ -286,15 +286,19 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
-    valuesLayout.addNumber("Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
+    valuesLayout.addNumber(
+        "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
     goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
-    goalLayout.addNumber("Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
+    goalLayout.addNumber(
+        "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
     goalLayout.addNumber("Extension Length Setpoint (m)", () -> setpoint.extensionLengthMeters);
-    goalLayout.addNumber("Rotation Angle Setpoint (deg)", () -> Units.radiansToDegrees(setpoint.rotationAngleRadians));
+    goalLayout.addNumber(
+        "Rotation Angle Setpoint (deg)",
+        () -> Units.radiansToDegrees(setpoint.rotationAngleRadians));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }

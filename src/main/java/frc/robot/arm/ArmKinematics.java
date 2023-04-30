@@ -4,12 +4,11 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 public class ArmKinematics {
 
@@ -61,7 +60,9 @@ public class ArmKinematics {
 
     final boolean belowCeiling = translation.getY() < Constants.Arm.Constraints.MAX_HEIGHT;
     final boolean aboveFloor = translation.getY() > Constants.Arm.Constraints.MIN_HEIGHT;
-    final boolean inG107 = translation.getX() < Constants.Physical.BUMPER_DISTANCE + Constants.Arm.Constraints.MAX_OUT_LENGTH;
+    final boolean inG107 =
+        translation.getX()
+            < Constants.Physical.BUMPER_DISTANCE + Constants.Arm.Constraints.MAX_OUT_LENGTH;
 
     return belowCeiling && aboveFloor && inG107;
   }
