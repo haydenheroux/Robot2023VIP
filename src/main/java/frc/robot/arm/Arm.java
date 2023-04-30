@@ -35,12 +35,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   private boolean enabled = false;
 
-  private ArmPosition goal = new ArmPosition(0, 0);
-  private ArmTrajectory trajectory;
-
   private boolean reset = false;
 
   private ArmPosition position = new ArmPosition(0, 0);
+  private ArmPosition goal = new ArmPosition(0, 0);
+  private ArmTrajectory trajectory = new ArmTrajectory(position, goal);
 
   /** Creates a new Arm. */
   private Arm() {
@@ -163,13 +162,14 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   /**
    * Sets the goal state for positional control.
    *
-   * @param state the goal state.
+   * @param goal the goal state.
    */
-  public Command setGoal(ArmPosition state) {
-    return this.runOnce(() -> {
-      this.goal = state;
-      this.trajectory = new ArmTrajectory(state);
-    });
+  public Command setGoal(ArmPosition goal) {
+    return this.runOnce(
+        () -> {
+          this.goal = goal;
+          this.trajectory = new ArmTrajectory(position, goal);
+        });
   }
 
   /**
@@ -265,7 +265,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   /** Update's the arm's setpoints depending on the goal. */
   private void updateSetpoint() {
-    ArmPosition setpoint = trajectory.next(position);
+    if (position.at(trajectory.get())) trajectory.next();
+
+    ArmPosition setpoint = trajectory.get();
+
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
   }
@@ -298,6 +301,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
     goalLayout.addNumber(
         "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
+    goalLayout.addNumber(
+        "Extension Length Setpoint (m)", () -> trajectory.get().extensionLengthMeters);
+    goalLayout.addNumber(
+        "Rotation Angle Setpoint (deg)",
+        () -> Units.radiansToDegrees(trajectory.get().rotationAngleRadians));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }
