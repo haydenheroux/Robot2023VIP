@@ -27,17 +27,29 @@ public class Constants {
     public static final double MASS = 4.5;
 
     public static class Extension {
-      public static final double TOLERANCE = 0.01;
+      public static final int CAN_ID = 3;
+      public static final int BRAKE_CHANNEL = 10;
+
       public static final double MIN_LENGTH = 0;
       public static final double MAX_LENGTH = Units.feetToMeters(5);
+
+      public static final double TOLERANCE = 0.01;
+
+      public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
     }
 
     public static class Rotation {
+      public static final int CAN_ID = 2;
+      public static final int BRAKE_CHANNEL = 9;
+
       public static final double GEAR_RATIO = 812.0 / 11.0;
+
       public static final double MIN_ANGLE = Units.degreesToRadians(-45);
       public static final double MAX_ANGLE = Units.degreesToRadians(60);
 
       public static final double TOLERANCE = Units.degreesToRadians(1);
+
+      public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
     }
 
     public static class Constraints {
