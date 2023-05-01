@@ -30,6 +30,9 @@ public class Constants {
       public static final int CAN_ID = 3;
       public static final int BRAKE_CHANNEL = 10;
 
+      public static final double DISTANCE_PER_ROTATION = Units.inchesToMeters(1) * Math.PI;
+      public static final double GEAR_RATIO = 15.34;
+
       public static final double MIN_LENGTH = 0;
       public static final double MAX_LENGTH = Units.feetToMeters(5);
 
