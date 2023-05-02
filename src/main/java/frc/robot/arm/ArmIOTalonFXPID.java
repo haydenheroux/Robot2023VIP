@@ -14,8 +14,8 @@ public class ArmIOTalonFXPID extends ArmIOTalonFXBase {
   public ArmIOTalonFXPID() {
     super();
 
-    extensionPID = new PIDController(Constants.Arm.Extension.KP, 0, 0);
-    rotationPID = new PIDController(Constants.Arm.Rotation.KP, 0, 0);
+    extensionPID = new PIDController(Constants.Arm.Extension.PID.KP, 0, 0);
+    rotationPID = new PIDController(Constants.Arm.Rotation.PID.KP, 0, 0);
   }
 
   @Override

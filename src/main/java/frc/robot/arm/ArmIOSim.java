@@ -39,9 +39,9 @@ public class ArmIOSim implements ArmIO {
           Constants.Arm.MASS,
           true);
 
-  private final PIDController extensionPID = new PIDController(Constants.Arm.Extension.KP, 0, 0);
+  private final PIDController extensionPID = new PIDController(Constants.Arm.Extension.PID.KP, 0, 0);
 
-  private final PIDController rotationPID = new PIDController(Constants.Arm.Rotation.KP, 0, 0);
+  private final PIDController rotationPID = new PIDController(Constants.Arm.Rotation.PID.KP, 0, 0);
   private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
 
   public ArmIOSim() {}

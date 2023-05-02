@@ -14,7 +14,7 @@ import frc.robot.Constants;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
-  private final WPI_TalonFX extensionMotor, rotationMotor;
+  protected final WPI_TalonFX extensionMotor, rotationMotor;
   private final Solenoid extensionBrake, rotationBrake;
 
   public ArmIOTalonFXBase() {

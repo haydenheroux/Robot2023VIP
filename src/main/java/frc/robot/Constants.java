@@ -38,7 +38,14 @@ public class Constants {
 
       public static final double TOLERANCE = 0.01;
 
-      public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
+      public static class BangBang {
+        public static final double INCREASE = 4;
+        public static final double DECREASE = -4;
+      }
+      
+      public static class PID {
+        public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
+      }
     }
 
     public static class Rotation {
@@ -52,7 +59,14 @@ public class Constants {
 
       public static final double TOLERANCE = Units.degreesToRadians(1);
 
-      public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
+      public static class BangBang {
+        public static final double INCREASE = 4;
+        public static final double DECREASE = -4;
+      }
+
+      public static class PID {
+        public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
+      }
     }
 
     public static class Constraints {
