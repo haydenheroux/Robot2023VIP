@@ -21,11 +21,11 @@ public class ArmTrajectory {
         (start.extensionLengthMeters < 0.1 && end.extensionLengthMeters < 0.1);
     boolean needToAvoidGrid = !alreadyAvoidingGrid;
 
-    double avoidingAngleRadians = Constants.Arm.Setpoints.AVOIDING_GRID.rotationAngleRadians;
+    double aboveGridAngleRadians = Constants.Arm.Setpoints.ABOVE_GRID.rotationAngleRadians;
 
     if (needToExtend && needToAvoidGrid) {
-      setpoints.add(new ArmPosition(start.extensionLengthMeters, avoidingAngleRadians));
-      setpoints.add(new ArmPosition(end.extensionLengthMeters, avoidingAngleRadians));
+      setpoints.add(new ArmPosition(start.extensionLengthMeters, aboveGridAngleRadians));
+      setpoints.add(new ArmPosition(end.extensionLengthMeters, aboveGridAngleRadians));
     }
 
     setpoints.add(end);

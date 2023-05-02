@@ -13,7 +13,7 @@ import java.util.Collections;
 public class ArmKinematics {
 
   private static Translation2d armTranslationRelative(ArmPosition position) {
-    double length = position.extensionLengthMeters + Constants.Physical.LENGTH_OFFSET;
+    double length = position.extensionLengthMeters + Constants.Arm.Extension.LENGTH_OFFSET;
     Rotation2d angle = Rotation2d.fromRadians(position.rotationAngleRadians);
     return new Translation2d(length, angle);
   }
@@ -51,7 +51,7 @@ public class ArmKinematics {
 
     if (maximumLengths.size() == 0) return true;
 
-    double maximumLength = Collections.min(maximumLengths) - Constants.Physical.LENGTH_OFFSET;
+    double maximumLength = Collections.min(maximumLengths) - Constants.Arm.Extension.LENGTH_OFFSET;
     return position.extensionLengthMeters < maximumLength;
   }
 

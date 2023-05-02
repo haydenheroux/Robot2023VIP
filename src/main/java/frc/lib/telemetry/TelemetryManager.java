@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TelemetryManager {
+/** Manages automatic initialization and outputting of {@link TelemetryOutputter} objects. */
+public class TelemetryManager implements TelemetryOutputter {
   // Singleton instance
   private static TelemetryManager instance = null;
 
@@ -23,14 +24,21 @@ public class TelemetryManager {
     return instance;
   }
 
+  /**
+   * Registers multiple {@link TelemetryOutputter} objects to the manager.
+   *
+   * @param telemetryOutputters objects to register.
+   */
   public void register(TelemetryOutputter... telemetryOutputters) {
     this.telemetryOutputters = Arrays.asList(telemetryOutputters);
   }
 
+  @Override
   public void initializeDashboard() {
     telemetryOutputters.forEach(TelemetryOutputter::initializeDashboard);
   }
 
+  @Override
   public void outputTelemetry() {
     telemetryOutputters.forEach(TelemetryOutputter::outputTelemetry);
   }

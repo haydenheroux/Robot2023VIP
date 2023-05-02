@@ -35,13 +35,17 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   // Moving average filter for bottomMotorCurrent
   private final LinearFilter bottomMotorCurrentFilter =
       LinearFilter.movingAverage(
-          (int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+          (int)
+              (Constants.Intake.SideIntake.Thresholds.THRESHOLD_PERIOD
+                  * Constants.ITERATIONS_PER_SECOND));
   private double filteredBottomMotorCurrentAmps = 0.0;
 
   // Moving average filter for topMotorCurrent
   private final LinearFilter topMotorCurrentFilter =
       LinearFilter.movingAverage(
-          (int) (Constants.Intake.SideIntake.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+          (int)
+              (Constants.Intake.SideIntake.Thresholds.THRESHOLD_PERIOD
+                  * Constants.ITERATIONS_PER_SECOND));
   private double filteredTopMotorCurrentAmps = 0.0;
 
   private State state = State.kDisabled;
@@ -66,9 +70,9 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
 
   public boolean isHolding() {
     boolean isBottomHolding =
-        filteredBottomMotorCurrentAmps >= Constants.Intake.SideIntake.BOTTOM_CURRENT_THRESHOLD;
+        filteredBottomMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.BOTTOM_THRESHOLD;
     boolean isTopHolding =
-        filteredTopMotorCurrentAmps >= Constants.Intake.SideIntake.TOP_CURRENT_THRESHOLD;
+        filteredTopMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.TOP_THRESHOLD;
     return isBottomHolding && isTopHolding;
   }
 
@@ -78,7 +82,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   }
 
   private double getBiasFor(double betaRelativeToAlphaRadians) {
-    return Constants.Intake.SideIntake.RELATIVE_BIAS_FACTOR * Math.sin(betaRelativeToAlphaRadians);
+    return Constants.Intake.SideIntake.Voltages.RELATIVE_BIAS
+        * Math.sin(betaRelativeToAlphaRadians);
   }
 
   public Command accept() {
@@ -106,8 +111,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     double bias =
         getBiasFor(
             Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.ACCEPT_ANGLE);
-    double bottomMotorVoltage = bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
-    double topMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_ACCEPTING_VOLTAGE;
+    double bottomMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
+    double topMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
     io.setTopMotorVoltage(topMotorVoltage);
   }
@@ -116,8 +121,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     double bias =
         getBiasFor(
             Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.EJECT_ANGLE);
-    double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
-    double topMotorVoltage = bias + Constants.Intake.SideIntake.BASE_EJECTING_VOLTAGE;
+    double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
+    double topMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
     io.setTopMotorVoltage(topMotorVoltage);
   }
@@ -148,8 +153,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
         doEject();
         break;
       case kHolding:
-        io.setBottomMotorVoltage(Constants.Intake.SideIntake.HOLDING_VOLTAGE);
-        io.setTopMotorVoltage(Constants.Intake.SideIntake.HOLDING_VOLTAGE);
+        io.setBottomMotorVoltage(Constants.Intake.SideIntake.Voltages.HOLDING);
+        io.setTopMotorVoltage(Constants.Intake.SideIntake.Voltages.HOLDING);
         break;
     }
 

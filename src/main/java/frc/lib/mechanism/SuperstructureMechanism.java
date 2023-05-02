@@ -17,47 +17,65 @@ import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 
+/** Renders robot superstructure using a {@link Mechanism2d}. */
 public class SuperstructureMechanism {
 
   private static SuperstructureMechanism instance = null;
 
+  /**
+   * @param meters size, in meters.
+   * @return size, in mechanism units.
+   */
   private double metersToMechanism(double meters) {
     return meters * 20;
   }
 
+  /**
+   * @param meters size, in meters.
+   * @return thickness, in mechanism units.
+   */
   private double metersToMechanismThickness(double meters) {
     return 8 * metersToMechanism(meters);
   }
 
+  // Width of mechanism "canvas"
   private final double kMechanismWidth =
       metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2);
+  // Height of mechanism "canvas"
   private final double kMechanismHeight = metersToMechanism(Constants.Arm.Constraints.MAX_HEIGHT);
 
+  // Colors for static superstructure components
   private final Color8Bit kDefaultColor = new Color8Bit(Color.kGray);
+  private final Color8Bit kBumpersColor = new Color8Bit(Color.kFirstRed);
 
+  // Colors for arm superstructure components
   private final Color8Bit kLockedColor = kDefaultColor;
   private final Color8Bit kUnlockedColor = new Color8Bit(Color.kHotPink);
   private final Color8Bit kConstraintColor = new Color8Bit(Color.kOrange);
 
+  // Colors for intake superstructure components
   private final Color8Bit kIntakeDisabledColor = new Color8Bit(Color.kLimeGreen);
   private final Color8Bit kIntakeHoldingConeColor = new Color8Bit(Color.kYellow);
   private final Color8Bit kIntakeHoldingCubeColor = new Color8Bit(Color.kPurple);
   private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLawnGreen);
   private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kOrangeRed);
 
-  private final Color8Bit kBumpersColor = new Color8Bit(Color.kFirstRed);
-
+  // Mechanism rending handle; "canvas"
   private final Mechanism2d mechanism;
 
-  private final MechanismRoot2d armRoot;
-  private final MechanismLigament2d armRotation, armExtension, armClaw;
-
-  private final MechanismRoot2d sideIntakeRoot;
-  private final MechanismLigament2d sideIntake;
-
+  // Static superstructure components
   private final MechanismRoot2d bumpersRoot;
   private final MechanismLigament2d bumpers;
 
+  // Arm superstructure components
+  private final MechanismRoot2d armRoot;
+  private final MechanismLigament2d armRotation, armExtension, armClaw;
+
+  // Intake superstructure components
+  private final MechanismRoot2d sideIntakeRoot;
+  private final MechanismLigament2d sideIntake;
+
+  /** Initializes superstructure components. */
   private SuperstructureMechanism() {
     mechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
 
@@ -71,7 +89,7 @@ public class SuperstructureMechanism {
         armRoot.append(
             new MechanismLigament2d(
                 "armRotation",
-                metersToMechanism(Constants.Physical.STATIC_LENGTH),
+                metersToMechanism(Constants.Physical.ARM_STATIC_SECTION_LENGTH),
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(2)),
                 kLockedColor));
@@ -137,14 +155,29 @@ public class SuperstructureMechanism {
     return mechanism;
   }
 
+  /**
+   * Sets the angle of the arm superstructure component.
+   *
+   * @param angleRadians angle of the arm, in radians.
+   */
   private void setAngle(double angleRadians) {
     armRotation.setAngle(Math.toDegrees(angleRadians));
   }
 
+  /**
+   * Sets the length of the arm superstructure component.
+   *
+   * @param lengthMeters length of the arm, in meters.
+   */
   private void setLength(double lengthMeters) {
     armExtension.setLength(metersToMechanism(lengthMeters));
   }
 
+  /**
+   * Sets the color of the arm superstructure component depending on brake states.
+   *
+   * @param isLocked brake states of the arm.
+   */
   private void setBrake(Arm.LockType isLocked) {
     switch (isLocked) {
       case kBoth:
@@ -166,6 +199,11 @@ public class SuperstructureMechanism {
     }
   }
 
+  /**
+   * Sets the color of the arm superstructure component depending on satisfaction of constraints.
+   *
+   * @param position position of the arm to test constraints against.
+   */
   private void setConstraint(ArmPosition position) {
     if (ArmKinematics.isWithinRuleZone(position) == false
         || ArmKinematics.isAvoidingGrid(position) == false) {
@@ -173,6 +211,12 @@ public class SuperstructureMechanism {
     }
   }
 
+  /**
+   * Sets properties of the arm superstructure component to match the properties of the arm.
+   *
+   * @param position position of the arm.
+   * @param isLocked brake states of the arm.
+   */
   public void updateArm(ArmPosition position, Arm.LockType isLocked) {
     setAngle(position.rotationAngleRadians);
     setLength(position.extensionLengthMeters);
@@ -180,6 +224,11 @@ public class SuperstructureMechanism {
     setConstraint(position);
   }
 
+  /**
+   * Sets color of the claw superstructure component depending on claw state.
+   *
+   * @param state claw state.
+   */
   public void updateClaw(Claw.State state) {
     switch (state) {
       case kAccepting:
@@ -200,6 +249,11 @@ public class SuperstructureMechanism {
     }
   }
 
+  /**
+   * Sets color of the side intake superstructure component depending on side intake state.
+   *
+   * @param state side intake state.
+   */
   public void updateSideIntake(SideIntake.State state) {
     switch (state) {
       case kAccepting:

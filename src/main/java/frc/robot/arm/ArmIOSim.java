@@ -32,11 +32,11 @@ public class ArmIOSim implements ArmIO {
       new SingleJointedArmSim(
           simMotor,
           Constants.Arm.Rotation.GEAR_RATIO,
-          SingleJointedArmSim.estimateMOI(simLength, Constants.Arm.MASS),
+          SingleJointedArmSim.estimateMOI(simLength, Constants.Physical.ARM_MASS),
           simLength,
           Constants.Arm.Rotation.MIN_ANGLE,
           Constants.Arm.Rotation.MAX_ANGLE,
-          Constants.Arm.MASS,
+          Constants.Physical.ARM_MASS,
           true);
 
   private final PIDController extensionPID =

@@ -9,122 +9,255 @@ import frc.robot.arm.ArmPosition;
 
 public class Constants {
 
+  /** Time taken to run one iteration of robot code, in seconds. */
   public static final double LOOP_TIME = 0.02;
-  public static final double SAMPLES_PER_SECOND = 1.0 / LOOP_TIME;
-
+  /** Number of iterations of robot code that are run per second. */
+  public static final double ITERATIONS_PER_SECOND = 1.0 / LOOP_TIME;
+  /** Expected nominal operating voltage of robot subsystems, in volts. */
   public static final double NOMINAL_VOLTAGE = 12.0;
 
+  /** Physical robot constants including masses, distances, and other critical measurements. */
   public static class Physical {
+    /** Mass of the arm, in kilograms. */
+    public static final double ARM_MASS = 4.5;
+    /** Distance from the arm pivot point ("shoulder") to the floor. */
     public static final double ARM_SHOULDER_HEIGHT = Units.inchesToMeters(28.72);
-    public static final double STATIC_LENGTH = Units.inchesToMeters(13);
+    /** Distance from the arm pivot point to the end of the static section. */
+    public static final double ARM_STATIC_SECTION_LENGTH = Units.inchesToMeters(13);
+    /** Distance from the base of the claw to the end of the claw. */
     public static final double CLAW_LENGTH = Units.inchesToMeters(12);
-    public static final double LENGTH_OFFSET = STATIC_LENGTH + CLAW_LENGTH;
+    /**
+     * Distance between the center axis of the robot (in line with the arm shoulder) to the edge of
+     * the bumpers.
+     */
     public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
   }
 
+  /** Arm constants relating to the operation of the arm subsystem. */
   public static class Arm {
 
-    public static final double MASS = 4.5;
-
+    /**
+     * Extension constants. All constants relating to the extension motor, extension brake,
+     * extension algorithms, etc.
+     */
     public static class Extension {
+      /**
+       * CAN identifier for the extension motor. The extension motor must be assigned this CAN
+       * identifier and be on the RoboRIO CAN bus to function.
+       */
       public static final int CAN_ID = 3;
+      /** Channel of the extension brake solenoid on the pneumatics controller. */
       public static final int BRAKE_CHANNEL = 10;
 
-      public static final double DISTANCE_PER_ROTATION = Units.inchesToMeters(1) * Math.PI;
+      /**
+       * Change in distance per full revolution of the spool drum. This is usually the circumference
+       * of the spool drum, plus a small constant to account for string diameter.
+       */
+      public static final double DISTANCE_PER_REVOLUTION = Units.inchesToMeters(1) * Math.PI;
+      /** Total gear ratio between the motor and the spool drum. */
       public static final double GEAR_RATIO = 15.34;
 
+      /**
+       * Difference between the total length of the arm (distance from the shoulder to end of claw)
+       * and the length of the mobile section.
+       */
+      public static final double LENGTH_OFFSET =
+          Physical.ARM_STATIC_SECTION_LENGTH + Physical.CLAW_LENGTH;
+      /** Minimum length of the mobile section. */
       public static final double MIN_LENGTH = 0;
+      /**
+       * Maximum length of the mobile section. Note that this does NOT equal the maximum TOTAL
+       * extension length.
+       */
       public static final double MAX_LENGTH = Units.feetToMeters(5);
 
+      /** The maximum mobile section length error. */
       public static final double TOLERANCE = 0.01;
 
+      /** Constants for extension using a bang-bang control algorithm. */
       public static class BangBang {
+        /** Volts to be applied to increase mobile section length. */
         public static final double INCREASE = 4;
+        /** Volts to be applied to decrease mobile section length. */
         public static final double DECREASE = -4;
       }
 
+      /** Constants for extension using a PID control algorithm. */
       public static class PID {
+        /** Volts to be applied per meter of mobile section length error. */
         public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
       }
     }
 
+    /**
+     * Rotation constants relating to the rotation motor, rotation brake, rotation algorithms, etc.
+     */
     public static class Rotation {
+      /**
+       * CAN identifier for the rotation motor. The rotation motor must be assigned this CAN
+       * identifier and be on the RoboRIO CAN bus to function.
+       */
       public static final int CAN_ID = 2;
+      /** Channel of the extension brake solenoid on the pneumatics controller. */
       public static final int BRAKE_CHANNEL = 9;
 
+      /** Total gear ratio between the motor and the arm rotation. */
       public static final double GEAR_RATIO = 812.0 / 11.0;
 
+      /** Minimum angle of the arm. */
       public static final double MIN_ANGLE = Units.degreesToRadians(-45);
+      /** Maximum angle of the arm. */
       public static final double MAX_ANGLE = Units.degreesToRadians(60);
 
+      /** The maximum angle error of the arm. */
       public static final double TOLERANCE = Units.degreesToRadians(1);
 
+      /** Constants for rotation using a bang-bang control algorithm. */
       public static class BangBang {
+        /** Volts to be applied to increase angle of the arm. */
         public static final double INCREASE = 4;
+        /** Volts to be applied to decrease angle of the arm. */
         public static final double DECREASE = -4;
       }
 
+      /** Constants for rotation using a PID control algorithm. */
       public static class PID {
+        /** Volts to be applied per degree of angle error. */
         public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
       }
     }
 
+    /** Arm motion constraint constants relating to the edge positions, and "danger" zones. */
     public static class Constraints {
+      /** Maximum vertical distance from the floor to the end of the arm. */
       public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
+      /** Minimum vertical distance from the floor to the end of the arm. */
       public static final double MIN_HEIGHT = Units.inchesToMeters(4);
+      /**
+       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
+       */
       public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);
 
+      /** Maximum angle of the arm to consider evaluating the hybrid node constraint. */
       public static final double HYBRID_ANGLE = Units.degreesToRadians(5);
+      /**
+       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
+       * Only evaluated if the arm could collide with the hybrid node, as determined by {@link
+       * HYBRID_ANGLE}.
+       */
       public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
 
+      /** Maximum angle of the arm to consider evaluating the middle node constraint. */
       public static final double MIDDLE_ANGLE = Units.degreesToRadians(16);
+      /**
+       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
+       * Only evaluated if the arm could collide with the middle node, as determined by {@link
+       * MIDDLE_ANGLE}.
+       */
       public static final double MIDDLE_DISTANCE =
           Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH;
     }
 
+    /** Arm position setpoints. */
     public static class Setpoints {
-      public static final ArmPosition STOWED = new ArmPosition(0.0, Rotation.MAX_ANGLE);
-      public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(25));
+      /**
+       * Position for safely stowing the arm. The arm is fully retracted and rotated as far up as
+       * possible.
+       */
+      public static final ArmPosition STOW = new ArmPosition(0.0, Rotation.MAX_ANGLE);
+      /**
+       * Position for safely extending the arm. The arm is rotated up enough such at any extension
+       * will not cause the arm to collide with the grid.
+       */
+      public static final ArmPosition ABOVE_GRID = new ArmPosition(0, Units.degreesToRadians(30));
+      /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
+      public static final ArmPosition FLOOR = new ArmPosition(0.05, Rotation.MIN_ANGLE);
+      /** Position for ejecting game pieces onto the middle row. */
       public static final ArmPosition MIDDLE_ROW =
           new ArmPosition(0.55, Units.degreesToRadians(14));
-      public static final ArmPosition HYRBID = new ArmPosition(0.05, Rotation.MIN_ANGLE);
-      public static final ArmPosition AVOIDING_GRID =
-          new ArmPosition(0, Units.degreesToRadians(30));
+      /** Position for ejecting game pieces onto the top row. */
+      public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(25));
     }
   }
 
+  /** Intake subsystem(s) constants including current draw thresholds, voltages, etc. */
   public static class Intake {
+
+    /** Claw subsystem constants. */
     public static class Claw {
-      public static final double GEAR_RATIO = 7.0;
-      public static final double MASS = Units.lbsToKilograms(0.269);
-      public static final double RADIUS = Units.inchesToMeters(4.0);
-
-      public static final double CURRENT_PERIOD = 1.0;
-      public static final double CONE_CURRENT_THRESHOLD = 30.0;
-      public static final double CUBE_CURRENT_THRESHOLD = 20.0;
-
-      public static final double ACCEPTING_VOLTAGE = -12.0;
-      public static final double EJECTING_VOLTAGE = 12.0;
-      public static final double HOLDING_CONE_VOLTAGE = -8;
-      public static final double HOLDING_CUBE_VOLTAGE = -4;
+      /**
+       * CAN identifier for the claw motor. The claw motor must be assigned this CAN identifier and
+       * be on the RoboRIO CAN bus to function.
+       */
       public static final int CAN_ID = 0;
+
+      /** Current draw thresholds for detecting game pieces. */
+      public static class Thresholds {
+        /** Duration before increased current draw is considered a game piece, in seconds. */
+        public static final double THRESHOLD_PERIOD = 1.0;
+        /** Current draw threshold for a cone, in amps. */
+        public static final double CONE_THRESHOLD = 30.0;
+        /** Current draw threshold for a cube, in amps. */
+        public static final double CUBE_THRESHOLD = 20.0;
+      }
+
+      /** Voltages for each state. */
+      public static class Voltages {
+        /** Voltage for accepting a game piece. */
+        public static final double ACCEPTING = -12.0;
+        /** Voltage for ejecting a game piece. */
+        public static final double EJECTING = 12.0;
+        /** Voltage for holding on to a cone. */
+        public static final double HOLDING_CONE = -8.0;
+        /** Voltage for holding on to a cube. */
+        public static final double HOLDING_CUBE = -4.0;
+      }
     }
 
+    /** Side intake subsystem constants. */
     public static class SideIntake {
+      /**
+       * CAN identifier for the bottom motor. The bottom motor must be assigned this CAN identifier
+       * and be on the RoboRIO CAN bus to function.
+       */
+      public static final int BOTTOM_CAN_ID = 0;
+      /**
+       * CAN identifier for the top motor. The top motor must be assigned this CAN identifier and be
+       * on the RoboRIO CAN bus to function.
+       */
+      public static final int TOP_CAN_ID = 0;
+
+      /** Assumed angle of the side intake. Used for calculating speed variation based on angle. */
       public static final double MECHANISM_ANGLE = Units.degreesToRadians(45);
+      /** Assumed angle for accepting game pieces using the side intake. */
       public static final double ACCEPT_ANGLE = Units.degreesToRadians(60);
+      /** Assumed angle for ejecting game pieces using the side intake. */
       public static final double EJECT_ANGLE = Units.degreesToRadians(30);
 
-      public static final double CURRENT_PERIOD = 1.0;
-      public static final double BOTTOM_CURRENT_THRESHOLD = 30.0;
-      public static final double TOP_CURRENT_THRESHOLD = 30.0;
+      /** Current draw thresholds for detecting game pieces. */
+      public static class Thresholds {
+        /** Duration before increased current draw is considered a game piece, in seconds. */
+        public static final double THRESHOLD_PERIOD = 1.0;
+        /** Current draw threshold for a cone on the bottom motor, in amps. */
+        public static final double BOTTOM_THRESHOLD = 30.0;
+        /** Current draw threshold for a cone on the top motor, in amps. */
+        public static final double TOP_THRESHOLD = 30.0;
+      }
 
-      public static final double RELATIVE_BIAS_FACTOR = 1.0;
-      public static final double BASE_ACCEPTING_VOLTAGE = -10.0;
-      public static final double BASE_EJECTING_VOLTAGE = 10.0;
-      public static final double HOLDING_VOLTAGE = -8;
-      public static final int TOP_CAN_ID = 0;
-      public static final int BOTTOM_CAN_ID = 0;
+      /** Voltages for each state. */
+      public static class Voltages {
+        /**
+         * Scalar for controlling the voltage difference between bottom and top motors, depending on
+         * angle.
+         */
+        public static final double RELATIVE_BIAS = 1.0;
+        /** Base voltage for accepting game pieces. */
+        public static final double BASE_ACCEPTING = -10.0;
+        /** Base voltage for ejecting game pieces. */
+        public static final double BASE_EJECTING = 10.0;
+        /** Voltage for holding on to a game piece. */
+        public static final double HOLDING = -8;
+      }
     }
   }
 }

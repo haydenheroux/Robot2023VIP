@@ -35,7 +35,9 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   // Moving average filter for motorCurrent
   private final LinearFilter motorCurrentFilter =
       LinearFilter.movingAverage(
-          (int) (Constants.Intake.Claw.CURRENT_PERIOD * Constants.SAMPLES_PER_SECOND));
+          (int)
+              (Constants.Intake.Claw.Thresholds.THRESHOLD_PERIOD
+                  * Constants.ITERATIONS_PER_SECOND));
   private double filteredMotorCurrentAmps = 0.0;
 
   private State state = State.kDisabled;
@@ -64,7 +66,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cone.
    */
   public boolean isHoldingCone() {
-    return filteredMotorCurrentAmps >= Constants.Intake.Claw.CONE_CURRENT_THRESHOLD;
+    return filteredMotorCurrentAmps >= Constants.Intake.Claw.Thresholds.CONE_THRESHOLD;
   }
 
   /**
@@ -73,7 +75,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cube.
    */
   public boolean isHoldingCube() {
-    return filteredMotorCurrentAmps >= Constants.Intake.Claw.CUBE_CURRENT_THRESHOLD;
+    return filteredMotorCurrentAmps >= Constants.Intake.Claw.Thresholds.CUBE_THRESHOLD;
   }
 
   public Command accept() {
@@ -113,19 +115,19 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
 
     switch (state) {
       case kAccepting:
-        io.setMotorVoltage(Constants.Intake.Claw.ACCEPTING_VOLTAGE);
+        io.setMotorVoltage(Constants.Intake.Claw.Voltages.ACCEPTING);
         break;
       case kDisabled:
         io.setMotorDisabled();
         break;
       case kEjecting:
-        io.setMotorVoltage(Constants.Intake.Claw.EJECTING_VOLTAGE);
+        io.setMotorVoltage(Constants.Intake.Claw.Voltages.EJECTING);
         break;
       case kHoldingCone:
-        io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CONE_VOLTAGE);
+        io.setMotorVoltage(Constants.Intake.Claw.Voltages.HOLDING_CONE);
         break;
       case kHoldingCube:
-        io.setMotorVoltage(Constants.Intake.Claw.HOLDING_CUBE_VOLTAGE);
+        io.setMotorVoltage(Constants.Intake.Claw.Voltages.HOLDING_CUBE);
         break;
     }
 

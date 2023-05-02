@@ -85,9 +85,9 @@ public class RobotContainer {
         .whileTrue(arm.driveRotation(rotationAxis))
         .onFalse(arm.lock(LockType.kRotation));
 
-    operator.a().onTrue(arm.setGoal(Constants.Arm.Setpoints.HYRBID)).whileTrue(arm.toGoal());
+    operator.a().onTrue(arm.setGoal(Constants.Arm.Setpoints.FLOOR)).whileTrue(arm.toGoal());
     operator.b().onTrue(arm.setGoal(Constants.Arm.Setpoints.MIDDLE_ROW)).whileTrue(arm.toGoal());
-    operator.x().onTrue(arm.setGoal(Constants.Arm.Setpoints.STOWED)).whileTrue(arm.toGoal());
+    operator.x().onTrue(arm.setGoal(Constants.Arm.Setpoints.STOW)).whileTrue(arm.toGoal());
     operator.y().onTrue(arm.setGoal(Constants.Arm.Setpoints.TOP_ROW)).whileTrue(arm.toGoal());
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
