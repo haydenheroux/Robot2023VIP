@@ -5,7 +5,6 @@
 package frc.robot.arm;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import frc.robot.Constants;
 
 public class ArmIOTalonFXBangBang extends ArmIOTalonFXBase {
@@ -18,7 +17,8 @@ public class ArmIOTalonFXBangBang extends ArmIOTalonFXBase {
   public void configure() {
     super.configure();
 
-    // Always ensure that your motor controllers are set to "coast" before attempting to control them with a bang-bang controller.
+    // Always ensure that your motor controllers are set to "coast" before attempting to control
+    // them with a bang-bang controller.
     extensionMotor.setNeutralMode(NeutralMode.Coast);
     rotationMotor.setNeutralMode(NeutralMode.Coast);
   }

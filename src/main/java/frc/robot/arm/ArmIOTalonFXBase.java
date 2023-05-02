@@ -38,19 +38,19 @@ public class ArmIOTalonFXBase implements ArmIO {
   @Override
   public void updateValues(ArmIOValues values) {
     values.extensionLengthMeters = getExtensionPosition();
-    values.extensionBrakeIsActive = extensionBrake.get();
+    values.extensionBrakeIsActive = getExtensionBrakeIsActive();
     values.rotationAngleRadians = getRotationPosition();
-    values.rotationBrakeIsActive = rotationBrake.get();
+    values.rotationBrakeIsActive = getRotationBrakeIsActive();
   }
 
   @Override
   public void setExtensionPosition(double lengthMeters) {
-    double units =
-        Conversions.TalonFX.fromMeters(
+    double ticks =
+        Conversions.TalonFX.Position.fromMeters(
             lengthMeters,
             Constants.Arm.Extension.DISTANCE_PER_ROTATION,
             Constants.Arm.Extension.GEAR_RATIO);
-    extensionMotor.setSelectedSensorPosition(units);
+    extensionMotor.setSelectedSensorPosition(ticks);
   }
 
   @Override
@@ -58,7 +58,13 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setExtensionVoltage(double volts) {
-    rotationMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
+    if (getExtensionBrakeIsActive())  {
+      System.out.printf("setExtensionVoltage(%d) while extensionBrakeIsActive", volts);
+      extensionMotor.disable();
+      return;
+    }
+
+    extensionMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }
 
   @Override
@@ -73,8 +79,8 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setRotationPosition(double angleRadians) {
-    double units = Conversions.TalonFX.fromRadians(angleRadians, Constants.Arm.Rotation.GEAR_RATIO);
-    rotationMotor.setSelectedSensorPosition(units);
+    double ticks = Conversions.TalonFX.Position.fromRadians(angleRadians, Constants.Arm.Rotation.GEAR_RATIO);
+    rotationMotor.setSelectedSensorPosition(ticks);
   }
 
   @Override
@@ -82,8 +88,13 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setRotationVoltage(double volts) {
+    if (getRotationBrakeIsActive())  {
+      System.out.printf("setRotationVoltage(%f) while rotationBrakeIsActive", volts);
+      rotationMotor.disable();
+      return;
+    }
+
     rotationMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
-    ;
   }
 
   @Override
@@ -97,14 +108,22 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   protected double getExtensionPosition() {
-    return Conversions.TalonFX.toMeters(
+    return Conversions.TalonFX.Position.toMeters(
         extensionMotor.getSelectedSensorPosition(),
         Constants.Arm.Extension.DISTANCE_PER_ROTATION,
         Constants.Arm.Extension.GEAR_RATIO);
   }
 
+  protected boolean getExtensionBrakeIsActive() {
+    return extensionBrake.get();
+  }
+
   protected double getRotationPosition() {
-    return Conversions.TalonFX.toRadians(
+    return Conversions.TalonFX.Position.toRadians(
         rotationMotor.getSelectedSensorPosition(), Constants.Arm.Rotation.GEAR_RATIO);
+  }
+
+  protected boolean getRotationBrakeIsActive() {
+    return rotationBrake.get();
   }
 }

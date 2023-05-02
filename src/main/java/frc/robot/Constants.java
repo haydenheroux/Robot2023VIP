@@ -42,7 +42,7 @@ public class Constants {
         public static final double INCREASE = 4;
         public static final double DECREASE = -4;
       }
-      
+
       public static class PID {
         public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
       }
