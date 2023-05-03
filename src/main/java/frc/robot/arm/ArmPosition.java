@@ -14,7 +14,7 @@ public class ArmPosition extends Translation2d {
     super(lengthMeters, Rotation2d.fromRadians(angleRadians));
   }
 
-  public static ArmPosition fromState(ArmState position) {
+  public static ArmPosition fromState(Arm.State position) {
     double length = position.extensionLengthMeters + Constants.Arm.Extension.LENGTH_OFFSET;
     return new ArmPosition(length, position.rotationAngleRadians);
   }

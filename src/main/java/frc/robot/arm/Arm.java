@@ -16,9 +16,44 @@ import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase implements TelemetryOutputter {
+
+  public static class State {
+
+    public final double extensionLengthMeters, rotationAngleRadians;
+
+    public State(double extensionLengthMeters, double rotationAngleRadians) {
+      this.extensionLengthMeters = extensionLengthMeters;
+      this.rotationAngleRadians = rotationAngleRadians;
+    }
+
+    public static State fromPosition(ArmPosition position) {
+      double extensionLengthMeters =
+          position.getLengthMeters() - Constants.Arm.Extension.LENGTH_OFFSET;
+      double rotationAngleRadians = position.getAngleRadians();
+      return new State(extensionLengthMeters, rotationAngleRadians);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+      if (other instanceof State) {
+        State rhs = (State) other;
+        boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
+        boolean rotationAnglesEqual = this.rotationAngleRadians == rhs.rotationAngleRadians;
+        return extensionLengthsEqual && rotationAnglesEqual;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(extensionLengthMeters, rotationAngleRadians);
+    }
+  }
+
   public enum LockType {
     kBoth,
     kExtension,
@@ -236,7 +271,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private void updateSetpoint() {
     if (position.at(trajectory.get())) trajectory.next();
 
-    ArmState setpoint = ArmState.fromPosition(trajectory.get());
+    State setpoint = State.fromPosition(trajectory.get());
 
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
@@ -248,7 +283,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position =
         ArmPosition.fromState(
-            new ArmState(values.extensionLengthMeters, values.rotationAngleRadians));
+            new Arm.State(values.extensionLengthMeters, values.rotationAngleRadians));
 
     if (isEnabled()) updateSetpoint();
 

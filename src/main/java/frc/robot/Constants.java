@@ -5,8 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.arm.Arm.State;
 import frc.robot.arm.ArmPosition;
-import frc.robot.arm.ArmState;
 
 public class Constants {
 
@@ -166,13 +166,13 @@ public class Constants {
        * possible.
        */
       public static final ArmPosition STOW =
-          ArmPosition.fromState(new ArmState(0, Rotation.MAX_ANGLE));
+          ArmPosition.fromState(new State(0, Rotation.MAX_ANGLE));
       /**
        * Position for safely extending the arm. The arm is rotated up enough such at any extension
        * will not cause the arm to collide with the grid.
        */
       public static final ArmPosition ABOVE_GRID =
-          ArmPosition.fromState(new ArmState(0, Units.degreesToRadians(30)));
+          ArmPosition.fromState(new State(0, Units.degreesToRadians(30)));
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
       public static final ArmPosition FLOOR =
           new ArmPosition(Units.feetToMeters(2.5), Rotation.MIN_ANGLE);

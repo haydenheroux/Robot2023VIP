@@ -14,7 +14,6 @@ import frc.robot.Constants;
 import frc.robot.arm.Arm;
 import frc.robot.arm.ArmKinematics;
 import frc.robot.arm.ArmPosition;
-import frc.robot.arm.ArmState;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 
@@ -219,7 +218,7 @@ public class SuperstructureMechanism {
    * @param isLocked brake states of the arm.
    */
   public void updateArm(ArmPosition position, Arm.LockType isLocked) {
-    ArmState state = ArmState.fromPosition(position);
+    Arm.State state = Arm.State.fromPosition(position);
 
     setAngle(state.rotationAngleRadians);
     setLength(state.extensionLengthMeters);
