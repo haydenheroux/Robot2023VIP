@@ -35,10 +35,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   private boolean enabled = false;
 
-  private boolean reset = false;
-
-  private ArmPosition position = new ArmPosition(0, 0);
-  private ArmPosition goal = new ArmPosition(0, 0);
+  private ArmPosition position = Constants.Arm.Positions.STOW;
+  private ArmPosition goal = Constants.Arm.Positions.STOW;
   private ArmTrajectory trajectory = new ArmTrajectory(position, goal);
 
   /** Creates a new Arm. */
@@ -172,15 +170,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         });
   }
 
-  /**
-   * Returns if the arm position has been reset.
-   *
-   * @return if the arm position has been reset.
-   */
-  public boolean isReset() {
-    return reset;
-  }
-
   public Command toGoal() {
     return this.unlock(LockType.kBoth)
         .andThen(this.enable())
@@ -189,26 +178,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
             interrupted -> {
               this.disable().andThen(this.lock(LockType.kBoth)).schedule();
             });
-  }
-
-  /**
-   * Resets the position of the arm to the state.
-   *
-   * @param state the state.
-   */
-  public void reset(ArmPosition state) {
-    reset = true;
-    io.setExtensionPosition(state.extensionLengthMeters);
-    io.setRotationPosition(state.rotationAngleRadians);
-  }
-
-  /**
-   * Returns the current position of the arm.
-   *
-   * @return the current position of the arm.
-   */
-  public ArmPosition getState() {
-    return new ArmPosition(values.rotationAngleRadians, values.extensionLengthMeters);
   }
 
   /**
@@ -267,7 +236,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private void updateSetpoint() {
     if (position.at(trajectory.get())) trajectory.next();
 
-    ArmPosition setpoint = trajectory.get();
+    ArmState setpoint = ArmState.fromPosition(trajectory.get());
 
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
     io.setRotationSetpoint(setpoint.rotationAngleRadians);
@@ -277,7 +246,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     io.updateValues(values);
 
-    position = new ArmPosition(values.extensionLengthMeters, values.rotationAngleRadians);
+    position =
+        ArmPosition.fromState(
+            new ArmState(values.extensionLengthMeters, values.rotationAngleRadians));
 
     if (isEnabled()) updateSetpoint();
 
@@ -297,15 +268,19 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
+    ShuffleboardLayout positionLayout = tab.getLayout("Position", BuiltInLayouts.kList);
+    positionLayout.addNumber("Arm Length (m)", () -> position.getLengthMeters());
+    positionLayout.addNumber(
+        "Arm Angle (deg)", () -> Units.radiansToDegrees(position.getAngleRadians()));
+
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
-    goalLayout.addNumber("Extension Length Goal (m)", () -> goal.extensionLengthMeters);
+    goalLayout.addNumber("Extension Length Goal (m)", () -> goal.getLengthMeters());
     goalLayout.addNumber(
-        "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.rotationAngleRadians));
-    goalLayout.addNumber(
-        "Extension Length Setpoint (m)", () -> trajectory.get().extensionLengthMeters);
+        "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.getAngleRadians()));
+    goalLayout.addNumber("Extension Length Setpoint (m)", () -> trajectory.get().getLengthMeters());
     goalLayout.addNumber(
         "Rotation Angle Setpoint (deg)",
-        () -> Units.radiansToDegrees(trajectory.get().rotationAngleRadians));
+        () -> Units.radiansToDegrees(trajectory.get().getAngleRadians()));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }

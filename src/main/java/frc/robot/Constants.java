@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.arm.ArmPosition;
+import frc.robot.arm.ArmState;
 
 public class Constants {
 
@@ -158,25 +159,28 @@ public class Constants {
           Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH;
     }
 
-    /** Arm position setpoints. */
-    public static class Setpoints {
+    /** Arm positions. */
+    public static class Positions {
       /**
        * Position for safely stowing the arm. The arm is fully retracted and rotated as far up as
        * possible.
        */
-      public static final ArmPosition STOW = new ArmPosition(0.0, Rotation.MAX_ANGLE);
+      public static final ArmPosition STOW =
+          ArmPosition.fromState(new ArmState(0, Rotation.MAX_ANGLE));
       /**
        * Position for safely extending the arm. The arm is rotated up enough such at any extension
        * will not cause the arm to collide with the grid.
        */
-      public static final ArmPosition ABOVE_GRID = new ArmPosition(0, Units.degreesToRadians(30));
+      public static final ArmPosition ABOVE_GRID =
+          ArmPosition.fromState(new ArmState(0, Units.degreesToRadians(30)));
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
-      public static final ArmPosition FLOOR = new ArmPosition(0.05, Rotation.MIN_ANGLE);
+      public static final ArmPosition FLOOR =
+          new ArmPosition(Units.feetToMeters(2.5), Rotation.MIN_ANGLE);
       /** Position for ejecting game pieces onto the middle row. */
       public static final ArmPosition MIDDLE_ROW =
-          new ArmPosition(0.55, Units.degreesToRadians(14));
+          new ArmPosition(1.15, Units.degreesToRadians(14));
       /** Position for ejecting game pieces onto the top row. */
-      public static final ArmPosition TOP_ROW = new ArmPosition(1.075, Units.degreesToRadians(25));
+      public static final ArmPosition TOP_ROW = new ArmPosition(1.7, Units.degreesToRadians(25));
     }
   }
 

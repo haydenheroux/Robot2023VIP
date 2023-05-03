@@ -4,45 +4,40 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
-import java.util.Objects;
 
-public class ArmPosition {
+public class ArmPosition extends Translation2d {
 
-  public final double extensionLengthMeters, rotationAngleRadians;
+  public ArmPosition(double lengthMeters, double angleRadians) {
+    super(lengthMeters, Rotation2d.fromRadians(angleRadians));
+  }
 
-  public ArmPosition(double extensionLengthMeters, double rotationAngleRadians) {
-    this.extensionLengthMeters = extensionLengthMeters;
-    this.rotationAngleRadians = rotationAngleRadians;
+  public static ArmPosition fromState(ArmState position) {
+    double length = position.extensionLengthMeters + Constants.Arm.Extension.LENGTH_OFFSET;
+    return new ArmPosition(length, position.rotationAngleRadians);
+  }
+
+  public double getAngleRadians() {
+    return super.getAngle().getRadians();
+  }
+
+  public double getLengthMeters() {
+    return super.getNorm();
   }
 
   public boolean at(ArmPosition other) {
-    return atLengthOf(other) && atRotationOf(other);
+    return atLengthOf(other) && atAngleOf(other);
   }
 
   public boolean atLengthOf(ArmPosition other) {
-    return Math.abs(this.extensionLengthMeters - other.extensionLengthMeters)
+    return Math.abs(this.getLengthMeters() - other.getLengthMeters())
         < Constants.Arm.Extension.TOLERANCE;
   }
 
-  public boolean atRotationOf(ArmPosition other) {
-    return Math.abs(this.rotationAngleRadians - other.rotationAngleRadians)
+  public boolean atAngleOf(ArmPosition other) {
+    return Math.abs(this.getAngleRadians() - other.getAngleRadians())
         < Constants.Arm.Rotation.TOLERANCE;
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other instanceof ArmPosition) {
-      ArmPosition rhs = (ArmPosition) other;
-      boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
-      boolean rotationAnglesEqual = this.rotationAngleRadians == rhs.rotationAngleRadians;
-      return extensionLengthsEqual && rotationAnglesEqual;
-    }
-    return false;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(extensionLengthMeters, rotationAngleRadians);
   }
 }

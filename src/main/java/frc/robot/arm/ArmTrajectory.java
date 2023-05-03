@@ -17,15 +17,14 @@ public class ArmTrajectory {
 
     boolean needToExtend = start.atLengthOf(end) == false;
 
-    boolean alreadyAvoidingGrid =
-        (start.extensionLengthMeters < 0.1 && end.extensionLengthMeters < 0.1);
+    boolean alreadyAvoidingGrid = (start.getLengthMeters() < 0.1 && end.getLengthMeters() < 0.1);
     boolean needToAvoidGrid = !alreadyAvoidingGrid;
 
-    double aboveGridAngleRadians = Constants.Arm.Setpoints.ABOVE_GRID.rotationAngleRadians;
+    double aboveGridAngleRadians = Constants.Arm.Positions.ABOVE_GRID.getAngleRadians();
 
     if (needToExtend && needToAvoidGrid) {
-      setpoints.add(new ArmPosition(start.extensionLengthMeters, aboveGridAngleRadians));
-      setpoints.add(new ArmPosition(end.extensionLengthMeters, aboveGridAngleRadians));
+      setpoints.add(new ArmPosition(start.getLengthMeters(), aboveGridAngleRadians));
+      setpoints.add(new ArmPosition(end.getLengthMeters(), aboveGridAngleRadians));
     }
 
     setpoints.add(end);
