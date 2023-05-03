@@ -78,9 +78,9 @@ public class Constants {
       /** Constants for extension using a bang-bang control algorithm. */
       public static class BangBang {
         /** Volts to be applied to increase mobile section length. */
-        public static final double INCREASE = 4;
+        public static final double INCREASE = 10;
         /** Volts to be applied to decrease mobile section length. */
-        public static final double DECREASE = -4;
+        public static final double DECREASE = -10;
       }
 
       /** Constants for extension using a PID control algorithm. */
@@ -118,7 +118,7 @@ public class Constants {
         /** Volts to be applied to increase angle of the arm. */
         public static final double INCREASE = 4;
         /** Volts to be applied to decrease angle of the arm. */
-        public static final double DECREASE = -4;
+        public static final double DECREASE = 0;
       }
 
       /** Constants for rotation using a PID control algorithm. */
@@ -193,28 +193,28 @@ public class Constants {
        * CAN identifier for the claw motor. The claw motor must be assigned this CAN identifier and
        * be on the RoboRIO CAN bus to function.
        */
-      public static final int CAN_ID = 0;
+      public static final int CAN_ID = 7;
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
         /** Duration before increased current draw is considered a game piece, in seconds. */
         public static final double THRESHOLD_PERIOD = 1.0;
         /** Current draw threshold for a cone, in amps. */
-        public static final double CONE_THRESHOLD = 30.0;
+        public static final double CONE_THRESHOLD = Double.POSITIVE_INFINITY;
         /** Current draw threshold for a cube, in amps. */
-        public static final double CUBE_THRESHOLD = 20.0;
+        public static final double CUBE_THRESHOLD = Double.POSITIVE_INFINITY;
       }
 
       /** Voltages for each state. */
       public static class Voltages {
         /** Voltage for accepting a game piece. */
-        public static final double ACCEPTING = -12.0;
+        public static final double ACCEPTING = -8.0;
         /** Voltage for ejecting a game piece. */
-        public static final double EJECTING = 12.0;
+        public static final double EJECTING = 6.0;
         /** Voltage for holding on to a cone. */
-        public static final double HOLDING_CONE = -8.0;
+        public static final double HOLDING_CONE = -1.0;
         /** Voltage for holding on to a cube. */
-        public static final double HOLDING_CUBE = -4.0;
+        public static final double HOLDING_CUBE = -1.0;
       }
     }
 
@@ -224,12 +224,12 @@ public class Constants {
        * CAN identifier for the bottom motor. The bottom motor must be assigned this CAN identifier
        * and be on the RoboRIO CAN bus to function.
        */
-      public static final int BOTTOM_CAN_ID = 0;
+      public static final int BOTTOM_CAN_ID = 6;
       /**
        * CAN identifier for the top motor. The top motor must be assigned this CAN identifier and be
        * on the RoboRIO CAN bus to function.
        */
-      public static final int TOP_CAN_ID = 0;
+      public static final int TOP_CAN_ID = 5;
 
       /** Assumed angle of the side intake. Used for calculating speed variation based on angle. */
       public static final double MECHANISM_ANGLE = Units.degreesToRadians(45);
@@ -243,9 +243,9 @@ public class Constants {
         /** Duration before increased current draw is considered a game piece, in seconds. */
         public static final double THRESHOLD_PERIOD = 1.0;
         /** Current draw threshold for a cone on the bottom motor, in amps. */
-        public static final double BOTTOM_THRESHOLD = 30.0;
+        public static final double BOTTOM_THRESHOLD = Double.POSITIVE_INFINITY;
         /** Current draw threshold for a cone on the top motor, in amps. */
-        public static final double TOP_THRESHOLD = 30.0;
+        public static final double TOP_THRESHOLD = Double.POSITIVE_INFINITY;
       }
 
       /** Voltages for each state. */
@@ -256,11 +256,11 @@ public class Constants {
          */
         public static final double RELATIVE_BIAS = 1.0;
         /** Base voltage for accepting game pieces. */
-        public static final double BASE_ACCEPTING = -10.0;
+        public static final double BASE_ACCEPTING = -6.0;
         /** Base voltage for ejecting game pieces. */
-        public static final double BASE_EJECTING = 10.0;
+        public static final double BASE_EJECTING = 6.0;
         /** Voltage for holding on to a game piece. */
-        public static final double HOLDING = -8;
+        public static final double HOLDING = -4;
       }
     }
   }

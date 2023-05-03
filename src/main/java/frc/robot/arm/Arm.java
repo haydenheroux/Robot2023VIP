@@ -295,6 +295,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
     tab.addString("Is Locked?", () -> getLocked().toString());
+    tab.add(this.unlock(LockType.kBoth).withName("Unlock Both"));
+    tab.add(this.lock(LockType.kBoth).withName("Lock Both"));
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
@@ -309,12 +311,12 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         "Arm Angle (deg)", () -> Units.radiansToDegrees(position.getAngleRadians()));
 
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
-    goalLayout.addNumber("Extension Length Goal (m)", () -> goal.getLengthMeters());
+    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLengthMeters());
     goalLayout.addNumber(
-        "Rotation Angle Goal (deg)", () -> Units.radiansToDegrees(goal.getAngleRadians()));
-    goalLayout.addNumber("Extension Length Setpoint (m)", () -> trajectory.get().getLengthMeters());
+        "Arm Angle Goal (deg)", () -> Units.radiansToDegrees(goal.getAngleRadians()));
+    goalLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getLengthMeters());
     goalLayout.addNumber(
-        "Rotation Angle Setpoint (deg)",
+        "Arm Angle Setpoint (deg)",
         () -> Units.radiansToDegrees(trajectory.get().getAngleRadians()));
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
