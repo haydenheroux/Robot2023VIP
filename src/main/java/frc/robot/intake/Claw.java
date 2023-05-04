@@ -4,7 +4,6 @@
 
 package frc.robot.intake;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -32,14 +31,6 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   private final ClawIO io;
   private final ClawIO.ClawIOValues values = new ClawIO.ClawIOValues();
 
-  // Moving average filter for motorCurrent
-  private final LinearFilter motorCurrentFilter =
-      LinearFilter.movingAverage(
-          (int)
-              (Constants.Intake.Claw.Thresholds.THRESHOLD_PERIOD
-                  * Constants.ITERATIONS_PER_SECOND));
-  private double filteredMotorCurrentAmps = 0.0;
-
   private State state = State.kDisabled;
 
   /** Creates a new Claw. */
@@ -66,7 +57,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cone.
    */
   public boolean isHoldingCone() {
-    return filteredMotorCurrentAmps >= Constants.Intake.Claw.Thresholds.CONE_THRESHOLD;
+    return values.motorCurrentAmps >= Constants.Intake.Claw.Thresholds.CONE_THRESHOLD;
   }
 
   /**
@@ -75,7 +66,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cube.
    */
   public boolean isHoldingCube() {
-    return filteredMotorCurrentAmps >= Constants.Intake.Claw.Thresholds.CUBE_THRESHOLD;
+    return values.motorCurrentAmps >= Constants.Intake.Claw.Thresholds.CUBE_THRESHOLD;
   }
 
   public Command accept() {
@@ -102,8 +93,6 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void periodic() {
     io.updateValues(values);
-
-    filteredMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
 
     if (state != State.kDisabled && state != State.kEjecting) {
       if (isHoldingCone()) {
@@ -154,10 +143,6 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Motor Current (A)", () -> values.motorCurrentAmps);
-
-    ShuffleboardLayout filteredValuesLayout =
-        tab.getLayout("Filtered Values", BuiltInLayouts.kList);
-    filteredValuesLayout.addNumber("Filtered Motor Current (A)", () -> filteredMotorCurrentAmps);
   }
 
   @Override

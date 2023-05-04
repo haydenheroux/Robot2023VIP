@@ -4,7 +4,6 @@
 
 package frc.robot.intake;
 
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -32,22 +31,6 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   private final SideIntakeIO io;
   private final SideIntakeIO.SideIntakeIOValues values = new SideIntakeIO.SideIntakeIOValues();
 
-  // Moving average filter for bottomMotorCurrent
-  private final LinearFilter bottomMotorCurrentFilter =
-      LinearFilter.movingAverage(
-          (int)
-              (Constants.Intake.SideIntake.Thresholds.THRESHOLD_PERIOD
-                  * Constants.ITERATIONS_PER_SECOND));
-  private double filteredBottomMotorCurrentAmps = 0.0;
-
-  // Moving average filter for topMotorCurrent
-  private final LinearFilter topMotorCurrentFilter =
-      LinearFilter.movingAverage(
-          (int)
-              (Constants.Intake.SideIntake.Thresholds.THRESHOLD_PERIOD
-                  * Constants.ITERATIONS_PER_SECOND));
-  private double filteredTopMotorCurrentAmps = 0.0;
-
   private State state = State.kDisabled;
 
   /** Creates a new SideIntake. */
@@ -70,9 +53,9 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
 
   public boolean isHolding() {
     boolean isBottomHolding =
-        filteredBottomMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.BOTTOM_THRESHOLD;
+        values.bottomMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.BOTTOM_THRESHOLD;
     boolean isTopHolding =
-        filteredTopMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.TOP_THRESHOLD;
+        values.topMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.TOP_THRESHOLD;
     return isBottomHolding && isTopHolding;
   }
 
@@ -131,10 +114,6 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     io.updateValues(values);
 
-    filteredBottomMotorCurrentAmps =
-        bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
-    filteredTopMotorCurrentAmps = topMotorCurrentFilter.calculate(values.topMotorCurrentAmps);
-
     if (state != State.kDisabled && state != State.kEjecting) {
       if (isHolding()) {
         state = State.kHolding;
@@ -178,13 +157,6 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Bottom Motor Current (A)", () -> values.bottomMotorCurrentAmps);
     valuesLayout.addNumber("Top Motor Current (A)", () -> values.topMotorCurrentAmps);
-
-    ShuffleboardLayout filteredValuesLayout =
-        tab.getLayout("Filtered Values", BuiltInLayouts.kList);
-    filteredValuesLayout.addNumber(
-        "Filtered Bottom Motor Current (A)", () -> filteredBottomMotorCurrentAmps);
-    filteredValuesLayout.addNumber(
-        "Filtered Top Motor Current (A)", () -> filteredTopMotorCurrentAmps);
   }
 
   @Override

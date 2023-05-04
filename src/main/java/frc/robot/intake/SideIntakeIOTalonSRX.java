@@ -18,14 +18,14 @@ public class SideIntakeIOTalonSRX implements SideIntakeIO {
 
   @Override
   public void configure() {
-    bottomMotor.setInverted(false);
-    topMotor.setInverted(false);
+    bottomMotor.setInverted(true);
+    topMotor.setInverted(true);
   }
 
   @Override
   public void updateValues(SideIntakeIOValues values) {
-    values.bottomMotorCurrentAmps = bottomMotor.getStatorCurrent();
-    values.topMotorCurrentAmps = topMotor.getStatorCurrent();
+    values.bottomMotorCurrentAmps = Math.abs(bottomMotor.getStatorCurrent());
+    values.topMotorCurrentAmps = Math.abs(topMotor.getStatorCurrent());
   }
 
   @Override

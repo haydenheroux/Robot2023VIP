@@ -22,7 +22,7 @@ public class ClawIOTalonSRX implements ClawIO {
 
   @Override
   public void updateValues(ClawIOValues values) {
-    values.motorCurrentAmps = motor.getStatorCurrent();
+    values.motorCurrentAmps = Math.abs(motor.getStatorCurrent());
   }
 
   @Override
