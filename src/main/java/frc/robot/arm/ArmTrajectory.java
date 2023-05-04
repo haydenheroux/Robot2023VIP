@@ -8,6 +8,8 @@ import frc.robot.Constants.Arm.Positions;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class ArmTrajectory {
 
   private final Queue<ArmPosition> setpoints;
@@ -17,14 +19,14 @@ public class ArmTrajectory {
 
     boolean needToExtend = start.atLengthOf(end) == false;
 
-    boolean alreadyAvoidingGrid = (start.getLengthMeters() < 0.1 && end.getLengthMeters() < 0.1);
+    boolean alreadyAvoidingGrid = (start.getNorm() < 0.1 && end.getNorm() < 0.1);
     boolean needToAvoidGrid = !alreadyAvoidingGrid;
 
-    double aboveGridAngleRadians = Positions.ABOVE_GRID.getAngleRadians();
+    Rotation2d aboveGridAngle = Positions.ABOVE_GRID.getAngle();
 
     if (needToExtend && needToAvoidGrid) {
-      setpoints.add(new ArmPosition(start.getLengthMeters(), aboveGridAngleRadians));
-      setpoints.add(new ArmPosition(end.getLengthMeters(), aboveGridAngleRadians));
+      setpoints.add(new ArmPosition(start.getNorm(), aboveGridAngle));
+      setpoints.add(new ArmPosition(end.getNorm(), aboveGridAngle));
     }
 
     setpoints.add(end);

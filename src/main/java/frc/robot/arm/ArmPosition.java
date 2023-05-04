@@ -11,21 +11,13 @@ import frc.robot.Constants.Arm.Rotation;
 
 public class ArmPosition extends Translation2d {
 
-  public ArmPosition(double lengthMeters, double angleRadians) {
-    super(lengthMeters, Rotation2d.fromRadians(angleRadians));
+  public ArmPosition(double lengthMeters, Rotation2d angle) {
+    super(lengthMeters, angle);
   }
 
   public static ArmPosition fromState(Arm.State position) {
     double length = position.extensionLengthMeters + Extension.LENGTH_OFFSET;
-    return new ArmPosition(length, position.rotationAngleRadians);
-  }
-
-  public double getAngleRadians() {
-    return super.getAngle().getRadians();
-  }
-
-  public double getLengthMeters() {
-    return super.getNorm();
+    return new ArmPosition(length, position.rotationAngle);
   }
 
   public boolean at(ArmPosition other) {
@@ -33,10 +25,10 @@ public class ArmPosition extends Translation2d {
   }
 
   public boolean atLengthOf(ArmPosition other) {
-    return Math.abs(this.getLengthMeters() - other.getLengthMeters()) < Extension.TOLERANCE;
+    return Math.abs(this.getNorm() - other.getNorm()) < Extension.TOLERANCE;
   }
 
   public boolean atAngleOf(ArmPosition other) {
-    return Math.abs(this.getAngleRadians() - other.getAngleRadians()) < Rotation.TOLERANCE;
+    return Math.abs(this.getAngle().minus(other.getAngle()).getRadians()) < Rotation.TOLERANCE.getRadians();
   }
 }

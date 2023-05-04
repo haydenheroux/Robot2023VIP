@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.arm.Arm.State;
@@ -115,12 +116,12 @@ public class Constants {
       public static final double GEAR_RATIO = 812.0 / 11.0;
 
       /** Minimum angle of the arm. */
-      public static final double MIN_ANGLE = Units.degreesToRadians(-45);
+      public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-45);
       /** Maximum angle of the arm. */
-      public static final double MAX_ANGLE = Units.degreesToRadians(60);
+      public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(60);
 
       /** The maximum angle error of the arm. */
-      public static final double TOLERANCE = Units.degreesToRadians(1);
+      public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
       /** Constants for rotation using a bang-bang control algorithm. */
       public static class BangBang {
@@ -181,15 +182,15 @@ public class Constants {
        * will not cause the arm to collide with the grid.
        */
       public static final ArmPosition ABOVE_GRID =
-          ArmPosition.fromState(new State(0, Units.degreesToRadians(30)));
+          ArmPosition.fromState(new State(0, Rotation2d.fromDegrees(30)));
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
       public static final ArmPosition FLOOR =
           new ArmPosition(Units.feetToMeters(2.5), Rotation.MIN_ANGLE);
       /** Position for ejecting game pieces onto the middle row. */
       public static final ArmPosition MIDDLE_ROW =
-          new ArmPosition(1.15, Units.degreesToRadians(14));
+          new ArmPosition(1.15, Rotation2d.fromDegrees(14));
       /** Position for ejecting game pieces onto the top row. */
-      public static final ArmPosition TOP_ROW = new ArmPosition(1.7, Units.degreesToRadians(25));
+      public static final ArmPosition TOP_ROW = new ArmPosition(1.7, Rotation2d.fromDegrees(25));
     }
   }
 

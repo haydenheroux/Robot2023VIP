@@ -37,8 +37,8 @@ public class ArmIOSim implements ArmIO {
           Rotation.GEAR_RATIO,
           SingleJointedArmSim.estimateMOI(simLength, Physical.ARM_MASS),
           simLength,
-          Rotation.MIN_ANGLE,
-          Rotation.MAX_ANGLE,
+          Rotation.MIN_ANGLE.getRadians(),
+          Rotation.MAX_ANGLE.getRadians(),
           Constants.Physical.ARM_MASS,
           true);
 

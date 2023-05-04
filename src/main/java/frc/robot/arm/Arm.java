@@ -4,7 +4,7 @@
 
 package frc.robot.arm;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -26,17 +26,17 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   public static class State {
 
-    public final double extensionLengthMeters, rotationAngleRadians;
+    public final double extensionLengthMeters;
+    public final Rotation2d rotationAngle;
 
-    public State(double extensionLengthMeters, double rotationAngleRadians) {
+    public State(double extensionLengthMeters, Rotation2d rotationAngle) {
       this.extensionLengthMeters = extensionLengthMeters;
-      this.rotationAngleRadians = rotationAngleRadians;
+      this.rotationAngle = rotationAngle;
     }
 
     public static State fromPosition(ArmPosition position) {
-      double extensionLengthMeters = position.getLengthMeters() - Extension.LENGTH_OFFSET;
-      double rotationAngleRadians = position.getAngleRadians();
-      return new State(extensionLengthMeters, rotationAngleRadians);
+      double extensionLengthMeters = position.getNorm() - Extension.LENGTH_OFFSET;
+      return new State(extensionLengthMeters, position.getAngle());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
       if (other instanceof State) {
         State rhs = (State) other;
         boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
-        boolean rotationAnglesEqual = this.rotationAngleRadians == rhs.rotationAngleRadians;
+        boolean rotationAnglesEqual = this.rotationAngle == rhs.rotationAngle;
         return extensionLengthsEqual && rotationAnglesEqual;
       }
       return false;
@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     @Override
     public int hashCode() {
-      return Objects.hash(extensionLengthMeters, rotationAngleRadians);
+      return Objects.hash(extensionLengthMeters, rotationAngle);
     }
   }
 
@@ -253,9 +253,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public Command driveRotation(DoubleSupplier percent) {
     return this.run(
         () -> {
-          boolean rotationAtMin = values.rotationAngleRadians < Rotation.MIN_ANGLE;
+          boolean rotationAtMin = values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
           boolean rotationIncreasing = -percent.getAsDouble() > 0;
-          boolean rotationAtMax = values.rotationAngleRadians > Rotation.MAX_ANGLE;
+          boolean rotationAtMax = values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
           boolean rotationDecreasing = -percent.getAsDouble() < 0;
 
           boolean rotationPastMin = rotationAtMin && rotationDecreasing;
@@ -274,7 +274,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     State setpoint = State.fromPosition(trajectory.get());
 
     io.setExtensionSetpoint(setpoint.extensionLengthMeters);
-    io.setRotationSetpoint(setpoint.rotationAngleRadians);
+    io.setRotationSetpoint(setpoint.rotationAngle.getRadians());
   }
 
   @Override
@@ -283,7 +283,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position =
         ArmPosition.fromState(
-            new Arm.State(values.extensionLengthMeters, values.rotationAngleRadians));
+            new Arm.State(values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
 
     if (isEnabled()) updateSetpoint();
 
@@ -301,23 +301,23 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
     valuesLayout.addNumber(
-        "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
+        "Rotation Angle (deg)", () -> values.rotationAngleRadians);
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
     ShuffleboardLayout positionLayout = tab.getLayout("Position", BuiltInLayouts.kList);
-    positionLayout.addNumber("Arm Length (m)", () -> position.getLengthMeters());
+    positionLayout.addNumber("Arm Length (m)", () -> position.getNorm());
     positionLayout.addNumber(
-        "Arm Angle (deg)", () -> Units.radiansToDegrees(position.getAngleRadians()));
+        "Arm Angle (deg)", () -> position.getAngle().getDegrees());
 
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
-    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLengthMeters());
+    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
     goalLayout.addNumber(
-        "Arm Angle Goal (deg)", () -> Units.radiansToDegrees(goal.getAngleRadians()));
-    goalLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getLengthMeters());
+        "Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
+    goalLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getNorm());
     goalLayout.addNumber(
         "Arm Angle Setpoint (deg)",
-        () -> Units.radiansToDegrees(trajectory.get().getAngleRadians()));
+        () -> trajectory.get().getAngle().getDegrees());
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
   }

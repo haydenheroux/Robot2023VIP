@@ -4,6 +4,7 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Arm.Constraints;
 import frc.robot.Constants.Physical;
@@ -12,26 +13,23 @@ import java.util.Collections;
 
 public class ArmKinematics {
 
-  private static double calculateHorizontal(double distanceMeters, double angleRadians) {
-    double cos = Math.cos(angleRadians);
-    if (cos == 0) {
-      return Double.POSITIVE_INFINITY;
-    }
-
+  private static double calculateHorizontal(double distanceMeters, Rotation2d angle) {
+    double cos = angle.getCos();
+    if (cos == 0) return Double.POSITIVE_INFINITY;
     return distanceMeters / cos;
   }
 
   public static boolean isAvoidingGrid(ArmPosition position) {
     ArrayList<Double> maximumLengths = new ArrayList<Double>();
 
-    if (position.getAngleRadians() <= Constraints.HYBRID_ANGLE) {
+    if (position.getAngle().getRadians() <= Constraints.HYBRID_ANGLE) {
       maximumLengths.add(
           calculateHorizontal(
-              Physical.BUMPER_DISTANCE + Constraints.HYBRID_DISTANCE, position.getAngleRadians()));
-    } else if (position.getAngleRadians() <= Constraints.MIDDLE_ANGLE) {
+              Physical.BUMPER_DISTANCE + Constraints.HYBRID_DISTANCE, position.getAngle()));
+    } else if (position.getAngle().getRadians() <= Constraints.MIDDLE_ANGLE) {
       maximumLengths.add(
           calculateHorizontal(
-              Physical.BUMPER_DISTANCE + Constraints.MIDDLE_DISTANCE, position.getAngleRadians()));
+              Physical.BUMPER_DISTANCE + Constraints.MIDDLE_DISTANCE, position.getAngle()));
     }
 
     maximumLengths.removeIf(x -> x < 0);
@@ -39,7 +37,7 @@ public class ArmKinematics {
     if (maximumLengths.size() == 0) return true;
 
     double maximumLength = Collections.min(maximumLengths);
-    return position.getLengthMeters() < maximumLength;
+    return position.getNorm() < maximumLength;
   }
 
   public static boolean isWithinRuleZone(ArmPosition position) {

@@ -220,7 +220,7 @@ public class SuperstructureMechanism {
   public void updateArm(ArmPosition position, Arm.LockType isLocked) {
     Arm.State state = Arm.State.fromPosition(position);
 
-    setAngle(state.rotationAngleRadians);
+    setAngle(state.rotationAngle.getRadians());
     setLength(state.extensionLengthMeters);
     setBrake(isLocked);
     setConstraint(position);
