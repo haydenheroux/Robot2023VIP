@@ -6,7 +6,8 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Rotation;
 
 public class ArmPosition extends Translation2d {
 
@@ -15,7 +16,7 @@ public class ArmPosition extends Translation2d {
   }
 
   public static ArmPosition fromState(Arm.State position) {
-    double length = position.extensionLengthMeters + Constants.Arm.Extension.LENGTH_OFFSET;
+    double length = position.extensionLengthMeters + Extension.LENGTH_OFFSET;
     return new ArmPosition(length, position.rotationAngleRadians);
   }
 
@@ -32,12 +33,10 @@ public class ArmPosition extends Translation2d {
   }
 
   public boolean atLengthOf(ArmPosition other) {
-    return Math.abs(this.getLengthMeters() - other.getLengthMeters())
-        < Constants.Arm.Extension.TOLERANCE;
+    return Math.abs(this.getLengthMeters() - other.getLengthMeters()) < Extension.TOLERANCE;
   }
 
   public boolean atAngleOf(ArmPosition other) {
-    return Math.abs(this.getAngleRadians() - other.getAngleRadians())
-        < Constants.Arm.Rotation.TOLERANCE;
+    return Math.abs(this.getAngleRadians() - other.getAngleRadians()) < Rotation.TOLERANCE;
   }
 }

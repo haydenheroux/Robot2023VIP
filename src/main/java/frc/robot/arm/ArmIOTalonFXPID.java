@@ -5,7 +5,8 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.controller.PIDController;
-import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Rotation;
 
 public class ArmIOTalonFXPID extends ArmIOTalonFXBase {
 
@@ -14,8 +15,8 @@ public class ArmIOTalonFXPID extends ArmIOTalonFXBase {
   public ArmIOTalonFXPID() {
     super();
 
-    extensionPID = new PIDController(Constants.Arm.Extension.PID.KP, 0, 0);
-    rotationPID = new PIDController(Constants.Arm.Rotation.PID.KP, 0, 0);
+    extensionPID = new PIDController(Extension.PID.KP, 0, 0);
+    rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
   }
 
   @Override

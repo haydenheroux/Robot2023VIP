@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Physical;
 
 public class ArmIOSim implements ArmIO {
 
@@ -31,18 +34,17 @@ public class ArmIOSim implements ArmIO {
   private final SingleJointedArmSim rotationSim =
       new SingleJointedArmSim(
           simMotor,
-          Constants.Arm.Rotation.GEAR_RATIO,
-          SingleJointedArmSim.estimateMOI(simLength, Constants.Physical.ARM_MASS),
+          Rotation.GEAR_RATIO,
+          SingleJointedArmSim.estimateMOI(simLength, Physical.ARM_MASS),
           simLength,
-          Constants.Arm.Rotation.MIN_ANGLE,
-          Constants.Arm.Rotation.MAX_ANGLE,
+          Rotation.MIN_ANGLE,
+          Rotation.MAX_ANGLE,
           Constants.Physical.ARM_MASS,
           true);
 
-  private final PIDController extensionPID =
-      new PIDController(Constants.Arm.Extension.PID.KP, 0, 0);
+  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 0);
 
-  private final PIDController rotationPID = new PIDController(Constants.Arm.Rotation.PID.KP, 0, 0);
+  private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
   private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
 
   public ArmIOSim() {}

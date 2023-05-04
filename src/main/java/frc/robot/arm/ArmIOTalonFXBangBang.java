@@ -5,7 +5,8 @@
 package frc.robot.arm;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Rotation;
 
 public class ArmIOTalonFXBangBang extends ArmIOTalonFXBase {
 
@@ -28,9 +29,9 @@ public class ArmIOTalonFXBangBang extends ArmIOTalonFXBase {
     double position = getExtensionPosition();
 
     if (position < getExtensionPosition()) {
-      setExtensionVoltage(Constants.Arm.Extension.BangBang.INCREASE);
+      setExtensionVoltage(Extension.BangBang.INCREASE);
     } else if (position > getExtensionPosition()) {
-      setExtensionVoltage(Constants.Arm.Extension.BangBang.DECREASE);
+      setExtensionVoltage(Extension.BangBang.DECREASE);
     } else {
       setExtensionDisabled();
     }
@@ -41,9 +42,9 @@ public class ArmIOTalonFXBangBang extends ArmIOTalonFXBase {
     double position = getRotationPosition();
 
     if (position < angleRadians) {
-      setRotationVoltage(Constants.Arm.Rotation.BangBang.INCREASE);
+      setRotationVoltage(Rotation.BangBang.INCREASE);
     } else if (position > angleRadians) {
-      setRotationVoltage(Constants.Arm.Rotation.BangBang.DECREASE);
+      setRotationVoltage(Rotation.BangBang.DECREASE);
     } else {
       setRotationDisabled();
     }

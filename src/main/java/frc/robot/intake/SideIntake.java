@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants;
+import frc.robot.Constants.Intake.SideIntake.Thresholds;
+import frc.robot.Constants.Intake.SideIntake.Voltages;
 import frc.robot.Robot;
 
 public class SideIntake extends SubsystemBase implements TelemetryOutputter {
@@ -51,10 +52,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   }
 
   public boolean isHolding() {
-    boolean isBottomHolding =
-        values.bottomMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.BOTTOM_THRESHOLD;
-    boolean isTopHolding =
-        values.topMotorCurrentAmps >= Constants.Intake.SideIntake.Thresholds.TOP_THRESHOLD;
+    boolean isBottomHolding = values.bottomMotorCurrentAmps >= Thresholds.BOTTOM_THRESHOLD;
+    boolean isTopHolding = values.topMotorCurrentAmps >= Thresholds.TOP_THRESHOLD;
     return isBottomHolding && isTopHolding;
   }
 
@@ -81,16 +80,16 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
 
   private void doAccept() {
     double bias = SideIntakeMath.getBias();
-    double bottomMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
-    double topMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
+    double bottomMotorVoltage = bias + Voltages.BASE_ACCEPTING;
+    double topMotorVoltage = -bias + Voltages.BASE_ACCEPTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
     io.setTopMotorVoltage(topMotorVoltage);
   }
 
   private void doEject() {
     double bias = SideIntakeMath.getBias();
-    double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
-    double topMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
+    double bottomMotorVoltage = -bias + Voltages.BASE_EJECTING;
+    double topMotorVoltage = bias + Voltages.BASE_EJECTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
     io.setTopMotorVoltage(topMotorVoltage);
   }
@@ -117,8 +116,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
         doEject();
         break;
       case kHolding:
-        io.setBottomMotorVoltage(Constants.Intake.SideIntake.Voltages.HOLDING);
-        io.setTopMotorVoltage(Constants.Intake.SideIntake.Voltages.HOLDING);
+        io.setBottomMotorVoltage(Voltages.HOLDING);
+        io.setTopMotorVoltage(Voltages.HOLDING);
         break;
     }
 

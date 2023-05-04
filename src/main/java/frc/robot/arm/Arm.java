@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Positions;
+import frc.robot.Constants.Arm.Rotation;
 import frc.robot.Robot;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
@@ -31,8 +34,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
 
     public static State fromPosition(ArmPosition position) {
-      double extensionLengthMeters =
-          position.getLengthMeters() - Constants.Arm.Extension.LENGTH_OFFSET;
+      double extensionLengthMeters = position.getLengthMeters() - Extension.LENGTH_OFFSET;
       double rotationAngleRadians = position.getAngleRadians();
       return new State(extensionLengthMeters, rotationAngleRadians);
     }
@@ -70,8 +72,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
   private boolean enabled = false;
 
-  private ArmPosition position = Constants.Arm.Positions.STOW;
-  private ArmPosition goal = Constants.Arm.Positions.STOW;
+  private ArmPosition position = Positions.STOW;
+  private ArmPosition goal = Positions.STOW;
   private ArmTrajectory trajectory = new ArmTrajectory(position, goal);
 
   /** Creates a new Arm. */
@@ -223,11 +225,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public Command driveExtension(DoubleSupplier percent) {
     return this.run(
         () -> {
-          boolean extensionAtMin =
-              values.extensionLengthMeters < Constants.Arm.Extension.MIN_LENGTH;
+          boolean extensionAtMin = values.extensionLengthMeters < Extension.MIN_LENGTH;
           boolean extensionIncreasing = -percent.getAsDouble() > 0;
-          boolean extensionAtMax =
-              values.extensionLengthMeters > Constants.Arm.Extension.MAX_LENGTH;
+          boolean extensionAtMax = values.extensionLengthMeters > Extension.MAX_LENGTH;
           boolean extensionDecreasing = -percent.getAsDouble() < 0;
 
           boolean extensionPastMin = extensionAtMin && extensionDecreasing;
@@ -253,9 +253,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public Command driveRotation(DoubleSupplier percent) {
     return this.run(
         () -> {
-          boolean rotationAtMin = values.rotationAngleRadians < Constants.Arm.Rotation.MIN_ANGLE;
+          boolean rotationAtMin = values.rotationAngleRadians < Rotation.MIN_ANGLE;
           boolean rotationIncreasing = -percent.getAsDouble() > 0;
-          boolean rotationAtMax = values.rotationAngleRadians > Constants.Arm.Rotation.MAX_ANGLE;
+          boolean rotationAtMax = values.rotationAngleRadians > Rotation.MAX_ANGLE;
           boolean rotationDecreasing = -percent.getAsDouble() < 0;
 
           boolean rotationPastMin = rotationAtMin && rotationDecreasing;

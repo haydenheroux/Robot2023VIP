@@ -4,7 +4,7 @@
 
 package frc.robot.arm;
 
-import frc.robot.Constants;
+import frc.robot.Constants.Arm.Positions;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -20,7 +20,7 @@ public class ArmTrajectory {
     boolean alreadyAvoidingGrid = (start.getLengthMeters() < 0.1 && end.getLengthMeters() < 0.1);
     boolean needToAvoidGrid = !alreadyAvoidingGrid;
 
-    double aboveGridAngleRadians = Constants.Arm.Positions.ABOVE_GRID.getAngleRadians();
+    double aboveGridAngleRadians = Positions.ABOVE_GRID.getAngleRadians();
 
     if (needToExtend && needToAvoidGrid) {
       setpoints.add(new ArmPosition(start.getLengthMeters(), aboveGridAngleRadians));

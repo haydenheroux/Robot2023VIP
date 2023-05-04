@@ -10,6 +10,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.robot.Constants.Arm.Extension;
+import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Pneumatics;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
@@ -17,19 +20,12 @@ public class ArmIOTalonFXBase implements ArmIO {
   private final Solenoid extensionBrake, rotationBrake;
 
   public ArmIOTalonFXBase() {
-    extensionMotor = new WPI_TalonFX(Constants.Arm.Extension.CAN_ID);
+    extensionMotor = new WPI_TalonFX(Extension.CAN_ID);
     extensionBrake =
-        new Solenoid(
-            Constants.Pneumatics.CAN_ID,
-            Constants.Pneumatics.MODULE_TYPE,
-            Constants.Arm.Extension.BRAKE_CHANNEL);
+        new Solenoid(Pneumatics.CAN_ID, Pneumatics.MODULE_TYPE, Extension.BRAKE_CHANNEL);
 
-    rotationMotor = new WPI_TalonFX(Constants.Arm.Rotation.CAN_ID);
-    rotationBrake =
-        new Solenoid(
-            Constants.Pneumatics.CAN_ID,
-            Constants.Pneumatics.MODULE_TYPE,
-            Constants.Arm.Rotation.BRAKE_CHANNEL);
+    rotationMotor = new WPI_TalonFX(Rotation.CAN_ID);
+    rotationBrake = new Solenoid(Pneumatics.CAN_ID, Pneumatics.MODULE_TYPE, Rotation.BRAKE_CHANNEL);
   }
 
   @Override
@@ -53,9 +49,7 @@ public class ArmIOTalonFXBase implements ArmIO {
   public void setExtensionPosition(double lengthMeters) {
     double ticks =
         Conversions.TalonFX.Position.fromMeters(
-            lengthMeters,
-            Constants.Arm.Extension.DISTANCE_PER_REVOLUTION,
-            Constants.Arm.Extension.GEAR_RATIO);
+            lengthMeters, Extension.DISTANCE_PER_REVOLUTION, Extension.GEAR_RATIO);
     extensionMotor.setSelectedSensorPosition(ticks);
   }
 
@@ -85,8 +79,7 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setRotationPosition(double angleRadians) {
-    double ticks =
-        Conversions.TalonFX.Position.fromRadians(angleRadians, Constants.Arm.Rotation.GEAR_RATIO);
+    double ticks = Conversions.TalonFX.Position.fromRadians(angleRadians, Rotation.GEAR_RATIO);
     rotationMotor.setSelectedSensorPosition(ticks);
   }
 
@@ -127,7 +120,7 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   protected double getRotationPosition() {
     return Conversions.TalonFX.Position.toRadians(
-        rotationMotor.getSelectedSensorPosition(), Constants.Arm.Rotation.GEAR_RATIO);
+        rotationMotor.getSelectedSensorPosition(), Rotation.GEAR_RATIO);
   }
 
   protected boolean getRotationBrakeIsActive() {

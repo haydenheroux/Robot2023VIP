@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants;
+import frc.robot.Constants.Intake.Claw.Thresholds;
+import frc.robot.Constants.Intake.Claw.Voltages;
 import frc.robot.Robot;
 
 public class Claw extends SubsystemBase implements TelemetryOutputter {
@@ -57,7 +58,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cone.
    */
   public boolean isHoldingCone() {
-    return values.motorCurrentAmps >= Constants.Intake.Claw.Thresholds.CONE_THRESHOLD;
+    return values.motorCurrentAmps >= Thresholds.CONE_THRESHOLD;
   }
 
   /**
@@ -66,7 +67,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cube.
    */
   public boolean isHoldingCube() {
-    return values.motorCurrentAmps >= Constants.Intake.Claw.Thresholds.CUBE_THRESHOLD;
+    return values.motorCurrentAmps >= Thresholds.CUBE_THRESHOLD;
   }
 
   public Command accept() {
@@ -104,19 +105,19 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
 
     switch (state) {
       case kAccepting:
-        io.setMotorVoltage(Constants.Intake.Claw.Voltages.ACCEPTING);
+        io.setMotorVoltage(Voltages.ACCEPTING);
         break;
       case kDisabled:
         io.setMotorDisabled();
         break;
       case kEjecting:
-        io.setMotorVoltage(Constants.Intake.Claw.Voltages.EJECTING);
+        io.setMotorVoltage(Voltages.EJECTING);
         break;
       case kHoldingCone:
-        io.setMotorVoltage(Constants.Intake.Claw.Voltages.HOLDING_CONE);
+        io.setMotorVoltage(Voltages.HOLDING_CONE);
         break;
       case kHoldingCube:
-        io.setMotorVoltage(Constants.Intake.Claw.Voltages.HOLDING_CUBE);
+        io.setMotorVoltage(Voltages.HOLDING_CUBE);
         break;
     }
 
