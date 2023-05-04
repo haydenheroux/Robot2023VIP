@@ -5,6 +5,7 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -283,7 +284,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     position =
         ArmPosition.fromState(
-            new Arm.State(values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
+            new Arm.State(
+                values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
 
     if (isEnabled()) updateSetpoint();
 
@@ -301,25 +303,24 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
     valuesLayout.addNumber(
-        "Rotation Angle (deg)", () -> values.rotationAngleRadians);
+        "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
     ShuffleboardLayout positionLayout = tab.getLayout("Position", BuiltInLayouts.kList);
     positionLayout.addNumber("Arm Length (m)", () -> position.getNorm());
-    positionLayout.addNumber(
-        "Arm Angle (deg)", () -> position.getAngle().getDegrees());
+    positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngle().getDegrees());
 
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
     goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
-    goalLayout.addNumber(
-        "Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
-    goalLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getNorm());
-    goalLayout.addNumber(
-        "Arm Angle Setpoint (deg)",
-        () -> trajectory.get().getAngle().getDegrees());
+    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
     goalLayout.addBoolean("At Goal?", this::atGoal);
     goalLayout.addBoolean("Is Enabled?", this::isEnabled);
+
+    ShuffleboardLayout setpointLayout = tab.getLayout("Setpoint", BuiltInLayouts.kList);
+    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getNorm());
+    setpointLayout.addNumber(
+        "Arm Angle Setpoint (deg)", () -> trajectory.get().getAngle().getDegrees());
   }
 
   @Override

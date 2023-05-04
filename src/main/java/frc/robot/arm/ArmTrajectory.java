@@ -4,11 +4,10 @@
 
 package frc.robot.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Arm.Positions;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ArmTrajectory {
 

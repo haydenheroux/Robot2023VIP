@@ -29,6 +29,7 @@ public class ArmPosition extends Translation2d {
   }
 
   public boolean atAngleOf(ArmPosition other) {
-    return Math.abs(this.getAngle().minus(other.getAngle()).getRadians()) < Rotation.TOLERANCE.getRadians();
+    return Math.abs(this.getAngle().minus(other.getAngle()).getRadians())
+        < Rotation.TOLERANCE.getRadians();
   }
 }
