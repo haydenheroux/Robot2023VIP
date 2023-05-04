@@ -7,7 +7,6 @@ package frc.robot.arm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
@@ -20,10 +19,17 @@ public class ArmIOTalonFXBase implements ArmIO {
   public ArmIOTalonFXBase() {
     extensionMotor = new WPI_TalonFX(Constants.Arm.Extension.CAN_ID);
     extensionBrake =
-        new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.Extension.BRAKE_CHANNEL);
+        new Solenoid(
+            Constants.Pneumatics.CAN_ID,
+            Constants.Pneumatics.MODULE_TYPE,
+            Constants.Arm.Extension.BRAKE_CHANNEL);
 
     rotationMotor = new WPI_TalonFX(Constants.Arm.Rotation.CAN_ID);
-    rotationBrake = new Solenoid(PneumaticsModuleType.REVPH, Constants.Arm.Rotation.BRAKE_CHANNEL);
+    rotationBrake =
+        new Solenoid(
+            Constants.Pneumatics.CAN_ID,
+            Constants.Pneumatics.MODULE_TYPE,
+            Constants.Arm.Rotation.BRAKE_CHANNEL);
   }
 
   @Override

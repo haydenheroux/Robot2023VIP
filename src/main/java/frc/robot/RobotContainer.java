@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +40,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Initialize subsystems
     arm = Arm.getInstance();
-    compressor = new Compressor(PneumaticsModuleType.REVPH);
+    compressor = new Compressor(Constants.Pneumatics.CAN_ID, Constants.Pneumatics.MODULE_TYPE);
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.arm.Arm.State;
 import frc.robot.arm.ArmPosition;
 
@@ -32,6 +33,14 @@ public class Constants {
      * the bumpers.
      */
     public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
+  }
+
+  /** Pneumatics constants relating to the pneumatics module. */
+  public static class Pneumatics {
+    /** Type of the pneumatics module. */
+    public static final PneumaticsModuleType MODULE_TYPE = PneumaticsModuleType.REVPH;
+    /** CAN identifier for the pneumatics module. */
+    public static final int CAN_ID = 30;
   }
 
   /** Arm constants relating to the operation of the arm subsystem. */
