@@ -149,24 +149,23 @@ public class Constants {
        */
       public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);
 
-      /** Maximum angle of the arm to consider evaluating the hybrid node constraint. */
-      public static final double HYBRID_ANGLE = Units.degreesToRadians(5);
       /**
-       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
-       * Only evaluated if the arm could collide with the hybrid node, as determined by {@link
-       * HYBRID_ANGLE}.
-       */
-      public static final double HYBRID_DISTANCE = Units.inchesToMeters(12);
-
-      /** Maximum angle of the arm to consider evaluating the middle node constraint. */
-      public static final double MIDDLE_ANGLE = Units.degreesToRadians(16);
-      /**
-       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
-       * Only evaluated if the arm could collide with the middle node, as determined by {@link
-       * MIDDLE_ANGLE}.
+       * Distance from the bumpers to the front of the middle node, plus the distance from the arm
+       * to the bumpers.
        */
       public static final double MIDDLE_DISTANCE =
-          Units.inchesToMeters(22.75) + Constants.Physical.CLAW_LENGTH;
+          Units.feetToMeters(1) + Units.inchesToMeters(10.75) + Physical.BUMPER_DISTANCE;
+      /** Height from the floor to the top of the middle cone node. */
+      public static final double MIDDLE_HEIGHT = Units.feetToMeters(2) + Units.inchesToMeters(10);
+
+      /**
+       * Distance from the bumpers to the front of the top node, plus the distance from the arm to
+       * the bumpers.
+       */
+      public static final double TOP_DISTANCE =
+          Units.feetToMeters(3) + Units.inchesToMeters(3.75) + Physical.BUMPER_DISTANCE;
+      /** Height from the floor to the top of the top cone node. */
+      public static final double TOP_HEIGHT = Units.feetToMeters(3) + Units.inchesToMeters(10);
     }
 
     /** Arm positions. */

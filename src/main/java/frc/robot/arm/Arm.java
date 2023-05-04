@@ -237,10 +237,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
           boolean isWithinRuleZone = ArmKinematics.isWithinRuleZone(position);
           boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
 
-          boolean isAvoidingGrid = ArmKinematics.isAvoidingGrid(position);
-          boolean isHittingGrid = !isAvoidingGrid && extensionIncreasing;
+          boolean willIntersectGrid =
+              ArmKinematics.isIntersectingGrid(position) && extensionIncreasing;
 
-          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone && !isHittingGrid) {
+          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone && !willIntersectGrid) {
             io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
           }
         });
@@ -262,7 +262,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
           boolean rotationPastMin = rotationAtMin && rotationDecreasing;
           boolean rotationPastMax = rotationAtMax && rotationIncreasing;
 
-          if (!rotationPastMin && !rotationPastMax) {
+          boolean willIntersectGrid =
+              ArmKinematics.isIntersectingGrid(position) && rotationDecreasing;
+
+          if (!rotationPastMin && !rotationPastMax && !willIntersectGrid) {
             io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
           }
         });

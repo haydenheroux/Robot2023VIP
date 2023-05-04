@@ -4,40 +4,23 @@
 
 package frc.robot.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Arm.Constraints;
 import frc.robot.Constants.Physical;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class ArmKinematics {
+  public static boolean isIntersectingGrid(ArmPosition position) {
+    Translation2d worldArmPosition =
+        position.plus(new Translation2d(0, Physical.ARM_SHOULDER_HEIGHT));
 
-  private static double calculateHorizontal(double distanceMeters, Rotation2d angle) {
-    double cos = angle.getCos();
-    if (cos == 0) return Double.POSITIVE_INFINITY;
-    return distanceMeters / cos;
-  }
+    boolean intersectsMiddleRow =
+        worldArmPosition.getX() >= Constraints.MIDDLE_DISTANCE
+            && worldArmPosition.getY() <= Constraints.MIDDLE_HEIGHT;
+    boolean intersectsTopRow =
+        worldArmPosition.getX() >= Constraints.TOP_DISTANCE
+            && worldArmPosition.getY() <= Constraints.TOP_HEIGHT;
 
-  public static boolean isAvoidingGrid(ArmPosition position) {
-    ArrayList<Double> maximumLengths = new ArrayList<Double>();
-
-    if (position.getAngle().getRadians() <= Constraints.HYBRID_ANGLE) {
-      maximumLengths.add(
-          calculateHorizontal(
-              Physical.BUMPER_DISTANCE + Constraints.HYBRID_DISTANCE, position.getAngle()));
-    } else if (position.getAngle().getRadians() <= Constraints.MIDDLE_ANGLE) {
-      maximumLengths.add(
-          calculateHorizontal(
-              Physical.BUMPER_DISTANCE + Constraints.MIDDLE_DISTANCE, position.getAngle()));
-    }
-
-    maximumLengths.removeIf(x -> x < 0);
-
-    if (maximumLengths.size() == 0) return true;
-
-    double maximumLength = Collections.min(maximumLengths);
-    return position.getNorm() < maximumLength;
+    return intersectsMiddleRow || intersectsTopRow;
   }
 
   public static boolean isWithinRuleZone(ArmPosition position) {

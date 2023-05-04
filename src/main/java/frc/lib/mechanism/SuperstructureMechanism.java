@@ -206,7 +206,7 @@ public class SuperstructureMechanism {
    */
   private void setConstraint(ArmPosition position) {
     if (ArmKinematics.isWithinRuleZone(position) == false
-        || ArmKinematics.isAvoidingGrid(position) == false) {
+        || ArmKinematics.isIntersectingGrid(position)) {
       armExtension.setColor(kConstraintColor);
     }
   }
