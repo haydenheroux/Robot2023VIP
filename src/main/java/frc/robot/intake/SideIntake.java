@@ -4,7 +4,6 @@
 
 package frc.robot.intake;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -59,16 +58,6 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     return isBottomHolding && isTopHolding;
   }
 
-  private double getBiasFor(double alphaRadians, double betaRadians) {
-    double betaRelativeToAlphaRadians = (alphaRadians - Units.degreesToRadians(90.0)) + betaRadians;
-    return getBiasFor(betaRelativeToAlphaRadians);
-  }
-
-  private double getBiasFor(double betaRelativeToAlphaRadians) {
-    return Constants.Intake.SideIntake.Voltages.RELATIVE_BIAS
-        * Math.sin(betaRelativeToAlphaRadians);
-  }
-
   public Command accept() {
     return this.runOnce(() -> state = State.kAccepting);
   }
@@ -91,9 +80,7 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   }
 
   private void doAccept() {
-    double bias =
-        getBiasFor(
-            Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.ACCEPT_ANGLE);
+    double bias = SideIntakeMath.getBias();
     double bottomMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
     double topMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_ACCEPTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
@@ -101,9 +88,7 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   }
 
   private void doEject() {
-    double bias =
-        getBiasFor(
-            Constants.Intake.SideIntake.MECHANISM_ANGLE, Constants.Intake.SideIntake.EJECT_ANGLE);
+    double bias = SideIntakeMath.getBias();
     double bottomMotorVoltage = -bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
     double topMotorVoltage = bias + Constants.Intake.SideIntake.Voltages.BASE_EJECTING;
     io.setBottomMotorVoltage(bottomMotorVoltage);
