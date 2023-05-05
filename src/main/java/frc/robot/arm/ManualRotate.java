@@ -9,12 +9,12 @@ import frc.robot.Constants;
 import frc.robot.arm.Arm.Type;
 import java.util.function.DoubleSupplier;
 
-public class ManualExtension extends CommandBase {
+public class ManualRotate extends CommandBase {
 
   private final Arm arm;
   private final DoubleSupplier percentSupplier;
 
-  public ManualExtension(Arm arm, DoubleSupplier percentSupplier) {
+  public ManualRotate(Arm arm, DoubleSupplier percentSupplier) {
     addRequirements(arm);
 
     this.arm = arm;
@@ -23,7 +23,7 @@ public class ManualExtension extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Type.kExtension);
+    arm.unlock(Type.kRotation);
   }
 
   @Override
@@ -31,23 +31,22 @@ public class ManualExtension extends CommandBase {
     double percent = percentSupplier.getAsDouble();
 
     boolean isLeavingBounds = isLeavingBounds(percent);
-    boolean isLeavingRuleZone = isLeavingRuleZone(percent);
-    boolean isIntersectingGrid = arm.isIntersectingGrid() && percent > 0;
+    boolean isIntersectingGrid = arm.isIntersectingGrid() && percent < 0;
 
-    if (isLeavingBounds || isLeavingRuleZone || isIntersectingGrid) {
-      arm.disable(Type.kExtension);
-      arm.lock(Type.kExtension);
+    if (isLeavingBounds || isIntersectingGrid) {
+      arm.disable(Type.kRotation);
+      arm.lock(Type.kRotation);
     } else {
       arm.unlock(Type.kExtension);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
-      arm.setVoltage(Type.kExtension, volts);
+      arm.setVoltage(Type.kRotation, volts);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Type.kExtension);
-    arm.lock(Type.kExtension);
+    arm.disable(Type.kRotation);
+    arm.lock(Type.kRotation);
   }
 
   @Override
@@ -56,12 +55,8 @@ public class ManualExtension extends CommandBase {
   }
 
   private boolean isLeavingBounds(double percent) {
-    boolean aboveMax = arm.extensionIsAtMax() && percent > 0;
-    boolean belowMin = arm.extensionIsAtMin() && percent < 0;
+    boolean aboveMax = arm.rotationIsAtMax() && percent > 0;
+    boolean belowMin = arm.rotationIsAtMin() && percent < 0;
     return aboveMax || belowMin;
-  }
-
-  private boolean isLeavingRuleZone(double percent) {
-    return arm.isWithinRuleZone() == false && percent > 0;
   }
 }

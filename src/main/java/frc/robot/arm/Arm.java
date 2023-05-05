@@ -244,8 +244,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
     tab.addString("Is Locked?", () -> getLocked().toString());
-    tab.add(this.runUnlock(Type.kBoth).withName("Unlock Both"));
-    tab.add(this.runLock(Type.kBoth).withName("Lock Both"));
+    tab.add(this.runOnce(() -> this.unlock(Type.kBoth)).withName("Unlock Both"));
+    tab.add(this.runOnce(() -> this.lock(Type.kBoth)).withName("Lock Both"));
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
@@ -272,23 +272,15 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void outputTelemetry() {}
 
-  public Command runLock(Type type) {
-    return this.runOnce(() -> this.lock(type));
-  }
-
-  public Command runUnlock(Type type) {
-    return this.runOnce(() -> this.unlock(type));
-  }
-
-  public Command runToGoal(ArmPosition goal) {
+  public Command toGoal(ArmPosition goal) {
     return new ToGoal(this, goal);
   }
 
-  public Command runManualExtension(DoubleSupplier percentSupplier) {
-    return new ManualExtension(this, percentSupplier);
+  public Command manualExtend(DoubleSupplier percentSupplier) {
+    return new ManualExtend(this, percentSupplier);
   }
 
-  public Command runManualRotation(DoubleSupplier percentSupplier) {
-    return new ManualRotation(this, percentSupplier);
+  public Command manualRotate(DoubleSupplier percentSupplier) {
+    return new ManualRotate(this, percentSupplier);
   }
 }

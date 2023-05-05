@@ -19,6 +19,7 @@ import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
@@ -69,20 +70,19 @@ public class RobotContainer {
   private void configureBindings() {
     DoubleSupplier extensionAxis =
         () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
-
-    new Trigger(() -> extensionAxis.getAsDouble() != 0.0)
-        .whileTrue(arm.runManualExtension(extensionAxis));
-
     DoubleSupplier rotationAxis =
         () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
 
-    new Trigger(() -> rotationAxis.getAsDouble() != 0.0)
-        .whileTrue(arm.runManualRotation(rotationAxis));
+    Trigger shouldExtend = new Trigger(() -> extensionAxis.getAsDouble() != 0);
+    Trigger shouldRotate = new Trigger(() -> rotationAxis.getAsDouble() != 0);
 
-    operator.a().whileTrue(arm.runToGoal(Constants.Arm.Positions.FLOOR));
-    operator.b().whileTrue(arm.runToGoal(Constants.Arm.Positions.MIDDLE_ROW));
-    operator.x().whileTrue(arm.runToGoal(Constants.Arm.Positions.STOW));
-    operator.y().whileTrue(arm.runToGoal(Constants.Arm.Positions.TOP_ROW));
+    shouldExtend.whileTrue(arm.manualExtend(extensionAxis));
+    shouldRotate.whileTrue(arm.manualRotate(rotationAxis));
+
+    operator.a().whileTrue(arm.toGoal(Constants.Arm.Positions.FLOOR));
+    operator.b().whileTrue(arm.toGoal(Constants.Arm.Positions.MIDDLE_ROW));
+    operator.x().whileTrue(arm.toGoal(Constants.Arm.Positions.STOW));
+    operator.y().whileTrue(arm.toGoal(Constants.Arm.Positions.TOP_ROW));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
