@@ -206,6 +206,7 @@ public class Constants {
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
+        public static final double PERIOD = 0.1;
         /** Current draw threshold for a game piece, in amps. */
         public static final double THRESHOLD = 60;
       }
@@ -243,6 +244,7 @@ public class Constants {
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
+        public static final double PERIOD = 0.1;
         /** Current draw threshold for a game piece on the bottom motor, in amps. */
         public static final double BOTTOM_THRESHOLD = 30;
         /** Current draw threshold for a game piece on the top motor, in amps. */

@@ -4,6 +4,7 @@
 
 package frc.robot.intake;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -14,6 +15,7 @@ import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants.Intake.Claw.Thresholds;
 import frc.robot.Constants.Intake.Claw.Voltages;
+import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class Claw extends SubsystemBase implements TelemetryOutputter {
@@ -32,6 +34,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   private final ClawIO.ClawIOValues values = new ClawIO.ClawIOValues();
 
   private State state = State.kDisabled;
+  private MedianFilter motorCurrentFilter = new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
+  private double filteredMotorCurrentAmps = 0.0;
 
   /** Creates a new Claw. */
   private Claw() {
@@ -57,7 +61,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    * @return if the claw is currently holding a cone.
    */
   public boolean isHolding() {
-    return values.motorCurrentAmps >= Thresholds.THRESHOLD;
+    return filteredMotorCurrentAmps >= Thresholds.THRESHOLD;
   }
 
   public Command accept() {
@@ -84,6 +88,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void periodic() {
     io.updateValues(values);
+
+    filteredMotorCurrentAmps = motorCurrentFilter.calculate(values.motorCurrentAmps);
 
     if (state != State.kDisabled && state != State.kEjecting) {
       if (isHolding()) {
@@ -113,7 +119,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
-    tab.addString("State", state::toString);
+    tab.addString("State", () -> state.toString());
     tab.addBoolean("Is Holding?", this::isHolding);
 
     ShuffleboardLayout stateOverridesLayout =
@@ -126,6 +132,9 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Motor Current (A)", () -> values.motorCurrentAmps);
+
+    ShuffleboardLayout filteredValuesLayout = tab.getLayout("Filtered Values", BuiltInLayouts.kList);
+    filteredValuesLayout.addNumber("Filtered Motor Current (A)", () -> filteredMotorCurrentAmps);
   }
 
   @Override
