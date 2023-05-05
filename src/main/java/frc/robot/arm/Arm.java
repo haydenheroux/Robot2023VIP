@@ -86,6 +86,10 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
 
     io.configure();
+
+    State state = State.fromPosition(position);
+    io.setExtensionPosition(state.extensionLengthMeters);
+    io.setRotationPosition(state.rotationAngle.getRadians());
   }
 
   public static Arm getInstance() {
