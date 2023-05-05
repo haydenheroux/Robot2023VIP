@@ -47,6 +47,9 @@ public class ArmIOSim implements ArmIO {
   private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
   private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
 
+  private double extensionVoltage = 0.0;
+  private double rotationVoltage = 0.0;  
+
   public ArmIOSim() {}
 
   @Override
@@ -54,8 +57,18 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void updateValues(ArmIOValues values) {
+    extensionLengthMeters += extensionVoltage * kMetersPerVolt;
+
     values.extensionLengthMeters = extensionLengthMeters;
     values.extensionBrakeIsActive = extensionBrakeIsActive;
+
+    rotationSim.setInput(rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
+    rotationSim.update(Constants.LOOP_TIME);
+
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
+
+    rotationAngleRadians = rotationSim.getAngleRads();
 
     values.rotationAngleRadians = rotationAngleRadians;
     values.rotationBrakeIsActive = rotationBrakeIsActive;
@@ -68,19 +81,14 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setExtensionSetpoint(double lengthMeters) {
-    if (extensionBrakeIsActive) return; // Stop motor
-
     double volts = extensionPID.calculate(extensionLengthMeters, lengthMeters);
     setExtensionVoltage(volts);
   }
 
   @Override
   public void setExtensionVoltage(double volts) {
-    if (extensionBrakeIsActive) return; // Stop motor
-
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
-
-    extensionLengthMeters += volts * kMetersPerVolt;
+    extensionVoltage = volts;
   }
 
   @Override
@@ -98,8 +106,6 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setRotationSetpoint(double angleRadians) {
-    if (rotationBrakeIsActive) return; // Stop motor
-
     double volts = rotationPID.calculate(rotationAngleRadians, angleRadians);
     volts = volts + rotationFeedforward.calculate(angleRadians, 0);
     setRotationVoltage(volts);
@@ -107,16 +113,8 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setRotationVoltage(double volts) {
-    if (rotationBrakeIsActive) return; // Stop motor
-
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
-
-    rotationSim.setInput(volts / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
-    rotationSim.update(Constants.LOOP_TIME);
-
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
-    rotationAngleRadians = rotationSim.getAngleRads();
+    rotationVoltage = volts;
   }
 
   @Override
