@@ -57,18 +57,22 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void updateValues(ArmIOValues values) {
-    extensionLengthMeters += extensionVoltage * kMetersPerVolt;
+    if (!extensionBrakeIsActive) {
+      extensionLengthMeters += extensionVoltage * kMetersPerVolt;
+    }
 
     values.extensionLengthMeters = extensionLengthMeters;
     values.extensionBrakeIsActive = extensionBrakeIsActive;
 
-    rotationSim.setInput(rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
-    rotationSim.update(Constants.LOOP_TIME);
+    if (!rotationBrakeIsActive) {
+      rotationSim.setInput(rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
+      rotationSim.update(Constants.LOOP_TIME);
 
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
+      RoboRioSim.setVInVoltage(
+          BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
 
-    rotationAngleRadians = rotationSim.getAngleRads();
+      rotationAngleRadians = rotationSim.getAngleRads();
+    }
 
     values.rotationAngleRadians = rotationAngleRadians;
     values.rotationBrakeIsActive = rotationBrakeIsActive;
@@ -97,7 +101,9 @@ public class ArmIOSim implements ArmIO {
   }
 
   @Override
-  public void setExtensionDisabled() {}
+  public void setExtensionDisabled() {
+    setExtensionVoltage(0.0);
+  }
 
   @Override
   public void setRotationPosition(double angleRadians) {
@@ -123,5 +129,7 @@ public class ArmIOSim implements ArmIO {
   }
 
   @Override
-  public void setRotationDisabled() {}
+  public void setRotationDisabled() {
+    setRotationVoltage(0.0);
+  }
 }
