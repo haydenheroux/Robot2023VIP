@@ -59,7 +59,6 @@ public class ArmIOTalonFXBase implements ArmIO {
   @Override
   public void setExtensionVoltage(double volts) {
     if (getExtensionBrakeIsActive()) {
-      System.out.printf("setExtensionVoltage(%d) while extensionBrakeIsActive", volts);
       extensionMotor.disable();
       return;
     }
@@ -69,7 +68,7 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setExtensionBrake(boolean isActive) {
-    extensionBrake.set(isActive);
+    extensionBrake.set(!isActive);
   }
 
   @Override
@@ -89,7 +88,6 @@ public class ArmIOTalonFXBase implements ArmIO {
   @Override
   public void setRotationVoltage(double volts) {
     if (getRotationBrakeIsActive()) {
-      System.out.printf("setRotationVoltage(%f) while rotationBrakeIsActive", volts);
       rotationMotor.disable();
       return;
     }
@@ -99,7 +97,7 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setRotationBrake(boolean isActive) {
-    rotationBrake.set(isActive);
+    rotationBrake.set(!isActive);
   }
 
   @Override
@@ -115,7 +113,7 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   protected boolean getExtensionBrakeIsActive() {
-    return extensionBrake.get();
+    return !extensionBrake.get();
   }
 
   protected double getRotationPosition() {
@@ -124,6 +122,6 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   protected boolean getRotationBrakeIsActive() {
-    return rotationBrake.get();
+    return !rotationBrake.get();
   }
 }
