@@ -18,7 +18,6 @@ import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Arm.Rotation;
 import frc.robot.Robot;
-import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase implements TelemetryOutputter {
@@ -36,22 +35,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     public static State fromPosition(ArmPosition position) {
       double extensionLengthMeters = position.getNorm() - Extension.LENGTH_OFFSET;
       return new State(extensionLengthMeters, position.getAngle());
-    }
-
-    @Override
-    public boolean equals(Object other) {
-      if (other instanceof State) {
-        State rhs = (State) other;
-        boolean extensionLengthsEqual = this.extensionLengthMeters == rhs.extensionLengthMeters;
-        boolean rotationAnglesEqual = this.rotationAngle == rhs.rotationAngle;
-        return extensionLengthsEqual && rotationAnglesEqual;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(extensionLengthMeters, rotationAngle);
     }
   }
 
@@ -243,30 +226,50 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
-    tab.addString("Is Locked?", () -> getLocked().toString());
-    tab.add(this.runOnce(() -> this.unlock(Type.kBoth)).withName("Unlock Both"));
-    tab.add(this.runOnce(() -> this.lock(Type.kBoth)).withName("Lock Both"));
+    tab.addString(
+            "Command",
+            () -> this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "")
+        .withPosition(0, 0)
+        .withSize(1, 1);
 
-    ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
+    tab.addString("Is Locked?", () -> getLocked().toString()).withPosition(0, 1).withSize(1, 1);
+
+    tab.add(this.runOnce(() -> this.unlock(Type.kBoth)).withName("Unlock Both"))
+        .withPosition(0, 2)
+        .withSize(1, 1);
+
+    tab.add(this.runOnce(() -> this.lock(Type.kBoth)).withName("Lock Both"))
+        .withPosition(0, 3)
+        .withSize(1, 1);
+
+    ShuffleboardLayout valuesLayout =
+        tab.getLayout("Values", BuiltInLayouts.kList).withPosition(1, 0).withSize(2, 4);
+
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
     valuesLayout.addNumber(
         "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
 
-    ShuffleboardLayout positionLayout = tab.getLayout("Position", BuiltInLayouts.kList);
+    ShuffleboardLayout positionLayout =
+        tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
+
     positionLayout.addNumber("Arm Length (m)", () -> position.getNorm());
     positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngle().getDegrees());
 
-    ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
-    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
-    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
-    goalLayout.addBoolean("At Goal?", () -> at(goal));
+    ShuffleboardLayout setpointLayout =
+        tab.getLayout("Setpoint", BuiltInLayouts.kList).withPosition(5, 0).withSize(2, 4);
 
-    ShuffleboardLayout setpointLayout = tab.getLayout("Setpoint", BuiltInLayouts.kList);
     setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getNorm());
     setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngle().getDegrees());
     setpointLayout.addBoolean("At Setpoint?", () -> at(setpoint));
+
+    ShuffleboardLayout goalLayout =
+        tab.getLayout("Goal", BuiltInLayouts.kList).withPosition(7, 0).withSize(2, 4);
+
+    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
+    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
+    goalLayout.addBoolean("At Goal?", () -> at(goal));
   }
 
   @Override
