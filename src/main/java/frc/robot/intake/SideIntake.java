@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
+import frc.robot.Constants;
 import frc.robot.Constants.Intake.SideIntake.Thresholds;
 import frc.robot.Constants.Intake.SideIntake.Voltages;
-import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class SideIntake extends SubsystemBase implements TelemetryOutputter {
@@ -35,10 +35,12 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
 
   private State state = State.kDisabled;
 
-  private MedianFilter bottomMotorCurrentFilter = new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
+  private MedianFilter bottomMotorCurrentFilter =
+      new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
   private double filteredBottomMotorCurrentAmps = 0.0;
 
-  private MedianFilter topMotorCurrentFilter = new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
+  private MedianFilter topMotorCurrentFilter =
+      new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
   private double filteredTopMotorCurrentAmps = 0.0;
 
   /** Creates a new SideIntake. */
@@ -106,7 +108,8 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     io.updateValues(values);
 
-    filteredBottomMotorCurrentAmps = bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
+    filteredBottomMotorCurrentAmps =
+        bottomMotorCurrentFilter.calculate(values.bottomMotorCurrentAmps);
     filteredTopMotorCurrentAmps = topMotorCurrentFilter.calculate(values.topMotorCurrentAmps);
 
     if (state != State.kDisabled && state != State.kEjecting) {
@@ -153,9 +156,12 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
     valuesLayout.addNumber("Bottom Motor Current (A)", () -> values.bottomMotorCurrentAmps);
     valuesLayout.addNumber("Top Motor Current (A)", () -> values.topMotorCurrentAmps);
 
-    ShuffleboardLayout filteredValuesLayout = tab.getLayout("Filtered Values", BuiltInLayouts.kList);
-    filteredValuesLayout.addNumber("Filtered Bottom Motor Current (A)", () -> filteredBottomMotorCurrentAmps);
-    filteredValuesLayout.addNumber("Filtered Top Motor Current (A)", () -> filteredTopMotorCurrentAmps);
+    ShuffleboardLayout filteredValuesLayout =
+        tab.getLayout("Filtered Values", BuiltInLayouts.kList);
+    filteredValuesLayout.addNumber(
+        "Filtered Bottom Motor Current (A)", () -> filteredBottomMotorCurrentAmps);
+    filteredValuesLayout.addNumber(
+        "Filtered Top Motor Current (A)", () -> filteredTopMotorCurrentAmps);
   }
 
   @Override

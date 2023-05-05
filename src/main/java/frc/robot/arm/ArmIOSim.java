@@ -48,7 +48,7 @@ public class ArmIOSim implements ArmIO {
   private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
 
   private double extensionVoltage = 0.0;
-  private double rotationVoltage = 0.0;  
+  private double rotationVoltage = 0.0;
 
   public ArmIOSim() {}
 
@@ -65,7 +65,8 @@ public class ArmIOSim implements ArmIO {
     values.extensionBrakeIsActive = extensionBrakeIsActive;
 
     if (!rotationBrakeIsActive) {
-      rotationSim.setInput(rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
+      rotationSim.setInput(
+          rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
       rotationSim.update(Constants.LOOP_TIME);
 
       RoboRioSim.setVInVoltage(

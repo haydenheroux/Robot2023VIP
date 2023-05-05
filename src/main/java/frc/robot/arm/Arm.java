@@ -232,33 +232,40 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param percent speed to run extension motor at.
    */
   public Command driveExtension(DoubleSupplier percent) {
-    return this.unlock(LockType.kExtension).andThen(this.run(
-        () -> {
-          boolean extensionAtMin = values.extensionLengthMeters < Extension.MIN_LENGTH;
-          boolean extensionIncreasing = -percent.getAsDouble() > 0;
-          boolean extensionAtMax = values.extensionLengthMeters > Extension.MAX_LENGTH;
-          boolean extensionDecreasing = -percent.getAsDouble() < 0;
+    return this.unlock(LockType.kExtension)
+        .andThen(
+            this.run(
+                () -> {
+                  boolean extensionAtMin = values.extensionLengthMeters < Extension.MIN_LENGTH;
+                  boolean extensionIncreasing = -percent.getAsDouble() > 0;
+                  boolean extensionAtMax = values.extensionLengthMeters > Extension.MAX_LENGTH;
+                  boolean extensionDecreasing = -percent.getAsDouble() < 0;
 
-          boolean extensionPastMin = extensionAtMin && extensionDecreasing;
-          boolean extensionPastMax = extensionAtMax && extensionIncreasing;
+                  boolean extensionPastMin = extensionAtMin && extensionDecreasing;
+                  boolean extensionPastMax = extensionAtMax && extensionIncreasing;
 
-          boolean isWithinRuleZone = ArmKinematics.isWithinRuleZone(position);
-          boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
+                  boolean isWithinRuleZone = ArmKinematics.isWithinRuleZone(position);
+                  boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
 
-          boolean willIntersectGrid =
-              ArmKinematics.isIntersectingGrid(position) && extensionIncreasing;
+                  boolean willIntersectGrid =
+                      ArmKinematics.isIntersectingGrid(position) && extensionIncreasing;
 
-          if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone && !willIntersectGrid) {
-            io.setExtensionBrake(false);
-            io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-          } else {
-            io.setExtensionDisabled();
-            io.setExtensionBrake(true);
-          }
-        })).finallyDo(interrupted -> {
-          io.setExtensionDisabled();
-          io.setExtensionBrake(true);
-        });
+                  if (extensionPastMin
+                      || extensionPastMax
+                      || isLeavingRuleZone
+                      || willIntersectGrid) {
+                    io.setExtensionDisabled();
+                    io.setExtensionBrake(true);
+                  } else {
+                    io.setExtensionBrake(false);
+                    io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+                  }
+                }))
+        .finallyDo(
+            interrupted -> {
+              io.setExtensionDisabled();
+              io.setExtensionBrake(true);
+            });
   }
 
   /**
@@ -267,30 +274,36 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param percent speed to run rotation motor at.
    */
   public Command driveRotation(DoubleSupplier percent) {
-    return this.unlock(LockType.kRotation).andThen(this.run(
-        () -> {
-          boolean rotationAtMin = values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
-          boolean rotationIncreasing = -percent.getAsDouble() > 0;
-          boolean rotationAtMax = values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
-          boolean rotationDecreasing = -percent.getAsDouble() < 0;
+    return this.unlock(LockType.kRotation)
+        .andThen(
+            this.run(
+                () -> {
+                  boolean rotationAtMin =
+                      values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
+                  boolean rotationIncreasing = -percent.getAsDouble() > 0;
+                  boolean rotationAtMax =
+                      values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
+                  boolean rotationDecreasing = -percent.getAsDouble() < 0;
 
-          boolean rotationPastMin = rotationAtMin && rotationDecreasing;
-          boolean rotationPastMax = rotationAtMax && rotationIncreasing;
+                  boolean rotationPastMin = rotationAtMin && rotationDecreasing;
+                  boolean rotationPastMax = rotationAtMax && rotationIncreasing;
 
-          boolean willIntersectGrid =
-              ArmKinematics.isIntersectingGrid(position) && rotationDecreasing;
+                  boolean willIntersectGrid =
+                      ArmKinematics.isIntersectingGrid(position) && rotationDecreasing;
 
-          if (!rotationPastMin && !rotationPastMax && !willIntersectGrid) {
-            io.setRotationBrake(false);
-            io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-          } else {
-            io.setRotationDisabled();
-            io.setRotationBrake(true);
-          }
-        })).finallyDo(interrupted -> {
-          io.setRotationDisabled();
-          io.setRotationBrake(true);
-        });
+                  if (rotationPastMin || rotationPastMax || willIntersectGrid) {
+                    io.setRotationDisabled();
+                    io.setRotationBrake(true);
+                  } else {
+                    io.setRotationBrake(false);
+                    io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+                  }
+                }))
+        .finallyDo(
+            interrupted -> {
+              io.setRotationDisabled();
+              io.setRotationBrake(true);
+            });
   }
 
   /** Update's the arm's setpoints depending on the goal. */

@@ -76,8 +76,7 @@ public class RobotContainer {
     DoubleSupplier rotationAxis =
         () -> MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
 
-    new Trigger(() -> rotationAxis.getAsDouble() != 0.0)
-        .whileTrue(arm.driveRotation(rotationAxis));
+    new Trigger(() -> rotationAxis.getAsDouble() != 0.0).whileTrue(arm.driveRotation(rotationAxis));
 
     operator.a().onTrue(arm.setGoal(Constants.Arm.Positions.FLOOR)).whileTrue(arm.toGoal());
     operator.b().onTrue(arm.setGoal(Constants.Arm.Positions.MIDDLE_ROW)).whileTrue(arm.toGoal());
