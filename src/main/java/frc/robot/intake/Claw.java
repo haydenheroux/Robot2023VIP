@@ -21,8 +21,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     kAccepting,
     kDisabled,
     kEjecting,
-    kHoldingCone,
-    kHoldingCube,
+    kHolding,
   }
 
   // Singleton instance
@@ -57,17 +56,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
    *
    * @return if the claw is currently holding a cone.
    */
-  public boolean isHoldingCone() {
-    return values.motorCurrentAmps >= Thresholds.CONE_THRESHOLD;
-  }
-
-  /**
-   * Returns if the claw is currently holding a cube.
-   *
-   * @return if the claw is currently holding a cube.
-   */
-  public boolean isHoldingCube() {
-    return values.motorCurrentAmps >= Thresholds.CUBE_THRESHOLD;
+  public boolean isHolding() {
+    return values.motorCurrentAmps >= Thresholds.THRESHOLD;
   }
 
   public Command accept() {
@@ -85,7 +75,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   public Command holdOrDisable() {
     return this.runOnce(
         () -> {
-          if (state != State.kHoldingCone && state != State.kHoldingCube) {
+          if (state != State.kHolding) {
             state = State.kDisabled;
           }
         });
@@ -96,10 +86,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     io.updateValues(values);
 
     if (state != State.kDisabled && state != State.kEjecting) {
-      if (isHoldingCone()) {
-        state = State.kHoldingCone;
-      } else if (isHoldingCube()) {
-        state = State.kHoldingCube;
+      if (isHolding()) {
+        state = State.kHolding;
       }
     }
 
@@ -113,11 +101,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
       case kEjecting:
         io.setMotorVoltage(Voltages.EJECTING);
         break;
-      case kHoldingCone:
-        io.setMotorVoltage(Voltages.HOLDING_CONE);
-        break;
-      case kHoldingCube:
-        io.setMotorVoltage(Voltages.HOLDING_CUBE);
+      case kHolding:
+        io.setMotorVoltage(Voltages.HOLDING);
         break;
     }
 
@@ -129,8 +114,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
     tab.addString("State", state::toString);
-    tab.addBoolean("Is Holding Cone?", this::isHoldingCone);
-    tab.addBoolean("Is Holding Cube?", this::isHoldingCube);
+    tab.addBoolean("Is Holding?", this::isHolding);
 
     ShuffleboardLayout stateOverridesLayout =
         tab.getLayout("State Overrides", BuiltInLayouts.kList);
@@ -138,9 +122,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     stateOverridesLayout.add(this.runOnce(() -> state = State.kDisabled).withName("Disabled"));
     stateOverridesLayout.add(this.runOnce(() -> state = State.kEjecting).withName("Ejecting"));
     stateOverridesLayout.add(
-        this.runOnce(() -> state = State.kHoldingCone).withName("Holding Cone"));
-    stateOverridesLayout.add(
-        this.runOnce(() -> state = State.kHoldingCube).withName("Holding Cube"));
+        this.runOnce(() -> state = State.kHolding).withName("Holding"));
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Motor Current (A)", () -> values.motorCurrentAmps);

@@ -206,10 +206,8 @@ public class Constants {
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
-        /** Current draw threshold for a cone, in amps. */
-        public static final double CONE_THRESHOLD = Double.POSITIVE_INFINITY; // TODO
-        /** Current draw threshold for a cube, in amps. */
-        public static final double CUBE_THRESHOLD = Double.POSITIVE_INFINITY; // TODO
+        /** Current draw threshold for a game piece, in amps. */
+        public static final double THRESHOLD = 60;
       }
 
       /** Voltages for each state. */
@@ -219,9 +217,7 @@ public class Constants {
         /** Voltage for ejecting a game piece. */
         public static final double EJECTING = 6.0;
         /** Voltage for holding on to a cone. */
-        public static final double HOLDING_CONE = 0.0; // TODO
-        /** Voltage for holding on to a cube. */
-        public static final double HOLDING_CUBE = 0.0; // TODO
+        public static final double HOLDING = -1.0;
       }
     }
 
@@ -247,10 +243,10 @@ public class Constants {
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
-        /** Current draw threshold for a cone on the bottom motor, in amps. */
-        public static final double BOTTOM_THRESHOLD = Double.POSITIVE_INFINITY; // TODO
-        /** Current draw threshold for a cone on the top motor, in amps. */
-        public static final double TOP_THRESHOLD = Double.POSITIVE_INFINITY; // TODO
+        /** Current draw threshold for a game piece on the bottom motor, in amps. */
+        public static final double BOTTOM_THRESHOLD = 30;
+        /** Current draw threshold for a game piece on the top motor, in amps. */
+        public static final double TOP_THRESHOLD = 30;
       }
 
       /** Voltages for each state. */
@@ -265,7 +261,7 @@ public class Constants {
         /** Base voltage for ejecting game pieces. */
         public static final double BASE_EJECTING = 6.0;
         /** Voltage for holding on to a game piece. */
-        public static final double HOLDING = 0; // TODO
+        public static final double HOLDING = -1.0;
       }
     }
   }

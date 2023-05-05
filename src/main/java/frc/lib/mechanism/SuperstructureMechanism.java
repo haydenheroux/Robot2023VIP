@@ -242,10 +242,7 @@ public class SuperstructureMechanism {
       case kEjecting:
         armClaw.setColor(kIntakeEjectingColor);
         break;
-      case kHoldingCone:
-        armClaw.setColor(kIntakeHoldingConeColor);
-        break;
-      case kHoldingCube:
+      case kHolding:
         armClaw.setColor(kIntakeHoldingCubeColor);
         break;
     }

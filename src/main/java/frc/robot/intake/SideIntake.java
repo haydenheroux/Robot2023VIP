@@ -54,7 +54,7 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
   public boolean isHolding() {
     boolean isBottomHolding = values.bottomMotorCurrentAmps >= Thresholds.BOTTOM_THRESHOLD;
     boolean isTopHolding = values.topMotorCurrentAmps >= Thresholds.TOP_THRESHOLD;
-    return isBottomHolding && isTopHolding;
+    return isBottomHolding || isTopHolding;
   }
 
   public Command accept() {
