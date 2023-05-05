@@ -218,7 +218,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         .andThen(Commands.waitUntil(this::atGoal))
         .finallyDo(
             interrupted -> {
-              this.disable().andThen(this.lock(LockType.kBoth)).schedule();
+              enabled = false;
+              io.setExtensionBrake(true);
+              io.setExtensionDisabled();
+              io.setRotationBrake(true);
+              io.setRotationDisabled();
             });
   }
 
@@ -228,7 +232,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param percent speed to run extension motor at.
    */
   public Command driveExtension(DoubleSupplier percent) {
-    return this.run(
+    return this.unlock(LockType.kExtension).andThen(this.run(
         () -> {
           boolean extensionAtMin = values.extensionLengthMeters < Extension.MIN_LENGTH;
           boolean extensionIncreasing = -percent.getAsDouble() > 0;
@@ -245,8 +249,15 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
               ArmKinematics.isIntersectingGrid(position) && extensionIncreasing;
 
           if (!extensionPastMin && !extensionPastMax && !isLeavingRuleZone && !willIntersectGrid) {
+            io.setExtensionBrake(false);
             io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+          } else {
+            io.setExtensionDisabled();
+            io.setExtensionBrake(true);
           }
+        })).finallyDo(interrupted -> {
+          io.setExtensionDisabled();
+          io.setExtensionBrake(true);
         });
   }
 
@@ -256,7 +267,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param percent speed to run rotation motor at.
    */
   public Command driveRotation(DoubleSupplier percent) {
-    return this.run(
+    return this.unlock(LockType.kRotation).andThen(this.run(
         () -> {
           boolean rotationAtMin = values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
           boolean rotationIncreasing = -percent.getAsDouble() > 0;
@@ -270,8 +281,15 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
               ArmKinematics.isIntersectingGrid(position) && rotationDecreasing;
 
           if (!rotationPastMin && !rotationPastMax && !willIntersectGrid) {
+            io.setRotationBrake(false);
             io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
+          } else {
+            io.setRotationDisabled();
+            io.setRotationBrake(true);
           }
+        })).finallyDo(interrupted -> {
+          io.setRotationDisabled();
+          io.setRotationBrake(true);
         });
   }
 

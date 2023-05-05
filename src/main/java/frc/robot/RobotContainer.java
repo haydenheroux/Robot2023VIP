@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
-import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
@@ -72,17 +71,13 @@ public class RobotContainer {
         () -> MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
 
     new Trigger(() -> extensionAxis.getAsDouble() != 0.0)
-        .onTrue(arm.unlock(LockType.kExtension))
-        .whileTrue(arm.driveExtension(extensionAxis))
-        .onFalse(arm.lock(LockType.kExtension));
+        .whileTrue(arm.driveExtension(extensionAxis));
 
     DoubleSupplier rotationAxis =
         () -> MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
 
     new Trigger(() -> rotationAxis.getAsDouble() != 0.0)
-        .onTrue(arm.unlock(LockType.kRotation))
-        .whileTrue(arm.driveRotation(rotationAxis))
-        .onFalse(arm.lock(LockType.kRotation));
+        .whileTrue(arm.driveRotation(rotationAxis));
 
     operator.a().onTrue(arm.setGoal(Constants.Arm.Positions.FLOOR)).whileTrue(arm.toGoal());
     operator.b().onTrue(arm.setGoal(Constants.Arm.Positions.MIDDLE_ROW)).whileTrue(arm.toGoal());
