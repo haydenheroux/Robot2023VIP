@@ -19,7 +19,6 @@ import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.Swerve;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
@@ -69,9 +68,9 @@ public class RobotContainer {
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
     DoubleSupplier extensionAxis =
-        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
+        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.1);
     DoubleSupplier rotationAxis =
-        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
+        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.1);
 
     Trigger shouldExtend = new Trigger(() -> extensionAxis.getAsDouble() != 0);
     Trigger shouldRotate = new Trigger(() -> rotationAxis.getAsDouble() != 0);
