@@ -68,20 +68,21 @@ public class RobotContainer {
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
     DoubleSupplier extensionAxis =
-        () -> MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
+        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.05);
 
     new Trigger(() -> extensionAxis.getAsDouble() != 0.0)
-        .whileTrue(arm.driveExtension(extensionAxis));
+        .whileTrue(arm.runManualExtension(extensionAxis));
 
     DoubleSupplier rotationAxis =
-        () -> MathUtil.applyDeadband(operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
+        () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kLeftY.value), 0.05);
 
-    new Trigger(() -> rotationAxis.getAsDouble() != 0.0).whileTrue(arm.driveRotation(rotationAxis));
+    new Trigger(() -> rotationAxis.getAsDouble() != 0.0)
+        .whileTrue(arm.runManualRotation(rotationAxis));
 
-    operator.a().onTrue(arm.setGoal(Constants.Arm.Positions.FLOOR)).whileTrue(arm.toGoal());
-    operator.b().onTrue(arm.setGoal(Constants.Arm.Positions.MIDDLE_ROW)).whileTrue(arm.toGoal());
-    operator.x().onTrue(arm.setGoal(Constants.Arm.Positions.STOW)).whileTrue(arm.toGoal());
-    operator.y().onTrue(arm.setGoal(Constants.Arm.Positions.TOP_ROW)).whileTrue(arm.toGoal());
+    operator.a().whileTrue(arm.runToGoal(Constants.Arm.Positions.FLOOR));
+    operator.b().whileTrue(arm.runToGoal(Constants.Arm.Positions.MIDDLE_ROW));
+    operator.x().whileTrue(arm.runToGoal(Constants.Arm.Positions.STOW));
+    operator.y().whileTrue(arm.runToGoal(Constants.Arm.Positions.TOP_ROW));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());

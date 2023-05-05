@@ -11,11 +11,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Arm.Rotation;
@@ -57,7 +55,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
-  public enum LockType {
+  public enum Type {
     kBoth,
     kExtension,
     kNeither,
@@ -71,11 +69,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private final ArmIO io;
   private final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
-  private boolean enabled = false;
-
   private ArmPosition position = Positions.STOW;
-  private ArmPosition goal = Positions.STOW;
-  private ArmTrajectory trajectory = new ArmTrajectory(position, goal);
+  private ArmPosition goal = position;
+  private ArmPosition setpoint = goal;
 
   /** Creates a new Arm. */
   private Arm() {
@@ -99,31 +95,50 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     return instance;
   }
 
-  /**
-   * Returns whether the arm is under positional control.
-   *
-   * @return whether the arm is under positional control.
-   */
-  public boolean isEnabled() {
-    return enabled;
+  public ArmPosition getPosition() {
+    return position;
   }
 
-  /** Disables positional control. */
-  public Command disable() {
-    return this.runOnce(
-        () -> {
-          enabled = false;
-          io.setExtensionDisabled();
-          io.setRotationDisabled();
-        });
+  public boolean isIntersectingGrid() {
+    return ArmKinematics.isIntersectingGrid(position);
   }
 
-  /** Enables positional control. */
-  public Command enable() {
-    return this.runOnce(
-        () -> {
-          enabled = true;
-        });
+  public boolean isWithinRuleZone() {
+    return ArmKinematics.isWithinRuleZone(position);
+  }
+
+  public void disable(Type type) {
+    switch (type) {
+      case kBoth:
+        io.setExtensionDisabled();
+        io.setRotationDisabled();
+        break;
+      case kExtension:
+        io.setExtensionDisabled();
+        break;
+      case kNeither:
+        break;
+      case kRotation:
+        io.setRotationDisabled();
+        break;
+    }
+  }
+
+  public void setVoltage(Type type, double volts) {
+    switch (type) {
+      case kBoth:
+        io.setExtensionVoltage(volts);
+        io.setRotationVoltage(volts);
+        break;
+      case kExtension:
+        io.setExtensionVoltage(volts);
+        break;
+      case kNeither:
+        break;
+      case kRotation:
+        io.setRotationVoltage(volts);
+        break;
+    }
   }
 
   /**
@@ -131,11 +146,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @return which brakes are active.
    */
-  public LockType getLocked() {
-    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return LockType.kBoth;
-    if (values.extensionBrakeIsActive) return LockType.kExtension;
-    if (values.rotationBrakeIsActive) return LockType.kRotation;
-    return LockType.kNeither;
+  public Type getLocked() {
+    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return Type.kBoth;
+    if (values.extensionBrakeIsActive) return Type.kExtension;
+    if (values.rotationBrakeIsActive) return Type.kRotation;
+    return Type.kNeither;
   }
 
   /**
@@ -143,8 +158,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param type which brakes to lock.
    */
-  public Command lock(LockType type) {
-    return setLocked(type, true);
+  public void lock(Type type) {
+    setLocked(type, true);
   }
 
   /**
@@ -152,8 +167,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param type which brakes to unlock.
    */
-  public Command unlock(LockType type) {
-    return setLocked(type, false);
+  public void unlock(Type type) {
+    setLocked(type, false);
   }
 
   /**
@@ -162,158 +177,54 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @param type which brakes to set.
    * @param value what to set to.
    */
-  private Command setLocked(LockType type, boolean value) {
-    return this.runOnce(
-        () -> {
-          switch (type) {
-            case kBoth:
-              io.setExtensionBrake(value);
-              io.setRotationBrake(value);
-            case kExtension:
-              io.setExtensionBrake(value);
-              break;
-            case kNeither:
-              break;
-            case kRotation:
-              io.setRotationBrake(value);
-              break;
-          }
-        });
+  private void setLocked(Type type, boolean value) {
+    switch (type) {
+      case kBoth:
+        io.setExtensionBrake(value);
+        io.setRotationBrake(value);
+        break;
+      case kExtension:
+        io.setExtensionBrake(value);
+        break;
+      case kNeither:
+        break;
+      case kRotation:
+        io.setRotationBrake(value);
+        break;
+    }
   }
 
-  /**
-   * Returns if the error is in tolerance.
-   *
-   * @return if the error is in tolerance.
-   */
-  public boolean atGoal() {
-    return position.at(goal);
+  public boolean extensionIsAtMax() {
+    return values.extensionLengthMeters > Extension.MAX_LENGTH;
   }
 
-  /**
-   * Returns the goal state of positional control.
-   *
-   * @return the goal state of positional control.
-   */
-  public ArmPosition getGoal() {
-    return goal;
+  public boolean extensionIsAtMin() {
+    return values.extensionLengthMeters < Extension.MIN_LENGTH;
   }
 
-  /**
-   * Sets the goal state for positional control.
-   *
-   * @param goal the goal state.
-   */
-  public Command setGoal(ArmPosition goal) {
-    return this.runOnce(
-        () -> {
-          this.goal = goal;
-          this.trajectory = new ArmTrajectory(position, goal);
-        });
+  public boolean rotationIsAtMax() {
+    return values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
   }
 
-  public Command toGoal() {
-    return this.unlock(LockType.kBoth)
-        .andThen(this.enable())
-        .andThen(Commands.waitUntil(this::atGoal))
-        .finallyDo(
-            interrupted -> {
-              enabled = false;
-              io.setExtensionBrake(true);
-              io.setExtensionDisabled();
-              io.setRotationBrake(true);
-              io.setRotationDisabled();
-            });
+  public boolean rotationIsAtMin() {
+    return values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
   }
 
-  /**
-   * Drives arm extension with the specified speed.
-   *
-   * @param percent speed to run extension motor at.
-   */
-  public Command driveExtension(DoubleSupplier percent) {
-    return this.unlock(LockType.kExtension)
-        .andThen(
-            this.run(
-                () -> {
-                  boolean extensionAtMin = values.extensionLengthMeters < Extension.MIN_LENGTH;
-                  boolean extensionIncreasing = -percent.getAsDouble() > 0;
-                  boolean extensionAtMax = values.extensionLengthMeters > Extension.MAX_LENGTH;
-                  boolean extensionDecreasing = -percent.getAsDouble() < 0;
-
-                  boolean extensionPastMin = extensionAtMin && extensionDecreasing;
-                  boolean extensionPastMax = extensionAtMax && extensionIncreasing;
-
-                  boolean isWithinRuleZone = ArmKinematics.isWithinRuleZone(position);
-                  boolean isLeavingRuleZone = !isWithinRuleZone && extensionIncreasing;
-
-                  boolean willIntersectGrid =
-                      ArmKinematics.isIntersectingGrid(position) && extensionIncreasing;
-
-                  if (extensionPastMin
-                      || extensionPastMax
-                      || isLeavingRuleZone
-                      || willIntersectGrid) {
-                    io.setExtensionDisabled();
-                    io.setExtensionBrake(true);
-                  } else {
-                    io.setExtensionBrake(false);
-                    io.setExtensionVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-                  }
-                }))
-        .finallyDo(
-            interrupted -> {
-              io.setExtensionDisabled();
-              io.setExtensionBrake(true);
-            });
+  public boolean at(ArmPosition position) {
+    return this.position.at(position);
   }
 
-  /**
-   * Drives arm rotation with the specified speed.
-   *
-   * @param percent speed to run rotation motor at.
-   */
-  public Command driveRotation(DoubleSupplier percent) {
-    return this.unlock(LockType.kRotation)
-        .andThen(
-            this.run(
-                () -> {
-                  boolean rotationAtMin =
-                      values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
-                  boolean rotationIncreasing = -percent.getAsDouble() > 0;
-                  boolean rotationAtMax =
-                      values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
-                  boolean rotationDecreasing = -percent.getAsDouble() < 0;
-
-                  boolean rotationPastMin = rotationAtMin && rotationDecreasing;
-                  boolean rotationPastMax = rotationAtMax && rotationIncreasing;
-
-                  boolean willIntersectGrid =
-                      ArmKinematics.isIntersectingGrid(position) && rotationDecreasing;
-
-                  if (rotationPastMin || rotationPastMax || willIntersectGrid) {
-                    io.setRotationDisabled();
-                    io.setRotationBrake(true);
-                  } else {
-                    io.setRotationBrake(false);
-                    io.setRotationVoltage(-percent.getAsDouble() * Constants.NOMINAL_VOLTAGE);
-                  }
-                }))
-        .finallyDo(
-            interrupted -> {
-              io.setRotationDisabled();
-              io.setRotationBrake(true);
-            });
+  public void setGoal(ArmPosition goal) {
+    this.goal = goal;
   }
 
-  /** Update's the arm's setpoints depending on the goal. */
-  private void updateSetpoint() {
-    if (position.at(trajectory.get())) trajectory.next();
+  public void setSetpoint(ArmPosition setpoint) {
+    this.setpoint = setpoint;
 
-    State setpoint = State.fromPosition(trajectory.get());
+    State state = State.fromPosition(setpoint);
 
-    io.setExtensionSetpoint(setpoint.extensionLengthMeters);
-    io.setRotationSetpoint(setpoint.rotationAngle.getRadians());
+    io.setExtensionSetpoint(state.extensionLengthMeters);
+    io.setRotationSetpoint(state.rotationAngle.getRadians());
   }
 
   @Override
@@ -325,8 +236,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
             new Arm.State(
                 values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
 
-    if (isEnabled()) updateSetpoint();
-
     SuperstructureMechanism.getInstance().updateArm(position, getLocked());
   }
 
@@ -335,8 +244,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab(getName());
 
     tab.addString("Is Locked?", () -> getLocked().toString());
-    tab.add(this.unlock(LockType.kBoth).withName("Unlock Both"));
-    tab.add(this.lock(LockType.kBoth).withName("Lock Both"));
+    tab.add(this.runUnlock(Type.kBoth).withName("Unlock Both"));
+    tab.add(this.runLock(Type.kBoth).withName("Lock Both"));
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
@@ -352,15 +261,34 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout goalLayout = tab.getLayout("Goal", BuiltInLayouts.kList);
     goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
     goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
-    goalLayout.addBoolean("At Goal?", this::atGoal);
-    goalLayout.addBoolean("Is Enabled?", this::isEnabled);
+    goalLayout.addBoolean("At Goal?", () -> at(goal));
 
     ShuffleboardLayout setpointLayout = tab.getLayout("Setpoint", BuiltInLayouts.kList);
-    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> trajectory.get().getNorm());
-    setpointLayout.addNumber(
-        "Arm Angle Setpoint (deg)", () -> trajectory.get().getAngle().getDegrees());
+    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getNorm());
+    setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngle().getDegrees());
+    setpointLayout.addBoolean("At Setpoint?", () -> at(setpoint));
   }
 
   @Override
   public void outputTelemetry() {}
+
+  public Command runLock(Type type) {
+    return this.runOnce(() -> this.lock(type));
+  }
+
+  public Command runUnlock(Type type) {
+    return this.runOnce(() -> this.unlock(type));
+  }
+
+  public Command runToGoal(ArmPosition goal) {
+    return new ToGoal(this, goal);
+  }
+
+  public Command runManualExtension(DoubleSupplier percentSupplier) {
+    return new ManualExtension(this, percentSupplier);
+  }
+
+  public Command runManualRotation(DoubleSupplier percentSupplier) {
+    return new ManualRotation(this, percentSupplier);
+  }
 }
