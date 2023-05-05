@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryOutputter;
+import frc.robot.Constants;
 import frc.robot.Constants.Intake.Claw.Thresholds;
 import frc.robot.Constants.Intake.Claw.Voltages;
-import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class Claw extends SubsystemBase implements TelemetryOutputter {
@@ -34,7 +34,8 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   private final ClawIO.ClawIOValues values = new ClawIO.ClawIOValues();
 
   private State state = State.kDisabled;
-  private MedianFilter motorCurrentFilter = new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
+  private MedianFilter motorCurrentFilter =
+      new MedianFilter((int) (Constants.ITERATIONS_PER_SECOND * Thresholds.PERIOD));
   private double filteredMotorCurrentAmps = 0.0;
 
   /** Creates a new Claw. */
@@ -127,13 +128,13 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     stateOverridesLayout.add(this.runOnce(() -> state = State.kAccepting).withName("Accepting"));
     stateOverridesLayout.add(this.runOnce(() -> state = State.kDisabled).withName("Disabled"));
     stateOverridesLayout.add(this.runOnce(() -> state = State.kEjecting).withName("Ejecting"));
-    stateOverridesLayout.add(
-        this.runOnce(() -> state = State.kHolding).withName("Holding"));
+    stateOverridesLayout.add(this.runOnce(() -> state = State.kHolding).withName("Holding"));
 
     ShuffleboardLayout valuesLayout = tab.getLayout("Values", BuiltInLayouts.kList);
     valuesLayout.addNumber("Motor Current (A)", () -> values.motorCurrentAmps);
 
-    ShuffleboardLayout filteredValuesLayout = tab.getLayout("Filtered Values", BuiltInLayouts.kList);
+    ShuffleboardLayout filteredValuesLayout =
+        tab.getLayout("Filtered Values", BuiltInLayouts.kList);
     filteredValuesLayout.addNumber("Filtered Motor Current (A)", () -> filteredMotorCurrentAmps);
   }
 
