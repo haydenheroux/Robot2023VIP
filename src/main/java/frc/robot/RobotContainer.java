@@ -19,6 +19,7 @@ import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.LockType;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
+import frc.robot.swerve.AbsoluteDrive;
 import frc.robot.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 
@@ -102,7 +103,15 @@ public class RobotContainer {
   }
 
   /** Configures default commands for each subsystem. */
-  public void configureDefaultCommands() {}
+  public void configureDefaultCommands() {
+    swerve.setDefaultCommand(
+        new AbsoluteDrive(
+            swerve,
+            () -> MathUtil.applyDeadband(-driver.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),
+            () -> 0,
+            () -> 0));
+  }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}

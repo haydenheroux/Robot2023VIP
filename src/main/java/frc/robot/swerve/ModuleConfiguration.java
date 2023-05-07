@@ -8,9 +8,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class ModuleConfiguration {
 
-    public final Translation2d locationRelativeToCenterMeters;
+  public final Translation2d locationRelativeToCenterMeters;
 
-    public ModuleConfiguration() {
-        locationRelativeToCenterMeters = new Translation2d();
-    }
+  public ModuleConfiguration(Translation2d locationRelativeToCenterMeters) {
+    this.locationRelativeToCenterMeters = locationRelativeToCenterMeters;
+  }
 }

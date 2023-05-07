@@ -19,9 +19,9 @@ public interface GyroIO {
 
   public void updateValues(GyroIOValues values);
 
-  public void setRollOffset(double rollOffsetRadians);
+  public void setRollAngle(double rollAngleRadians);
 
-  public void setPitchOffset(double pitchOffsetRadians);
+  public void setPitchAngle(double pitchAngleRadians);
 
-  public void setYawOffset(double yawOffsetRadians);
+  public void setYawAngle(double yawAngleRadians);
 }

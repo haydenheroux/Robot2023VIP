@@ -16,99 +16,104 @@ import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 
 public class Module {
 
-    private final ModuleConfiguration config;
+  private final ModuleConfiguration config;
 
-    private final AngleMotorIO angleMotor;
-    private final AngleMotorIOValues angleMotorValues = new AngleMotorIOValues();
+  private final AngleMotorIO angleMotor;
+  private final AngleMotorIOValues angleMotorValues = new AngleMotorIOValues();
 
-    private final DriveMotorIO driveMotor;
-    private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
+  private final DriveMotorIO driveMotor;
+  private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
 
-    private final AzimuthEncoderIO azimuthEncoder;
-    private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
+  private final AzimuthEncoderIO azimuthEncoder;
+  private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
 
-    private final double offsetAngleRadians;
+  private final double offsetAngleRadians;
 
-    private SwerveModuleState state;
+  private SwerveModuleState state;
 
-    public Module(ModuleConfiguration config) {
-        if (Robot.isSimulation()) {
-            angleMotor = null;
-            driveMotor = null;
-            azimuthEncoder = null;
-        } else {
-            angleMotor = null;
-            driveMotor = null;
-            azimuthEncoder = null;
-        }
-        
-        this.config = config;
-        offsetAngleRadians = 0.0; // TODO
+  public Module(ModuleConfiguration config) {
+    this.config = config;
+    offsetAngleRadians = 0.0; // TODO
 
-        angleMotor.configure();
-        driveMotor.configure();
-
-        azimuthEncoder.configure();
-
-        azimuthEncoder.updateValues(azimuthEncoderValues);
-        angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRadians - offsetAngleRadians);
-
-        state = getState();
+    if (Robot.isSimulation()) {
+      angleMotor = new AngleMotorIOSim();
+      driveMotor = new DriveMotorIOSim();
+      azimuthEncoder = new AzimuthEncoderIOSim(offsetAngleRadians);
+    } else {
+      angleMotor = null;
+      driveMotor = null;
+      azimuthEncoder = null;
     }
 
-    public void update() {
-        angleMotor.updateValues(angleMotorValues);
-        driveMotor.updateValues(driveMotorValues);
+    angleMotor.configure();
+    driveMotor.configure();
 
-        azimuthEncoder.updateValues(azimuthEncoderValues);
+    azimuthEncoder.configure();
 
-        state = getState();
+    azimuthEncoder.updateValues(azimuthEncoderValues);
+    angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRadians - offsetAngleRadians);
 
-        // TODO angleMotor.setPosition({azimuthAngle})
+    state = getState();
+  }
+
+  public void update() {
+    angleMotor.updateValues(angleMotorValues);
+    driveMotor.updateValues(driveMotorValues);
+
+    azimuthEncoder.updateValues(azimuthEncoderValues);
+
+    state = getState();
+
+    // TODO angleMotor.setPosition({azimuthAngle})
+  }
+
+  public void setDesiredState(
+      SwerveModuleState desiredState, boolean isOpenLoop, boolean isForced) {
+    desiredState =
+        SwerveModuleState.optimize(
+            desiredState, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+
+    if (isOpenLoop) {
+      double percent = desiredState.speedMetersPerSecond / Constants.Swerve.MAX_SPEED;
+      double volts = percent * Constants.NOMINAL_VOLTAGE;
+      driveMotor.setVoltage(volts);
+    } else {
+      driveMotor.setVelocitySetpoint(desiredState.speedMetersPerSecond);
     }
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean isForced) {
-        desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(angleMotorValues.angleRadians));
-
-        if (isOpenLoop) {
-            final double kMaxSpeedMetersPerSecond = 0.0; // TODO
-            double percent = desiredState.speedMetersPerSecond / kMaxSpeedMetersPerSecond;
-            double volts = percent * Constants.NOMINAL_VOLTAGE;
-            driveMotor.setVoltage(volts);
-        } else {
-            driveMotor.setVelocitySetpoint(desiredState.speedMetersPerSecond);
-        }
-
-        if (isForced == false) {
-            // TODO anti-jitter
-        }
-
-        boolean isSameAngle = desiredState.angle.equals(state.angle);
-
-        if (isSameAngle == false) {
-            angleMotor.setSetpoint(desiredState.angle.getRadians());
-        }
-
-        state = desiredState;
+    if (isForced == false) {
+      // TODO anti-jitter
     }
 
-    public Translation2d getLocation() {
-        return config.locationRelativeToCenterMeters;
+    boolean isSameAngle = desiredState.angle.equals(state.angle);
+
+    if (isSameAngle == false) {
+      angleMotor.setSetpoint(desiredState.angle.getRadians());
     }
 
-    public SwerveModuleState getState() {
-        return new SwerveModuleState(driveMotorValues.velocityMetersPerSecond, Rotation2d.fromRadians(angleMotorValues.angleRadians));
-    }
+    state = desiredState;
+  }
 
-    public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(driveMotorValues.positionMeters, Rotation2d.fromRadians(angleMotorValues.angleRadians));
-    }
+  public Translation2d getLocation() {
+    return config.locationRelativeToCenterMeters;
+  }
 
-    public void setMotorBrake(boolean isActive) {
-        driveMotor.setBrake(isActive);
-    }
+  public SwerveModuleState getState() {
+    return new SwerveModuleState(
+        driveMotorValues.velocityMetersPerSecond,
+        Rotation2d.fromRadians(angleMotorValues.angleRadians));
+  }
 
-    public void zeroDrivePosition() {
-        driveMotor.setPosition(0);
-    }
+  public SwerveModulePosition getPosition() {
+    return new SwerveModulePosition(
+        driveMotorValues.positionMeters, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+  }
+
+  public void setMotorBrake(boolean isActive) {
+    driveMotor.setBrake(isActive);
+  }
+
+  public void zeroDrivePosition() {
+    driveMotor.setPosition(0);
+  }
 }
