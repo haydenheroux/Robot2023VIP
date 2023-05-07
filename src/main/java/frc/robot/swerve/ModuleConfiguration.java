@@ -4,8 +4,13 @@
 
 package frc.robot.swerve;
 
-public class ModuleConfiguration {
-    public ModuleConfiguration() {
+import edu.wpi.first.math.geometry.Translation2d;
 
+public class ModuleConfiguration {
+
+    public final Translation2d locationRelativeToCenterMeters;
+
+    public ModuleConfiguration() {
+        locationRelativeToCenterMeters = new Translation2d();
     }
 }
