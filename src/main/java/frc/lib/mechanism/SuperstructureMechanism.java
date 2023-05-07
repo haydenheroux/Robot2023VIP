@@ -178,7 +178,7 @@ public class SuperstructureMechanism {
    *
    * @param isLocked brake states of the arm.
    */
-  private void setBrake(Arm.Type isLocked) {
+  private void setBrake(Arm.Selector isLocked) {
     switch (isLocked) {
       case kBoth:
         armExtension.setColor(kLockedColor);
@@ -217,7 +217,7 @@ public class SuperstructureMechanism {
    * @param position position of the arm.
    * @param isLocked brake states of the arm.
    */
-  public void updateArm(ArmPosition position, Arm.Type isLocked) {
+  public void updateArm(ArmPosition position, Arm.Selector isLocked) {
     Arm.State state = Arm.State.fromPosition(position);
 
     setAngle(state.rotationAngle.getRadians());

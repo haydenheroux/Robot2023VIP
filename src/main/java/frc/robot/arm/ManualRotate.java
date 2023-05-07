@@ -6,7 +6,7 @@ package frc.robot.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.arm.Arm.Type;
+import frc.robot.arm.Arm.Selector;
 import java.util.function.DoubleSupplier;
 
 public class ManualRotate extends CommandBase {
@@ -23,7 +23,7 @@ public class ManualRotate extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Type.kRotation);
+    arm.unlock(Selector.kRotation);
   }
 
   @Override
@@ -34,19 +34,19 @@ public class ManualRotate extends CommandBase {
     boolean isIntersectingGrid = arm.isIntersectingGrid() && percent < 0;
 
     if (isLeavingBounds || isIntersectingGrid) {
-      arm.disable(Type.kRotation);
-      arm.lock(Type.kRotation);
+      arm.disable(Selector.kRotation);
+      arm.lock(Selector.kRotation);
     } else {
-      arm.unlock(Type.kExtension);
+      arm.unlock(Selector.kExtension);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
-      arm.setVoltage(Type.kRotation, volts);
+      arm.setVoltage(Selector.kRotation, volts);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Type.kRotation);
-    arm.lock(Type.kRotation);
+    arm.disable(Selector.kRotation);
+    arm.lock(Selector.kRotation);
   }
 
   @Override

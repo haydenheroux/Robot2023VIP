@@ -5,7 +5,7 @@
 package frc.robot.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.arm.Arm.Type;
+import frc.robot.arm.Arm.Selector;
 
 public class ToGoal extends CommandBase {
 
@@ -23,7 +23,7 @@ public class ToGoal extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Type.kBoth);
+    arm.unlock(Selector.kBoth);
     trajectory = new ArmTrajectory(arm.getPosition(), goal);
 
     arm.setGoal(goal);
@@ -42,8 +42,8 @@ public class ToGoal extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Type.kBoth);
-    arm.lock(Type.kBoth);
+    arm.disable(Selector.kBoth);
+    arm.lock(Selector.kBoth);
   }
 
   @Override

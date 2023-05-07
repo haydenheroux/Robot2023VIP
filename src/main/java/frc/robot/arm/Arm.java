@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
-  public enum Type {
+  public enum Selector {
     kBoth,
     kExtension,
     kNeither,
@@ -66,9 +66,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     io.configure();
 
-    State state = State.fromPosition(position);
-    io.setExtensionPosition(state.extensionLengthMeters);
-    io.setRotationPosition(state.rotationAngle.getRadians());
+    setPosition(Positions.STOW);
   }
 
   public static Arm getInstance() {
@@ -78,20 +76,52 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     return instance;
   }
 
+  /**
+   * Sets the position of the arm to the specified position.
+   *
+   * @param position
+   */
+  public void setPosition(ArmPosition position) {
+    this.position = position;
+
+    State state = State.fromPosition(position);
+    io.setExtensionPosition(state.extensionLengthMeters);
+    io.setRotationPosition(state.rotationAngle.getRadians());
+  }
+
+  /**
+   * Gets the position of the arm.
+   *
+   * @return
+   */
   public ArmPosition getPosition() {
     return position;
   }
 
+  /**
+   * Tests whether the arm is intersecting the grid.
+   *
+   * @return true if the arm is intersecting the grid.
+   */
   public boolean isIntersectingGrid() {
     return ArmKinematics.isIntersectingGrid(position);
   }
-
+  /**
+   * Tests whether the arm is within the rule zone.
+   *
+   * @return true if the arm is within the rule zone.
+   */
   public boolean isWithinRuleZone() {
     return ArmKinematics.isWithinRuleZone(position);
   }
 
-  public void disable(Type type) {
-    switch (type) {
+  /**
+   * Disables parts of the arm.
+   *
+   * @param selector the part of the arm to be disabled.
+   */
+  public void disable(Selector selector) {
+    switch (selector) {
       case kBoth:
         io.setExtensionDisabled();
         io.setRotationDisabled();
@@ -107,8 +137,14 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
-  public void setVoltage(Type type, double volts) {
-    switch (type) {
+  /**
+   * Sets voltage for parts of the arm.
+   *
+   * @param selector the part of the arm to set voltage for.
+   * @param volts the voltage to set the part of the arm to.
+   */
+  public void setVoltage(Selector selector, double volts) {
+    switch (selector) {
       case kBoth:
         io.setExtensionVoltage(volts);
         io.setRotationVoltage(volts);
@@ -125,82 +161,118 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Returns which brakes are active.
+   * Returns the brakes that are active.
    *
-   * @return which brakes are active.
+   * @return the brakes that are active.
    */
-  public Type getLocked() {
-    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return Type.kBoth;
-    if (values.extensionBrakeIsActive) return Type.kExtension;
-    if (values.rotationBrakeIsActive) return Type.kRotation;
-    return Type.kNeither;
+  public Selector getLocked() {
+    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return Selector.kBoth;
+    if (values.extensionBrakeIsActive) return Selector.kExtension;
+    if (values.rotationBrakeIsActive) return Selector.kRotation;
+    return Selector.kNeither;
   }
 
   /**
-   * Locks the specified brakes.
+   * Locks the selected brakes.
    *
-   * @param type which brakes to lock.
+   * @param selector the brakes to lock.
    */
-  public void lock(Type type) {
-    setLocked(type, true);
+  public void lock(Selector selector) {
+    setBrake(selector, true);
   }
 
   /**
-   * Unlocks the specified brakes.
+   * Unlocks the selected brakes.
    *
-   * @param type which brakes to unlock.
+   * @param selector the brakes to unlock.
    */
-  public void unlock(Type type) {
-    setLocked(type, false);
+  public void unlock(Selector selector) {
+    setBrake(selector, false);
   }
 
   /**
-   * Sets the specified brakes.
+   * Sets the selected brakes to be active or inactive.
    *
-   * @param type which brakes to set.
-   * @param value what to set to.
+   * @param selector the brakes to set.
+   * @param isActive whether the brakes are active or inactive.
    */
-  private void setLocked(Type type, boolean value) {
-    switch (type) {
+  private void setBrake(Selector selector, boolean isActive) {
+    switch (selector) {
       case kBoth:
-        io.setExtensionBrake(value);
-        io.setRotationBrake(value);
+        io.setExtensionBrake(isActive);
+        io.setRotationBrake(isActive);
         break;
       case kExtension:
-        io.setExtensionBrake(value);
+        io.setExtensionBrake(isActive);
         break;
       case kNeither:
         break;
       case kRotation:
-        io.setRotationBrake(value);
+        io.setRotationBrake(isActive);
         break;
     }
   }
 
+  /**
+   * Tests if the extension of the arm is at the maximum.
+   *
+   * @return true if the extension of the arm is at the maximum.
+   */
   public boolean extensionIsAtMax() {
     return values.extensionLengthMeters > Extension.MAX_LENGTH;
   }
 
+  /**
+   * Tests if the extension of the arm is at the minimum.
+   *
+   * @return true if the extension of the arm is at the minimum.
+   */
   public boolean extensionIsAtMin() {
     return values.extensionLengthMeters < Extension.MIN_LENGTH;
   }
 
+  /**
+   * Tests if the rotation of the arm is at the maximum.
+   *
+   * @return true if the rotation of the arm is at the maximum.
+   */
   public boolean rotationIsAtMax() {
     return values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
   }
 
+  /**
+   * Tests if the rotation of the arm is at the minimum.
+   *
+   * @return true if the rotation of the arm is at the minimum.
+   */
   public boolean rotationIsAtMin() {
     return values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
   }
 
+  /**
+   * Tests if the arm is at the specified position.
+   *
+   * @param position the position to test.
+   * @return true if the arm is at the specified position.
+   */
   public boolean at(ArmPosition position) {
     return this.position.at(position);
   }
 
+  /**
+   * Sets the goal of the arm to the specified position.
+   *
+   * @param goal
+   */
   public void setGoal(ArmPosition goal) {
     this.goal = goal;
   }
 
+  /**
+   * Sets the setpoint of the arm to the specified position.
+   *
+   * @param setpoint
+   */
   public void setSetpoint(ArmPosition setpoint) {
     this.setpoint = setpoint;
 
@@ -214,11 +286,13 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     io.updateValues(values);
 
+    // Update the arm's position with IO readings
     position =
         ArmPosition.fromState(
             new Arm.State(
                 values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
 
+    // Update the arm's mechanism with new position
     SuperstructureMechanism.getInstance().updateArm(position, getLocked());
   }
 
@@ -234,11 +308,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     tab.addString("Is Locked?", () -> getLocked().toString()).withPosition(0, 1).withSize(1, 1);
 
-    tab.add(this.runOnce(() -> this.unlock(Type.kBoth)).withName("Unlock Both"))
+    tab.add(this.runOnce(() -> this.unlock(Selector.kBoth)).withName("Unlock Both"))
         .withPosition(0, 2)
         .withSize(1, 1);
 
-    tab.add(this.runOnce(() -> this.lock(Type.kBoth)).withName("Lock Both"))
+    tab.add(this.runOnce(() -> this.lock(Selector.kBoth)).withName("Lock Both"))
         .withPosition(0, 3)
         .withSize(1, 1);
 

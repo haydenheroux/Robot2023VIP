@@ -6,7 +6,7 @@ package frc.robot.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.arm.Arm.Type;
+import frc.robot.arm.Arm.Selector;
 import java.util.function.DoubleSupplier;
 
 public class ManualExtend extends CommandBase {
@@ -23,7 +23,7 @@ public class ManualExtend extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Type.kExtension);
+    arm.unlock(Selector.kExtension);
   }
 
   @Override
@@ -35,19 +35,19 @@ public class ManualExtend extends CommandBase {
     boolean isIntersectingGrid = arm.isIntersectingGrid() && percent > 0;
 
     if (isLeavingBounds || isLeavingRuleZone || isIntersectingGrid) {
-      arm.disable(Type.kExtension);
-      arm.lock(Type.kExtension);
+      arm.disable(Selector.kExtension);
+      arm.lock(Selector.kExtension);
     } else {
-      arm.unlock(Type.kExtension);
+      arm.unlock(Selector.kExtension);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
-      arm.setVoltage(Type.kExtension, volts);
+      arm.setVoltage(Selector.kExtension, volts);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Type.kExtension);
-    arm.lock(Type.kExtension);
+    arm.disable(Selector.kExtension);
+    arm.lock(Selector.kExtension);
   }
 
   @Override
