@@ -273,6 +273,7 @@ public class Constants {
   public static class Swerve {
 
     public static final double MAX_SPEED = Units.feetToMeters(20);
+    public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
 
     public static class FrontLeft {
       public static final Translation2d LOCATION =

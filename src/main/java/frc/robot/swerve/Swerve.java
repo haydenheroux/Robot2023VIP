@@ -4,8 +4,11 @@
 
 package frc.robot.swerve;
 
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,6 +45,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   private final Module[] modules = new Module[4];
 
+  private final PIDController thetaController;
+
+  private final SwerveAutoBuilder autoBuilder;
+
   private final Field2d field = new Field2d();
 
   /** Creates a new Swerve. */
@@ -57,6 +64,21 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             modules[1].getLocation(),
             modules[2].getLocation(),
             modules[3].getLocation());
+
+    thetaController = new PIDController(4.0, 0, 0);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    autoBuilder =
+        new SwerveAutoBuilder(
+            this::getPose,
+            this::setPose,
+            this.kinematics,
+            new PIDConstants(5.0, 0, 0),
+            new PIDConstants(50, 0, 0),
+            this::setModuleStates,
+            null,
+            true,
+            this);
 
     if (Robot.isSimulation()) {
       gyro =
@@ -102,6 +124,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
     tab.add(field);
+
+    tab.addNumber(
+        "omegaRadiansPerSecond",
+        () -> kinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
+
     tab.addDoubleArray("Module States", this::getModuleStatesAsDoubleArray);
 
     ShuffleboardLayout module0 = tab.getLayout("Module 0", BuiltInLayouts.kList);
@@ -211,12 +238,22 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public void drive(Translation2d velocity, Rotation2d heading) {
-    final double kOmegaRadiansPerSecond = 0.0;
+    double omegaRadiansPerSecond =
+        thetaController.calculate(getYaw().getRadians(), heading.getRadians());
+
+    drive(velocity, omegaRadiansPerSecond);
+  }
+
+  public void drive(Translation2d velocity, double omegaRadiansPerSecond) {
     SwerveModuleState[] desiredStates =
         kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                velocity.getX(), velocity.getY(), kOmegaRadiansPerSecond, getYaw()));
+                velocity.getX(), velocity.getY(), omegaRadiansPerSecond, getYaw()));
 
     setModuleStates(desiredStates);
+  }
+
+  public SwerveAutoBuilder getAutoBuilder() {
+    return autoBuilder;
   }
 }

@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -109,14 +114,22 @@ public class RobotContainer {
             swerve,
             () -> MathUtil.applyDeadband(-driver.getLeftY(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),
-            () -> 0,
-            () -> 0));
+            () -> MathUtil.applyDeadband(-driver.getRightY(), 0.1),
+            () -> MathUtil.applyDeadband(-driver.getRightX(), 0.1),
+            () -> driver.leftTrigger().getAsBoolean()));
   }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    // FIXME does not rotate
+    return swerve
+        .getAutoBuilder()
+        .followPath(
+            PathPlanner.generatePath(
+                new PathConstraints(4, 3),
+                new PathPoint(swerve.getPose().getTranslation(), Rotation2d.fromDegrees(0)),
+                new PathPoint(new Translation2d(8, 4), Rotation2d.fromDegrees(45))));
   }
 }
