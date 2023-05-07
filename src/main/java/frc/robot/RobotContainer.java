@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.XboxController;
@@ -18,6 +21,7 @@ import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
+import frc.robot.swerve.AbsoluteDrive;
 import frc.robot.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 
@@ -96,12 +100,22 @@ public class RobotContainer {
   }
 
   /** Configures default commands for each subsystem. */
-  public void configureDefaultCommands() {}
+  public void configureDefaultCommands() {
+    swerve.setDefaultCommand(
+        new AbsoluteDrive(
+            swerve,
+            () -> MathUtil.applyDeadband(-driver.getLeftY(), 0.1),
+            () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),
+            () -> MathUtil.applyDeadband(-driver.getRightY(), 0.1),
+            () -> MathUtil.applyDeadband(-driver.getRightX(), 0.1),
+            () -> driver.leftTrigger().getAsBoolean()));
+  }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("Test Path", new PathConstraints(4, 3));
+    return swerve.getAutoBuilder().fullAuto(trajectory);
   }
 }

@@ -5,10 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.arm.Arm.State;
 import frc.robot.arm.ArmPosition;
+import frc.robot.swerve.ModuleConfiguration;
+import java.util.HashMap;
 
 public class Constants {
 
@@ -266,5 +270,38 @@ public class Constants {
         public static final double HOLDING = -1.0;
       }
     }
+  }
+
+  public static class Swerve {
+    public static final double MAX_SPEED = Units.feetToMeters(20);
+    public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
+
+    public static class FrontLeft {
+      public static final Translation2d LOCATION =
+          new Translation2d(Units.inchesToMeters(-22.75), Units.inchesToMeters(22.75));
+      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+    }
+
+    public static class FrontRight {
+      public static final Translation2d LOCATION =
+          new Translation2d(Units.inchesToMeters(22.75), Units.inchesToMeters(22.75));
+      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+    }
+
+    public static class BackLeft {
+      public static final Translation2d LOCATION =
+          new Translation2d(Units.inchesToMeters(-22.75), Units.inchesToMeters(-22.75));
+      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+    }
+
+    public static class BackRight {
+      public static final Translation2d LOCATION =
+          new Translation2d(Units.inchesToMeters(22.75), Units.inchesToMeters(-22.75));
+      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+    }
+  }
+
+  public static class Auto {
+    public static final HashMap<String, Command> EVENT_MAP = new HashMap<>();
   }
 }
