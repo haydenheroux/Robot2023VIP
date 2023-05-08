@@ -278,25 +278,25 @@ public class Constants {
 
     public static class FrontLeft {
       public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(-22.75), Units.inchesToMeters(22.75));
+          new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375));
       public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
     }
 
     public static class FrontRight {
       public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(22.75), Units.inchesToMeters(22.75));
+          new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375));
       public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
     }
 
     public static class BackLeft {
       public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(-22.75), Units.inchesToMeters(-22.75));
+          new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375));
       public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
     }
 
     public static class BackRight {
       public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(22.75), Units.inchesToMeters(-22.75));
+          new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375));
       public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
     }
   }
