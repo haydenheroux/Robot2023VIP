@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -302,6 +303,7 @@ public class Constants {
   }
 
   public static class Auto {
+    public static final PathConstraints SPEEDS = new PathConstraints(4, 3);
     public static final HashMap<String, Command> EVENT_MAP = new HashMap<>();
   }
 }

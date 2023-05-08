@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 
-public class Autos {
+public class Auto {
   private static final Arm arm = Arm.getInstance();
   private static final Claw claw = Claw.getInstance();
 

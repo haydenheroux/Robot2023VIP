@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MathUtil;
@@ -23,7 +22,6 @@ import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.AbsoluteDrive;
 import frc.robot.swerve.Swerve;
-import java.util.List;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
@@ -39,7 +37,8 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(1);
 
   // Autonomous routine chooser
-  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  private final SendableChooser<PathPlannerTrajectory> autoChooser =
+      new SendableChooser<PathPlannerTrajectory>();
 
   public RobotContainer() {
     // Initialize subsystems
@@ -69,10 +68,17 @@ public class RobotContainer {
 
   /** Configures the autonomous chooser with autonomous routines. */
   private void configureAutonomous() {
-    Constants.Auto.EVENT_MAP.put("toFloor", Autos.toFloor());
-    Constants.Auto.EVENT_MAP.put("toStow", Autos.toStow());
-    Constants.Auto.EVENT_MAP.put("accept", Autos.accept());
-    Constants.Auto.EVENT_MAP.put("scoreTop", Autos.scoreTop());
+    Constants.Auto.EVENT_MAP.put("toFloor", Auto.toFloor());
+    Constants.Auto.EVENT_MAP.put("toStow", Auto.toStow());
+    Constants.Auto.EVENT_MAP.put("accept", Auto.accept());
+    Constants.Auto.EVENT_MAP.put("scoreTop", Auto.scoreTop());
+
+    autoChooser.setDefaultOption(
+        "2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Constants.Auto.SPEEDS));
+    autoChooser.addOption(
+        "2 Piece No Bump", PathPlanner.loadPath("2 Piece No Bump", Constants.Auto.SPEEDS));
+
+    SmartDashboard.putData(autoChooser);
   }
 
   /** Configures bindings for driver and operator controllers. */
@@ -121,8 +127,6 @@ public class RobotContainer {
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    List<PathPlannerTrajectory> trajectory =
-        PathPlanner.loadPathGroup("Test Path", new PathConstraints(6, 3));
-    return swerve.getAutoBuilder().fullAuto(trajectory);
+    return swerve.getAutoBuilder().fullAuto(autoChooser.getSelected());
   }
 }
