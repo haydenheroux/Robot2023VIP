@@ -23,6 +23,7 @@ import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.swerve.AbsoluteDrive;
 import frc.robot.swerve.Swerve;
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
@@ -67,7 +68,12 @@ public class RobotContainer {
   }
 
   /** Configures the autonomous chooser with autonomous routines. */
-  private void configureAutonomous() {}
+  private void configureAutonomous() {
+    Constants.Auto.EVENT_MAP.put("toFloor", Autos.toFloor());
+    Constants.Auto.EVENT_MAP.put("toStow", Autos.toStow());
+    Constants.Auto.EVENT_MAP.put("accept", Autos.accept());
+    Constants.Auto.EVENT_MAP.put("scoreTop", Autos.scoreTop());
+  }
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
@@ -115,7 +121,8 @@ public class RobotContainer {
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory trajectory = PathPlanner.loadPath("Test Path", new PathConstraints(4, 3));
+    List<PathPlannerTrajectory> trajectory =
+        PathPlanner.loadPathGroup("Test Path", new PathConstraints(6, 3));
     return swerve.getAutoBuilder().fullAuto(trajectory);
   }
 }

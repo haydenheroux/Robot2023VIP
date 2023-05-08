@@ -27,7 +27,7 @@ public class SuperstructureMechanism {
    * @return size, in mechanism units.
    */
   private double metersToMechanism(double meters) {
-    return meters * 20;
+    return meters;
   }
 
   /**
@@ -35,7 +35,7 @@ public class SuperstructureMechanism {
    * @return thickness, in mechanism units.
    */
   private double metersToMechanismThickness(double meters) {
-    return 8 * metersToMechanism(meters);
+    return 160 * metersToMechanism(meters);
   }
 
   // Width of mechanism "canvas"
@@ -100,7 +100,7 @@ public class SuperstructureMechanism {
                 "armExtension",
                 0,
                 Math.toDegrees(0),
-                4 * metersToMechanism(Units.inchesToMeters(1.5)),
+                metersToMechanismThickness(Units.inchesToMeters(1.5)),
                 kLockedColor));
 
     armClaw =

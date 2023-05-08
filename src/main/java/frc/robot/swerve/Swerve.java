@@ -76,7 +76,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             new PIDConstants(5.0, 0, 0),
             new PIDConstants(50, 0, 0),
             this::setModuleStates,
-            null,
+            Constants.Auto.EVENT_MAP,
             true,
             this);
 
