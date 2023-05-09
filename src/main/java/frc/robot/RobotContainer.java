@@ -58,7 +58,7 @@ public class RobotContainer {
 
     TelemetryManager.getInstance().initializeDashboard();
 
-    SmartDashboard.putData("Mechanism", SuperstructureMechanism.getInstance().getMechanism());
+    SmartDashboard.putData("Arm Mechanism", SuperstructureMechanism.getInstance().getArmMechanism());
 
     configureAutonomous();
     configureBindings();
@@ -69,6 +69,7 @@ public class RobotContainer {
   /** Configures the autonomous chooser with autonomous routines. */
   private void configureAutonomous() {
     Constants.Auto.EVENT_MAP.put("toFloor", Auto.toFloor());
+    Constants.Auto.EVENT_MAP.put("toIntermediate", Auto.toIntermediate());
     Constants.Auto.EVENT_MAP.put("toStow", Auto.toStow());
     Constants.Auto.EVENT_MAP.put("accept", Auto.accept());
     Constants.Auto.EVENT_MAP.put("scoreTop", Auto.scoreTop());
@@ -76,7 +77,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption(
         "2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Constants.Auto.SPEEDS));
     autoChooser.addOption(
-        "2 Piece No Bump", PathPlanner.loadPath("2 Piece No Bump", Constants.Auto.SPEEDS));
+        "2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Constants.Auto.SPEEDS));
 
     SmartDashboard.putData(autoChooser);
   }
