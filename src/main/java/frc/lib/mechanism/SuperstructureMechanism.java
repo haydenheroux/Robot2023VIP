@@ -60,27 +60,31 @@ public class SuperstructureMechanism {
   private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLawnGreen);
   private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kOrangeRed);
 
-  // Mechanism rending handle; "canvas"
-  private final Mechanism2d mechanism;
 
   // Static superstructure components
+  private final Mechanism2d bumpersMechanism;
   private final MechanismRoot2d bumpersRoot;
   private final MechanismLigament2d bumpers;
 
   // Arm superstructure components
+  // Mechanism rending handle; "canvas"
+  private final Mechanism2d armMechanism;
   private final MechanismRoot2d armRoot;
   private final MechanismLigament2d armRotation, armExtension, armClaw;
 
   // Intake superstructure components
+  private final Mechanism2d sideIntakeMechanism;
   private final MechanismRoot2d sideIntakeRoot;
   private final MechanismLigament2d sideIntake;
 
   /** Initializes superstructure components. */
   private SuperstructureMechanism() {
-    mechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
+    bumpersMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
+    armMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
+    sideIntakeMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
 
     armRoot =
-        mechanism.getRoot(
+        armMechanism.getRoot(
             "armRoot",
             kMechanismWidth / 2,
             metersToMechanism(Constants.Physical.ARM_SHOULDER_HEIGHT));
@@ -113,7 +117,7 @@ public class SuperstructureMechanism {
                 kIntakeDisabledColor));
 
     sideIntakeRoot =
-        mechanism.getRoot(
+        sideIntakeMechanism.getRoot(
             "sideIntakeRoot",
             kMechanismWidth / 2 - metersToMechanism(Units.inchesToMeters(12)) / 2,
             metersToMechanism(Units.inchesToMeters(18)));
@@ -128,7 +132,7 @@ public class SuperstructureMechanism {
                 kIntakeDisabledColor));
 
     bumpersRoot =
-        mechanism.getRoot(
+        bumpersMechanism.getRoot(
             "bumpersRoot",
             (kMechanismWidth / 2) - metersToMechanism(Constants.Physical.BUMPER_DISTANCE),
             metersToMechanism(Units.inchesToMeters(7.5)) / 2);
@@ -151,8 +155,16 @@ public class SuperstructureMechanism {
     return instance;
   }
 
-  public Mechanism2d getMechanism() {
-    return mechanism;
+  public Mechanism2d getArmMechanism() {
+    return armMechanism;
+  }
+
+  public Mechanism2d getSideIntakeMechanism() {
+    return sideIntakeMechanism;
+  }
+
+  public Mechanism2d getBumpersMechanism() {
+    return bumpersMechanism;
   }
 
   /**
