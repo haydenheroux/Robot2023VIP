@@ -18,7 +18,7 @@ public class ArmTrajectory {
 
     boolean needToExtend = start.atLengthOf(end) == false;
 
-    boolean alreadyAvoidingGrid = (start.getNorm() < 0.1 && end.getNorm() < 0.1);
+    boolean alreadyAvoidingGrid = (start.getNorm() < 0.8 && end.getNorm() < 0.8);
     boolean needToAvoidGrid = !alreadyAvoidingGrid;
 
     Rotation2d aboveGridAngle = Positions.ABOVE_GRID.getAngle();

@@ -24,12 +24,20 @@ public class ArmPosition extends Translation2d {
     return atLengthOf(other) && atAngleOf(other);
   }
 
+  public boolean atAngleOf(ArmPosition other) {
+    return Math.abs(this.getAngle().minus(other.getAngle()).getRadians())
+        < Rotation.TOLERANCE.getRadians();
+  }
+
   public boolean atLengthOf(ArmPosition other) {
     return Math.abs(this.getNorm() - other.getNorm()) < Extension.TOLERANCE;
   }
 
-  public boolean atAngleOf(ArmPosition other) {
-    return Math.abs(this.getAngle().minus(other.getAngle()).getRadians())
-        < Rotation.TOLERANCE.getRadians();
+  public ArmPosition withAngleOf(ArmPosition other) {
+    return new ArmPosition(this.getNorm(), other.getAngle());
+  }
+
+  public ArmPosition withLengthOf(ArmPosition other) {
+    return new ArmPosition(other.getNorm(), this.getAngle());
   }
 }

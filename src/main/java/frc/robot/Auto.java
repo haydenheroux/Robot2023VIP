@@ -21,12 +21,16 @@ public class Auto {
     return arm.toGoal(Constants.Arm.Positions.STOW);
   }
 
+  public static Command toIntermediate() {
+    return arm.toGoal(Constants.Arm.Positions.STOW.withAngleOf(Constants.Arm.Positions.TOP_ROW));
+  }
+
   public static Command toTop() {
     return arm.toGoal(Constants.Arm.Positions.TOP_ROW);
   }
 
   public static Command accept() {
-    return Commands.sequence(claw.accept(), Commands.waitSeconds(0.5), claw.holdOrDisable());
+    return claw.accept();
   }
 
   public static Command eject() {
@@ -34,6 +38,6 @@ public class Auto {
   }
 
   public static Command scoreTop() {
-    return Commands.sequence(toTop(), eject(), toStow());
+    return Commands.sequence(toTop(), eject(), toIntermediate());
   }
 }
