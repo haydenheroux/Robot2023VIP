@@ -19,6 +19,13 @@ public class ArmPosition extends Translation2d {
     double length = position.extensionLengthMeters + Extension.LENGTH_OFFSET;
     return new ArmPosition(length, position.rotationAngle);
   }
+  public boolean isAbove(ArmPosition other) {
+    return this.getAngle().getRadians() > other.getAngle().getRadians();
+  }
+
+  public boolean isBelow(ArmPosition other) {
+    return this.getAngle().getRadians() < other.getAngle().getRadians();
+  }
 
   public boolean at(ArmPosition other) {
     return atLengthOf(other) && atAngleOf(other);
@@ -48,4 +55,5 @@ public class ArmPosition extends Translation2d {
   public ArmPosition withLength(double lengthMeters) {
     return new ArmPosition(lengthMeters, this.getAngle());
   }
+
 }

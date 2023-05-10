@@ -41,11 +41,28 @@ public class ArmTrajectory {
   }
 
   private boolean directTrajectoryIntersectsGrid(ArmPosition start, ArmPosition end) {
-    boolean needToExtend = start.atLengthOf(end) == false;
+    Rotation2d startAngle, endAngle;
 
-    boolean alreadyAvoidingGrid = (start.getNorm() < 0.8 && end.getNorm() < 0.8);
-    boolean needToAvoidGrid = !alreadyAvoidingGrid;
+    if (start.isBelow(end)) {
+      startAngle = start.getAngle();
+      endAngle = end.getAngle();
+    } else {
+      startAngle = end.getAngle();
+      endAngle = start.getAngle();
+    }
 
-    return needToExtend && needToAvoidGrid; 
+    double worstCaseLength = Math.max(start.getNorm(), end.getNorm());
+
+    for (double percent = 0.0; percent < 1.0; percent += 0.01) {
+      Rotation2d angle = startAngle.interpolate(endAngle, percent);
+
+      ArmPosition worstCase = new ArmPosition(worstCaseLength, angle);
+
+      if (ArmKinematics.isIntersectingGrid(worstCase)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
