@@ -10,28 +10,30 @@ import frc.robot.Constants.Physical;
 
 public class ArmKinematics {
   public static boolean isIntersectingGrid(ArmPosition position) {
-    Translation2d worldArmPosition =
-        position.plus(new Translation2d(0, Physical.ARM_SHOULDER_HEIGHT));
+    Translation2d worldPosition = getWorldPosition(position);
 
     boolean intersectsMiddleRow =
-        worldArmPosition.getX() >= Constraints.MIDDLE_DISTANCE
-            && worldArmPosition.getY() <= Constraints.MIDDLE_HEIGHT;
+        worldPosition.getX() >= Constraints.MIDDLE_DISTANCE
+            && worldPosition.getY() <= Constraints.MIDDLE_HEIGHT;
     boolean intersectsTopRow =
-        worldArmPosition.getX() >= Constraints.TOP_DISTANCE
-            && worldArmPosition.getY() <= Constraints.TOP_HEIGHT;
+        worldPosition.getX() >= Constraints.TOP_DISTANCE
+            && worldPosition.getY() <= Constraints.TOP_HEIGHT;
 
     return intersectsMiddleRow || intersectsTopRow;
   }
 
   public static boolean isWithinRuleZone(ArmPosition position) {
-    Translation2d worldArmPosition =
-        position.plus(new Translation2d(0, Physical.ARM_SHOULDER_HEIGHT));
+    Translation2d worldPosition = getWorldPosition(position);
 
-    final boolean belowCeiling = worldArmPosition.getY() < Constraints.MAX_HEIGHT;
-    final boolean aboveFloor = worldArmPosition.getY() > Constraints.MIN_HEIGHT;
+    final boolean belowCeiling = worldPosition.getY() < Constraints.MAX_HEIGHT;
+    final boolean aboveFloor = worldPosition.getY() > Constraints.MIN_HEIGHT;
     final boolean inG107 =
-        worldArmPosition.getX() < Physical.BUMPER_DISTANCE + Constraints.MAX_OUT_LENGTH;
+        worldPosition.getX() < Physical.BUMPER_DISTANCE + Constraints.MAX_OUT_LENGTH;
 
     return belowCeiling && aboveFloor && inG107;
+  }
+
+  private static Translation2d getWorldPosition(ArmPosition position) {
+    return position.plus(Physical.ARM_SHOULDER);
   }
 }

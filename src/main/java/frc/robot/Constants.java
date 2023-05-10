@@ -29,7 +29,7 @@ public class Constants {
     /** Mass of the arm, in kilograms. */
     public static final double ARM_MASS = 4.5;
     /** Distance from the arm pivot point ("shoulder") to the floor. */
-    public static final double ARM_SHOULDER_HEIGHT = Units.inchesToMeters(28.72);
+    public static final Translation2d ARM_SHOULDER = new Translation2d(0, Units.inchesToMeters(28.72));
     /** Distance from the arm pivot point to the end of the static section. */
     public static final double ARM_STATIC_SECTION_LENGTH = Units.inchesToMeters(13);
     /** Distance from the base of the claw to the end of the claw. */

@@ -87,7 +87,7 @@ public class SuperstructureMechanism {
         armMechanism.getRoot(
             "armRoot",
             kMechanismWidth / 2,
-            metersToMechanism(Constants.Physical.ARM_SHOULDER_HEIGHT));
+            metersToMechanism(Constants.Physical.ARM_SHOULDER.getY()));
 
     armRotation =
         armRoot.append(
