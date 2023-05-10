@@ -22,7 +22,7 @@ public class Auto {
   }
 
   public static Command toIntermediate() {
-    return arm.toGoal(Constants.Arm.Positions.STOW.withAngleOf(Constants.Arm.Positions.TOP_ROW));
+    return arm.toGoal(Constants.Arm.Positions.STOW.withAngle(Constants.Arm.Positions.TOP_ROW));
   }
 
   public static Command toTop() {
