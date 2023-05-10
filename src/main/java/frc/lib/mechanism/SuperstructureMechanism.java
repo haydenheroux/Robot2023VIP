@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
 import frc.robot.arm.Arm;
-import frc.robot.arm.ArmKinematics;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
@@ -59,7 +58,6 @@ public class SuperstructureMechanism {
   private final Color8Bit kIntakeHoldingCubeColor = new Color8Bit(Color.kPurple);
   private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLawnGreen);
   private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kOrangeRed);
-
 
   // Static superstructure components
   private final Mechanism2d bumpersMechanism;
@@ -217,8 +215,7 @@ public class SuperstructureMechanism {
    * @param position position of the arm to test constraints against.
    */
   private void setConstraint(ArmPosition position) {
-    if (ArmKinematics.isWithinRuleZone(position) == false
-        || ArmKinematics.isIntersectingGrid(position)) {
+    if (!position.isWithinRuleZone() || position.isIntersectingGrid()) {
       armExtension.setColor(kConstraintColor);
     }
   }

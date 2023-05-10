@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
 
     public static State fromPosition(ArmPosition position) {
-      double extensionLengthMeters = position.getNorm() - Extension.LENGTH_OFFSET;
+      double extensionLengthMeters = position.getLength() - Extension.LENGTH_OFFSET;
       return new State(extensionLengthMeters, position.getAngle());
     }
   }
@@ -104,7 +104,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return true if the arm is intersecting the grid.
    */
   public boolean isIntersectingGrid() {
-    return ArmKinematics.isIntersectingGrid(position);
+    return position.isIntersectingGrid();
   }
   /**
    * Tests whether the arm is within the rule zone.
@@ -328,20 +328,20 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout positionLayout =
         tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
 
-    positionLayout.addNumber("Arm Length (m)", () -> position.getNorm());
+    positionLayout.addNumber("Arm Length (m)", () -> position.getLength());
     positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngle().getDegrees());
 
     ShuffleboardLayout setpointLayout =
         tab.getLayout("Setpoint", BuiltInLayouts.kList).withPosition(5, 0).withSize(2, 4);
 
-    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getNorm());
+    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getLength());
     setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngle().getDegrees());
     setpointLayout.addBoolean("At Setpoint?", () -> at(setpoint));
 
     ShuffleboardLayout goalLayout =
         tab.getLayout("Goal", BuiltInLayouts.kList).withPosition(7, 0).withSize(2, 4);
 
-    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getNorm());
+    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLength());
     goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
     goalLayout.addBoolean("At Goal?", () -> at(goal));
   }

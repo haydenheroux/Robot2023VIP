@@ -58,7 +58,8 @@ public class RobotContainer {
 
     TelemetryManager.getInstance().initializeDashboard();
 
-    SmartDashboard.putData("Arm Mechanism", SuperstructureMechanism.getInstance().getArmMechanism());
+    SmartDashboard.putData(
+        "Arm Mechanism", SuperstructureMechanism.getInstance().getArmMechanism());
 
     configureAutonomous();
     configureBindings();

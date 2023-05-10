@@ -9,27 +9,44 @@ import frc.robot.Constants.Arm.Positions;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * A collection of arm positions that form a safe path between a start position and an end position.
+ */
 public class ArmTrajectory {
 
   private final Queue<ArmPosition> setpoints;
 
+  /**
+   * Constructs a new trajectory between a start position and an end position.
+   *
+   * @param start
+   * @param end
+   */
   public ArmTrajectory(ArmPosition start, ArmPosition end) {
     setpoints = new LinkedList<ArmPosition>();
 
-    Rotation2d aboveGridAngle = Positions.ABOVE_GRID.getAngle();
-
-    if (directTrajectoryIntersectsGrid(start, end)) {
-      setpoints.add(start.withAngle(aboveGridAngle));
-      setpoints.add(start.withAngle(aboveGridAngle).withLengthOf(end));
+    if (directTrajectoryIsUnsafe(start, end)) {
+      setpoints.add(start.withAngle(Positions.ABOVE_GRID));
+      setpoints.add(start.withAngle(Positions.ABOVE_GRID).withLength(end));
     }
 
     setpoints.add(end);
   }
 
+  /**
+   * Returns the current setpoint in the trajectory.
+   *
+   * @return the current setpoint in the trajectory.
+   */
   public ArmPosition get() {
     return setpoints.element();
   }
 
+  /**
+   * Advances to and returns the next setpoint in the trajectory.
+   *
+   * @return the next setpoint in the trajectory.
+   */
   public ArmPosition next() {
     boolean hasNext = setpoints.size() > 1;
 
@@ -40,9 +57,18 @@ public class ArmTrajectory {
     return get();
   }
 
-  private boolean directTrajectoryIntersectsGrid(ArmPosition start, ArmPosition end) {
+  /**
+   * Returns true if the direct trajectory between two positions will be unsafe.
+   *
+   * @param start the start posiiton of the trajectory.
+   * @param end the end position of the trajectory.
+   * @return true if the direct trajectory between two positions will be unsafe.
+   */
+  private boolean directTrajectoryIsUnsafe(ArmPosition start, ArmPosition end) {
     Rotation2d startAngle, endAngle;
 
+    // Since interpolating between two angles mandates that start is less than end,
+    // initialize the start angle and end angle so that start is less than end
     if (start.isBelow(end)) {
       startAngle = start.getAngle();
       endAngle = end.getAngle();
@@ -51,14 +77,15 @@ public class ArmTrajectory {
       endAngle = start.getAngle();
     }
 
-    double worstCaseLength = Math.max(start.getNorm(), end.getNorm());
+    // Determine the worst case length for the trajectory
+    double worstCaseLength = Math.max(start.getLength(), end.getLength());
 
+    // Sweep through all angles between the start angle and the end angle
     for (double percent = 0.0; percent < 1.0; percent += 0.01) {
-      Rotation2d angle = startAngle.interpolate(endAngle, percent);
+      Rotation2d testAngle = startAngle.interpolate(endAngle, percent);
+      ArmPosition testPosition = new ArmPosition(worstCaseLength, testAngle);
 
-      ArmPosition worstCase = new ArmPosition(worstCaseLength, angle);
-
-      if (ArmKinematics.isIntersectingGrid(worstCase)) {
+      if (testPosition.isIntersectingGrid() || !testPosition.isWithinRuleZone()) {
         return true;
       }
     }
