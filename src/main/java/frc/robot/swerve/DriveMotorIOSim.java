@@ -41,8 +41,7 @@ public class DriveMotorIOSim implements DriveMotorIO {
   public void setSetpoint(double distanceMeters) {
     velocityMetersPerSecond = 0.0;
 
-    positionController.setSetpoint(distanceMeters);
-    double volts = positionController.calculate(this.positionMeters);
+    double volts = positionController.calculate(this.positionMeters, distanceMeters);
     setVoltage(volts);
   }
 
