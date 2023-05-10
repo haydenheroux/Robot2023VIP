@@ -16,16 +16,11 @@ public class ArmTrajectory {
   public ArmTrajectory(ArmPosition start, ArmPosition end) {
     setpoints = new LinkedList<ArmPosition>();
 
-    boolean needToExtend = start.atLengthOf(end) == false;
-
-    boolean alreadyAvoidingGrid = (start.getNorm() < 0.8 && end.getNorm() < 0.8);
-    boolean needToAvoidGrid = !alreadyAvoidingGrid;
-
     Rotation2d aboveGridAngle = Positions.ABOVE_GRID.getAngle();
 
-    if (needToExtend && needToAvoidGrid) {
-      setpoints.add(new ArmPosition(start.getNorm(), aboveGridAngle));
-      setpoints.add(new ArmPosition(end.getNorm(), aboveGridAngle));
+    if (directTrajectoryIntersectsGrid(start, end)) {
+      setpoints.add(start.withAngle(aboveGridAngle));
+      setpoints.add(start.withAngle(aboveGridAngle).withLengthOf(end));
     }
 
     setpoints.add(end);
@@ -43,5 +38,14 @@ public class ArmTrajectory {
     }
 
     return get();
+  }
+
+  private boolean directTrajectoryIntersectsGrid(ArmPosition start, ArmPosition end) {
+    boolean needToExtend = start.atLengthOf(end) == false;
+
+    boolean alreadyAvoidingGrid = (start.getNorm() < 0.8 && end.getNorm() < 0.8);
+    boolean needToAvoidGrid = !alreadyAvoidingGrid;
+
+    return needToExtend && needToAvoidGrid; 
   }
 }
