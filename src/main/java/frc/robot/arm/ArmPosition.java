@@ -34,10 +34,18 @@ public class ArmPosition extends Translation2d {
   }
 
   public ArmPosition withAngleOf(ArmPosition other) {
-    return new ArmPosition(this.getNorm(), other.getAngle());
+    return this.withAngle(other.getAngle());
   }
 
   public ArmPosition withLengthOf(ArmPosition other) {
-    return new ArmPosition(other.getNorm(), this.getAngle());
+    return this.withLength(other.getNorm());
+  }
+
+  public ArmPosition withAngle(Rotation2d angle) {
+    return new ArmPosition(this.getNorm(), angle);
+  }
+
+  public ArmPosition withLength(double lengthMeters) {
+    return new ArmPosition(lengthMeters, this.getAngle());
   }
 }
