@@ -6,6 +6,7 @@ package frc.robot.swerve;
 
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -43,7 +45,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private final GyroIO gyro;
   private final GyroIOValues gyroValues = new GyroIOValues();
 
-  private final Module[] modules = new Module[4];
+  private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private final PIDController thetaController;
 
@@ -75,29 +77,33 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             this.kinematics,
             new PIDConstants(5.0, 0, 0),
             new PIDConstants(50, 0, 0),
-            this::setModuleStates,
+            this::setSetpoints,
             Constants.Auto.EVENT_MAP,
             true,
             this);
 
     if (Robot.isSimulation()) {
-      gyro =
-          new GyroIOSim(() -> kinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
+      gyro = new GyroIOSim(() -> kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond);
     } else {
       gyro = null;
     }
 
-    gyro.configure();
+    Pose2d initialPoseMeters = new Pose2d();
+
     poseEstimator =
         new SwerveDrivePoseEstimator(
             kinematics,
             getYaw(),
-            getModulePositions(),
-            new Pose2d(),
+            getPositions(),
+            initialPoseMeters,
             stateStandardDeviations,
             visionStandardDeviations);
 
-    setYaw(Rotation2d.fromDegrees(0));
+    gyro.configure();
+    // Assume that we are flat on the ground
+    setRoll(Rotation2d.fromDegrees(0));
+    setPitch(Rotation2d.fromDegrees(0));
+    setYaw(initialPoseMeters.getRotation());
   }
 
   public static Swerve getInstance() {
@@ -115,7 +121,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     gyro.updateValues(gyroValues);
 
-    poseEstimator.update(getYaw(), getModulePositions());
+    poseEstimator.update(getYaw(), getPositions());
     field.setRobotPose(getPose());
   }
 
@@ -127,25 +133,34 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     tab.addNumber(
         "omegaRadiansPerSecond",
-        () -> kinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
+        () -> kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond);
 
-    tab.addDoubleArray("Module States", this::getModuleStatesAsDoubleArray);
+    tab.addDoubleArray("Module States", this::getStatesAsArray);
 
-    ShuffleboardLayout module0 = tab.getLayout("Module 0", BuiltInLayouts.kList);
-    module0.addNumber("Angle (deg)", () -> getModuleStates()[0].angle.getDegrees());
-    module0.addNumber("Velocity (mps)", () -> getModuleStates()[0].speedMetersPerSecond);
+	ShuffleboardLayout gyroLayout = tab.getLayout("Gyroscope", BuiltInLayouts.kList);
+	gyroLayout.addNumber("Roll (deg)", () -> Units.radiansToDegrees(gyroValues.rollAngleRadians));
+	gyroLayout.addNumber("Pitch (deg)", () -> Units.radiansToDegrees(gyroValues.pitchAngleRadians));
+	gyroLayout.addNumber("Yaw (deg)", () -> Units.radiansToDegrees(gyroValues.yawAngleRadians));
 
-    ShuffleboardLayout module1 = tab.getLayout("Module 1", BuiltInLayouts.kList);
-    module1.addNumber("Angle (deg)", () -> getModuleStates()[1].angle.getDegrees());
-    module1.addNumber("Velocity (mps)", () -> getModuleStates()[1].speedMetersPerSecond);
+    ShuffleboardLayout module0Layout = tab.getLayout("Module 0", BuiltInLayouts.kList);
+    module0Layout.addNumber("Angle (deg)", () -> getStates()[0].angle.getDegrees());
+    module0Layout.addNumber("Absolute Angle (deg)", () -> modules[0].getAbsoluteAzimuthAngle().getDegrees());
+    module0Layout.addNumber("Velocity (mps)", () -> getStates()[0].speedMetersPerSecond);
 
-    ShuffleboardLayout module2 = tab.getLayout("Module 2", BuiltInLayouts.kList);
-    module2.addNumber("Angle (deg)", () -> getModuleStates()[2].angle.getDegrees());
-    module2.addNumber("Velocity (mps)", () -> getModuleStates()[2].speedMetersPerSecond);
+    ShuffleboardLayout module1Layout = tab.getLayout("Module 1", BuiltInLayouts.kList);
+    module1Layout.addNumber("Angle (deg)", () -> getStates()[1].angle.getDegrees());
+    module1Layout.addNumber("Absolute Angle (deg)", () -> modules[1].getAbsoluteAzimuthAngle().getDegrees());
+    module1Layout.addNumber("Velocity (mps)", () -> getStates()[1].speedMetersPerSecond);
 
-    ShuffleboardLayout module3 = tab.getLayout("Module 3", BuiltInLayouts.kList);
-    module3.addNumber("Angle (deg)", () -> getModuleStates()[3].angle.getDegrees());
-    module3.addNumber("Velocity (mps)", () -> getModuleStates()[3].speedMetersPerSecond);
+    ShuffleboardLayout module2Layout = tab.getLayout("Module 2", BuiltInLayouts.kList);
+    module2Layout.addNumber("Angle (deg)", () -> getStates()[2].angle.getDegrees());
+    module2Layout.addNumber("Absolute Angle (deg)", () -> modules[2].getAbsoluteAzimuthAngle().getDegrees());
+    module2Layout.addNumber("Velocity (mps)", () -> getStates()[2].speedMetersPerSecond);
+
+    ShuffleboardLayout module3Layout = tab.getLayout("Module 3", BuiltInLayouts.kList);
+    module3Layout.addNumber("Angle (deg)", () -> getStates()[3].angle.getDegrees());
+    module3Layout.addNumber("Absolute Angle (deg)", () -> modules[3].getAbsoluteAzimuthAngle().getDegrees());
+    module3Layout.addNumber("Velocity (mps)", () -> getStates()[3].speedMetersPerSecond);
   }
 
   @Override
@@ -159,8 +174,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public Rotation2d getPitch() {
-    return Rotation2d.fromRadians(gyroValues.pitchAngleRadians);
-  }
+    return Rotation2d.fromRadians(gyroValues.pitchAngleRadians); }
 
   public Rotation2d getYaw() {
     return Rotation2d.fromRadians(gyroValues.yawAngleRadians);
@@ -180,15 +194,15 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
 
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
+  public void setSetpoints(SwerveModuleState[] setpoints) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Swerve.MAX_SPEED);
 
     for (int i = 0; i < 4; i++) {
-      modules[i].setDesiredState(desiredStates[i], true, false);
+      modules[i].setSetpoint(setpoints[i]);
     }
   }
 
-  public SwerveModuleState[] getModuleStates() {
+  public SwerveModuleState[] getStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
     for (int i = 0; i < 4; i++) {
@@ -198,7 +212,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     return states;
   }
 
-  public double[] getModuleStatesAsDoubleArray() {
+  public double[] getStatesAsArray() {
     double[] doubles = new double[8];
 
     for (int i = 0; i < 4; i++) {
@@ -210,7 +224,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     return doubles;
   }
 
-  public SwerveModulePosition[] getModulePositions() {
+  public SwerveModulePosition[] getPositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
     for (int i = 0; i < 4; i++) {
@@ -225,7 +239,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getYaw(), getPositions(), pose);
   }
 
   public void setPose(Pose2d pose, double timestamp, boolean hard, double accuracy) {
@@ -250,7 +264,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             ChassisSpeeds.fromFieldRelativeSpeeds(
                 velocity.getX(), velocity.getY(), omegaRadiansPerSecond, getYaw()));
 
-    setModuleStates(desiredStates);
+    setSetpoints(desiredStates);
   }
 
   public SwerveAutoBuilder getAutoBuilder() {

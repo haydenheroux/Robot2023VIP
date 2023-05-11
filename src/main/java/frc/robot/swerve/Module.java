@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
@@ -33,7 +32,7 @@ public class Module {
 
   public Module(ModuleConfiguration config) {
     this.config = config;
-    offsetAngleRadians = 0.0; // TODO
+    offsetAngleRadians = this.config.offsetAngleRadians;
 
     if (Robot.isSimulation()) {
       angleMotor = new AngleMotorIOSim();
@@ -67,31 +66,27 @@ public class Module {
     // TODO angleMotor.setPosition({azimuthAngle})
   }
 
-  public void setDesiredState(
-      SwerveModuleState desiredState, boolean isOpenLoop, boolean isForced) {
-    desiredState =
-        SwerveModuleState.optimize(
-            desiredState, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+  public void setSetpoint(SwerveModuleState setpoint) {
+    setSetpoint(setpoint, false);
+  }
 
-    if (isOpenLoop) {
-      double percent = desiredState.speedMetersPerSecond / Constants.Swerve.MAX_SPEED;
-      double volts = percent * Constants.NOMINAL_VOLTAGE;
-      driveMotor.setVoltage(volts);
-    } else {
-      driveMotor.setVelocitySetpoint(desiredState.speedMetersPerSecond);
-    }
+  public void setSetpoint(SwerveModuleState setpoint, boolean isForced) {
+    setpoint =
+        SwerveModuleState.optimize(setpoint, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+
+    driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
 
     if (isForced == false) {
       // TODO anti-jitter
     }
 
-    boolean isSameAngle = desiredState.angle.equals(state.angle);
+    boolean angleChanged = setpoint.angle.equals(state.angle) == false;
 
-    if (isSameAngle == false) {
-      angleMotor.setSetpoint(desiredState.angle.getRadians());
+    if (angleChanged) {
+      angleMotor.setSetpoint(setpoint.angle.getRadians());
     }
 
-    state = desiredState;
+    state = setpoint;
   }
 
   public Translation2d getLocation() {
@@ -102,6 +97,10 @@ public class Module {
     return new SwerveModuleState(
         driveMotorValues.velocityMetersPerSecond,
         Rotation2d.fromRadians(angleMotorValues.angleRadians));
+  }
+
+  public Rotation2d getAbsoluteAzimuthAngle() {
+	  return Rotation2d.fromRadians(azimuthEncoderValues.absoluteAngleRadians);
   }
 
   public SwerveModulePosition getPosition() {

@@ -281,25 +281,33 @@ public class Constants {
     public static class FrontLeft {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375));
-      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final ModuleConfiguration CONFIG =
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
     }
 
     public static class FrontRight {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375));
-      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final ModuleConfiguration CONFIG =
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
     }
 
     public static class BackLeft {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375));
-      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final ModuleConfiguration CONFIG =
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
     }
 
     public static class BackRight {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375));
-      public static final ModuleConfiguration CONFIG = new ModuleConfiguration(LOCATION);
+      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final ModuleConfiguration CONFIG =
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
     }
   }
 
