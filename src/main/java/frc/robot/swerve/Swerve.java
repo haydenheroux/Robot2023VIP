@@ -1,12 +1,7 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.swerve;
 
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -137,29 +132,33 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     tab.addDoubleArray("Module States", this::getStatesAsArray);
 
-	ShuffleboardLayout gyroLayout = tab.getLayout("Gyroscope", BuiltInLayouts.kList);
-	gyroLayout.addNumber("Roll (deg)", () -> Units.radiansToDegrees(gyroValues.rollAngleRadians));
-	gyroLayout.addNumber("Pitch (deg)", () -> Units.radiansToDegrees(gyroValues.pitchAngleRadians));
-	gyroLayout.addNumber("Yaw (deg)", () -> Units.radiansToDegrees(gyroValues.yawAngleRadians));
+    ShuffleboardLayout gyroLayout = tab.getLayout("Gyroscope", BuiltInLayouts.kList);
+    gyroLayout.addNumber("Roll (deg)", () -> Units.radiansToDegrees(gyroValues.rollAngleRadians));
+    gyroLayout.addNumber("Pitch (deg)", () -> Units.radiansToDegrees(gyroValues.pitchAngleRadians));
+    gyroLayout.addNumber("Yaw (deg)", () -> Units.radiansToDegrees(gyroValues.yawAngleRadians));
 
     ShuffleboardLayout module0Layout = tab.getLayout("Module 0", BuiltInLayouts.kList);
     module0Layout.addNumber("Angle (deg)", () -> getStates()[0].angle.getDegrees());
-    module0Layout.addNumber("Absolute Angle (deg)", () -> modules[0].getAbsoluteAzimuthAngle().getDegrees());
+    module0Layout.addNumber(
+        "Absolute Angle (deg)", () -> modules[0].getAbsoluteAzimuthAngle().getDegrees());
     module0Layout.addNumber("Velocity (mps)", () -> getStates()[0].speedMetersPerSecond);
 
     ShuffleboardLayout module1Layout = tab.getLayout("Module 1", BuiltInLayouts.kList);
     module1Layout.addNumber("Angle (deg)", () -> getStates()[1].angle.getDegrees());
-    module1Layout.addNumber("Absolute Angle (deg)", () -> modules[1].getAbsoluteAzimuthAngle().getDegrees());
+    module1Layout.addNumber(
+        "Absolute Angle (deg)", () -> modules[1].getAbsoluteAzimuthAngle().getDegrees());
     module1Layout.addNumber("Velocity (mps)", () -> getStates()[1].speedMetersPerSecond);
 
     ShuffleboardLayout module2Layout = tab.getLayout("Module 2", BuiltInLayouts.kList);
     module2Layout.addNumber("Angle (deg)", () -> getStates()[2].angle.getDegrees());
-    module2Layout.addNumber("Absolute Angle (deg)", () -> modules[2].getAbsoluteAzimuthAngle().getDegrees());
+    module2Layout.addNumber(
+        "Absolute Angle (deg)", () -> modules[2].getAbsoluteAzimuthAngle().getDegrees());
     module2Layout.addNumber("Velocity (mps)", () -> getStates()[2].speedMetersPerSecond);
 
     ShuffleboardLayout module3Layout = tab.getLayout("Module 3", BuiltInLayouts.kList);
     module3Layout.addNumber("Angle (deg)", () -> getStates()[3].angle.getDegrees());
-    module3Layout.addNumber("Absolute Angle (deg)", () -> modules[3].getAbsoluteAzimuthAngle().getDegrees());
+    module3Layout.addNumber(
+        "Absolute Angle (deg)", () -> modules[3].getAbsoluteAzimuthAngle().getDegrees());
     module3Layout.addNumber("Velocity (mps)", () -> getStates()[3].speedMetersPerSecond);
   }
 
@@ -174,7 +173,8 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public Rotation2d getPitch() {
-    return Rotation2d.fromRadians(gyroValues.pitchAngleRadians); }
+    return Rotation2d.fromRadians(gyroValues.pitchAngleRadians);
+  }
 
   public Rotation2d getYaw() {
     return Rotation2d.fromRadians(gyroValues.yawAngleRadians);
