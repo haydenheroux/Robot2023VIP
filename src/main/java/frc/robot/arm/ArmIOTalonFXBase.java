@@ -12,6 +12,8 @@ import frc.robot.Constants.Pneumatics;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
+  protected final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
+
   protected final WPI_TalonFX extensionMotor, rotationMotor;
   private final Solenoid extensionBrake, rotationBrake;
 
@@ -35,10 +37,16 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void updateValues(ArmIOValues values) {
-    values.extensionLengthMeters = getExtensionPosition();
-    values.extensionBrakeIsActive = getExtensionBrakeIsActive();
-    values.rotationAngleRadians = getRotationPosition();
-    values.rotationBrakeIsActive = getRotationBrakeIsActive();
+    this.values.extensionBrakeIsActive = getExtensionBrakeIsActive();
+    this.values.extensionLengthMeters = getExtensionPosition();
+    this.values.extensionVoltage = getExtensionVoltage();
+
+    this.values.rotationAngleRadians = getRotationPosition();
+    this.values.rotationBrakeIsActive = getRotationBrakeIsActive();
+    this.values.rotationVoltage = getRotationVoltage();
+
+    // Copy our values up to the caller
+    values = this.values;
   }
 
   @Override
@@ -101,6 +109,10 @@ public class ArmIOTalonFXBase implements ArmIO {
     setRotationVoltage(0);
   }
 
+  protected boolean getExtensionBrakeIsActive() {
+    return !extensionBrake.get();
+  }
+
   protected double getExtensionPosition() {
     return Conversions.TalonFX.Position.toMeters(
         extensionMotor.getSelectedSensorPosition(),
@@ -108,8 +120,12 @@ public class ArmIOTalonFXBase implements ArmIO {
         Constants.Arm.Extension.GEAR_RATIO);
   }
 
-  protected boolean getExtensionBrakeIsActive() {
-    return !extensionBrake.get();
+  protected double getExtensionVoltage() {
+    return extensionMotor.getMotorOutputVoltage();
+  }
+
+  protected boolean getRotationBrakeIsActive() {
+    return !rotationBrake.get();
   }
 
   protected double getRotationPosition() {
@@ -117,7 +133,7 @@ public class ArmIOTalonFXBase implements ArmIO {
         rotationMotor.getSelectedSensorPosition(), Rotation.GEAR_RATIO);
   }
 
-  protected boolean getRotationBrakeIsActive() {
-    return !rotationBrake.get();
+  protected double getRotationVoltage() {
+    return rotationMotor.getMotorOutputVoltage();
   }
 }

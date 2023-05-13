@@ -2,11 +2,13 @@ package frc.robot.arm;
 
 public interface ArmIO {
   public static class ArmIOValues {
-    public double extensionLengthMeters = 0.0;
     public boolean extensionBrakeIsActive = true;
+    public double extensionLengthMeters = 0.0;
+    public double extensionVoltage = 0.0;
 
-    public double rotationAngleRadians = 0.0;
     public boolean rotationBrakeIsActive = true;
+    public double rotationAngleRadians = 0.0;
+    public double rotationVoltage = 0.0;
   }
 
   /** Configures arm hardware to default. */

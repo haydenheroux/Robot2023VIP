@@ -57,8 +57,9 @@ public class ArmIOSim implements ArmIO {
       extensionLengthMeters += extensionVoltage * kMetersPerVolt;
     }
 
-    values.extensionLengthMeters = extensionLengthMeters;
     values.extensionBrakeIsActive = extensionBrakeIsActive;
+    values.extensionLengthMeters = extensionLengthMeters;
+    values.extensionVoltage = extensionVoltage;
 
     if (!rotationBrakeIsActive) {
       rotationSim.setInput(
@@ -73,6 +74,7 @@ public class ArmIOSim implements ArmIO {
 
     values.rotationAngleRadians = rotationAngleRadians;
     values.rotationBrakeIsActive = rotationBrakeIsActive;
+    values.rotationVoltage = rotationVoltage;
   }
 
   @Override

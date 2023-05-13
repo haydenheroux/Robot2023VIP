@@ -320,6 +320,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
+    valuesLayout.addNumber("Extension Voltage (V)", () -> values.extensionVoltage);
+    valuesLayout.addNumber("Rotation Voltage (V)", () -> values.rotationVoltage);
 
     ShuffleboardLayout positionLayout =
         tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
