@@ -283,10 +283,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     io.updateValues(values);
 
     // Update the arm's position with IO readings
-    position =
-        ArmPosition.fromState(
-            new Arm.State(
-                values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
+    position = ArmPosition.fromValues(values);
 
     // Update the arm's mechanism with new position
     SuperstructureMechanism.getInstance().updateArm(position, getLocked());
