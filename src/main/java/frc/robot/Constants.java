@@ -136,7 +136,7 @@ public class Constants {
       /** Constants for rotation using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per degree of angle error. */
-        public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
+        public static final double KP = 1 / Units.degreesToRadians(10); // 0.5V per 10 degrees
       }
     }
 

@@ -1,13 +1,14 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Rotation;
@@ -26,22 +27,23 @@ public class ArmIOSim implements ArmIO {
   private final DCMotor simMotor =
       new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
 
-  private final double simLength = 1.0;
+  // FIXME Simulation assumes constant length
+  private final double fakeSimLength = Constants.Arm.Positions.STOW.getLength();
   private final SingleJointedArmSim rotationSim =
       new SingleJointedArmSim(
           simMotor,
           Rotation.GEAR_RATIO,
-          SingleJointedArmSim.estimateMOI(simLength, Physical.ARM_MASS),
-          simLength,
+          SingleJointedArmSim.estimateMOI(fakeSimLength, Physical.ARM_MASS),
+          fakeSimLength,
           Rotation.MIN_ANGLE.getRadians(),
           Rotation.MAX_ANGLE.getRadians(),
           Constants.Physical.ARM_MASS,
           true);
 
-  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 0);
+  private final ExtensionRotationFeedforward feedforward = new ExtensionRotationFeedforward();
 
+  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 4);
   private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
-  private final ArmFeedforward rotationFeedforward = new ArmFeedforward(0, 1.5, 0);
 
   private double extensionVoltage = 0.0;
   private double rotationVoltage = 0.0;
@@ -90,6 +92,11 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setExtensionVoltage(double volts) {
+    volts +=
+        feedforward.calculateExtension(
+            ArmPosition.fromState(
+                new Arm.State(extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))),
+            volts);
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     extensionVoltage = volts;
   }
@@ -112,14 +119,21 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setRotationSetpoint(double angleRadians) {
     double volts = rotationPID.calculate(rotationAngleRadians, angleRadians);
-    volts = volts + rotationFeedforward.calculate(angleRadians, 0);
     setRotationVoltage(volts);
   }
 
   @Override
   public void setRotationVoltage(double volts) {
+    SmartDashboard.putNumber("inputVoltage", volts);
+    volts +=
+        feedforward.calculateRotation(
+            ArmPosition.fromState(
+                new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))),
+            volts);
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     rotationVoltage = volts;
+    SmartDashboard.putNumber("voltageToOvercomeGravity", feedforward.calculateRotation(ArmPosition.fromState(new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))), 0.0));
+    SmartDashboard.putNumber("outputVoltage", volts);
   }
 
   @Override
@@ -129,6 +143,7 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setRotationDisabled() {
+    // FIXME Applies feedforward
     setRotationVoltage(0.0);
   }
 }

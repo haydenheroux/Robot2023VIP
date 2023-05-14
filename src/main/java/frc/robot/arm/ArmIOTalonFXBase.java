@@ -17,7 +17,7 @@ public class ArmIOTalonFXBase implements ArmIO {
   protected final WPI_TalonFX extensionMotor, rotationMotor;
   private final Solenoid extensionBrake, rotationBrake;
 
-  private final ArmFeedforward feedforward = new ArmFeedforward();
+  private final ExtensionRotationFeedforward feedforward = new ExtensionRotationFeedforward();
 
   public ArmIOTalonFXBase() {
     extensionMotor = new WPI_TalonFX(Extension.CAN_ID);
