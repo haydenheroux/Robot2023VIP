@@ -21,10 +21,10 @@ public class ArmTrajectory {
   public ArmTrajectory(ArmPosition start, ArmPosition end) {
     setpoints = new LinkedList<ArmPosition>();
 
-    if (directTrajectoryIsUnsafe(start, end)) {
-      setpoints.add(start.withAngle(Positions.ABOVE_GRID));
-      setpoints.add(start.withAngle(Positions.ABOVE_GRID).withLength(end));
-    }
+    setpoints.add(start);
+
+    addSafeExtensionAngle(get(), end);
+    addSafeIntermediateTrajectory(get(), end);
 
     setpoints.add(end);
   }
@@ -51,6 +51,34 @@ public class ArmTrajectory {
     }
 
     return get();
+  }
+
+  /**
+   * Adds a setpoint to the main trajectory to get to a safe extension angle if the main
+   * trajectory has extension and the start position is above the safe extension angle.
+   *
+   * @param start the start position of the sub-trajectory.
+   * @param end the end position of the sub-trajectory.
+   */
+  private void addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
+    boolean hasExtension = start.getLength() < end.getLength();
+    if (start.isAbove(Positions.SAFE) && hasExtension) {
+      setpoints.add(start.withAngle(Positions.SAFE));
+    }
+  }
+
+  /**
+   * Adds a sub-trajectory to the main trajectory to get to a safe position where the next position
+   * is the end position of the main trajectory.
+   *
+   * @param start
+   * @param end
+   */
+  private void addSafeIntermediateTrajectory(ArmPosition start, ArmPosition end) {
+    if (directTrajectoryIsUnsafe(start, end)) {
+      setpoints.add(start.withAngle(Positions.SAFE));
+      setpoints.add(start.withAngle(Positions.SAFE).withLength(end));
+    }
   }
 
   /**
