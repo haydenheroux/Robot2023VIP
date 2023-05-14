@@ -40,8 +40,6 @@ public class ArmIOSim implements ArmIO {
           Constants.Physical.ARM_MASS,
           true);
 
-  private final ExtensionRotationFeedforward feedforward = new ExtensionRotationFeedforward();
-
   private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 4);
   private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
 
@@ -102,7 +100,7 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setExtensionVoltage(double volts) {
     volts +=
-        feedforward.calculateExtensionVoltageToOvercomeGravity(
+        ExtensionRotationFeedforward.calculateExtensionG(
             ArmPosition.fromState(
                 new Arm.State(
                     extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))));
@@ -134,7 +132,7 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setRotationVoltage(double volts) {
     volts +=
-        feedforward.calculateRotationVoltageToOvercomeGravity(
+        ExtensionRotationFeedforward.calculateRotationG(
             ArmPosition.fromState(
                 new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))));
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);

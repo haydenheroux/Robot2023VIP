@@ -17,8 +17,6 @@ public class ArmIOTalonFXBase implements ArmIO {
   protected final WPI_TalonFX extensionMotor, rotationMotor;
   private final Solenoid extensionBrake, rotationBrake;
 
-  private final ExtensionRotationFeedforward feedforward = new ExtensionRotationFeedforward();
-
   public ArmIOTalonFXBase() {
     extensionMotor = new WPI_TalonFX(Extension.CAN_ID);
     extensionBrake =
@@ -69,7 +67,7 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts += feedforward.calculateExtensionVoltageToOvercomeGravity(ArmPosition.fromValues(values));
+    volts += ExtensionRotationFeedforward.calculateExtensionG(ArmPosition.fromValues(values));
 
     extensionMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }
@@ -100,7 +98,7 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts += feedforward.calculateRotationVoltageToOvercomeGravity(ArmPosition.fromValues(values));
+    volts += ExtensionRotationFeedforward.calculateRotationG(ArmPosition.fromValues(values));
 
     rotationMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }
