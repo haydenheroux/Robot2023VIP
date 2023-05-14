@@ -33,7 +33,7 @@ public class ManualRotate extends CommandBase {
       arm.disable(Selector.kRotation);
       arm.lock(Selector.kRotation);
     } else {
-      arm.unlock(Selector.kExtension);
+      arm.unlock(Selector.kRotation);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
       arm.setVoltage(Selector.kRotation, volts);
     }
