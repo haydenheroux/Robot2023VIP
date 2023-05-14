@@ -117,6 +117,23 @@ public class Constants {
       /** The maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
+      public static class Feedforward {
+        /** Voltage required to barely overcome gravity, causing positive movement. */
+        public static final double KG_MAX = 0.764;
+        /** Voltage required to barely not overcome gravity, causing negative moement. */
+        public static final double KG_MIN = 0.764;
+
+        /** Voltage required to overcome gravity in both directions. */
+        public static final double KG = (KG_MAX + KG_MIN) / 2.0;
+        /** Voltage required to overcome static friction. */
+        public static final double KS = KG_MAX - KG_MIN;
+
+        /**
+         * Voltage required to overcome the resistive force of the spring.
+         */
+        public static final double SPRING_VOLTAGE = 0.0; // TODO
+      }
+
       /** Constants for rotation using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per degree of angle error. */
