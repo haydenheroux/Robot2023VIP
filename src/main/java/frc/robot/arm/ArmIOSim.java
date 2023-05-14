@@ -40,7 +40,7 @@ public class ArmIOSim implements ArmIO {
           Constants.Physical.ARM_MASS,
           true);
 
-  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 4);
+  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 0);
   private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
 
   private double extensionVoltage = 0.0;
