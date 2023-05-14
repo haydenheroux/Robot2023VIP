@@ -100,7 +100,7 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts += feedforward.calculateRotation(ArmPosition.fromValues(values), volts);
+    volts += feedforward.calculateRotationVoltageToOvercomeGravity(ArmPosition.fromValues(values));
 
     rotationMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }

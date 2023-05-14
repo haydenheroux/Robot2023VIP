@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Rotation;
@@ -124,16 +123,12 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setRotationVoltage(double volts) {
-    SmartDashboard.putNumber("inputVoltage", volts);
     volts +=
-        feedforward.calculateRotation(
+        feedforward.calculateRotationVoltageToOvercomeGravity(
             ArmPosition.fromState(
-                new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))),
-            volts);
+                new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))));
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     rotationVoltage = volts;
-    SmartDashboard.putNumber("voltageToOvercomeGravity", feedforward.calculateRotation(ArmPosition.fromState(new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))), 0.0));
-    SmartDashboard.putNumber("outputVoltage", volts);
   }
 
   @Override

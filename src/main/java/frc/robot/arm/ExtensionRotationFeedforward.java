@@ -25,10 +25,9 @@ public class ExtensionRotationFeedforward {
    *
    * @return the voltage required to overcome resistive forces at the given position.
    */
-  public double calculateRotation(ArmPosition position, double volts) {
-    final double kG = 1.5290;
-    final double kSpring = 0.0;
+  public double calculateRotationVoltageToOvercomeGravity(ArmPosition position) {
+    final double kG = 0.764;
 
-    return kG * Math.cos(position.getAngle().getRadians()) * position.getLength();
+    return kG * position.getAngle().getCos() * position.getLength();
   }
 }
