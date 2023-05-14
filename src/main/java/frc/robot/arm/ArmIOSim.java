@@ -22,6 +22,7 @@ public class ArmIOSim implements ArmIO {
   private boolean rotationBrakeIsActive;
 
   private final double kMetersPerVolt = 0.0025;
+  private final double kMetersPerGravity = -0.005;
 
   private final DCMotor simMotor =
       new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
@@ -56,6 +57,15 @@ public class ArmIOSim implements ArmIO {
   public void updateValues(ArmIOValues values) {
     if (!extensionBrakeIsActive) {
       extensionLengthMeters += extensionVoltage * kMetersPerVolt;
+
+      double metersPulledByGravity = Math.sin(rotationAngleRadians) * kMetersPerGravity;
+
+      boolean atMin = extensionLengthMeters < Extension.MIN_LENGTH;
+      boolean belowMin = atMin && metersPulledByGravity < 0;
+
+      if (!belowMin) {
+        extensionLengthMeters += metersPulledByGravity;
+      }
     }
 
     values.extensionBrakeIsActive = extensionBrakeIsActive;
@@ -92,10 +102,10 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setExtensionVoltage(double volts) {
     volts +=
-        feedforward.calculateExtension(
+        feedforward.calculateExtensionVoltageToOvercomeGravity(
             ArmPosition.fromState(
-                new Arm.State(extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))),
-            volts);
+                new Arm.State(
+                    extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))));
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     extensionVoltage = volts;
   }
