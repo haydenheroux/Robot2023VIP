@@ -87,18 +87,10 @@ public class Constants {
       /** The maximum mobile section length error. */
       public static final double TOLERANCE = 0.01;
 
-      /** Constants for extension using a bang-bang control algorithm. */
-      public static class BangBang {
-        /** Volts to be applied to increase mobile section length. */
-        public static final double INCREASE = 10;
-        /** Volts to be applied to decrease mobile section length. */
-        public static final double DECREASE = -10;
-      }
-
       /** Constants for extension using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per meter of mobile section length error. */
-        public static final double KP = 3.6 / 0.1; // 3.6V per 10cm
+        public static final double KP = 1.2 / 0.01; // 1.2V per cm
       }
     }
 
@@ -125,18 +117,10 @@ public class Constants {
       /** The maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
-      /** Constants for rotation using a bang-bang control algorithm. */
-      public static class BangBang {
-        /** Volts to be applied to increase angle of the arm. */
-        public static final double INCREASE = 4;
-        /** Volts to be applied to decrease angle of the arm. */
-        public static final double DECREASE = 0;
-      }
-
       /** Constants for rotation using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per degree of angle error. */
-        public static final double KP = 0.5 / Units.degreesToRadians(10); // 0.5V per 10 degrees
+        public static final double KP = 0.9 / Units.degreesToRadians(10); // 0.9V per 10 degrees
       }
     }
 

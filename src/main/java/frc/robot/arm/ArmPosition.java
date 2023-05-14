@@ -33,6 +33,18 @@ public class ArmPosition extends Translation2d {
   }
 
   /**
+   * Constructs a new arm position derived from the given {@link ArmIO.ArmIOValues}.
+   *
+   * @param values
+   * @return the arm position for the given values.
+   */
+  public static ArmPosition fromValues(ArmIO.ArmIOValues values) {
+    return ArmPosition.fromState(
+        new Arm.State(
+            values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
+  }
+
+  /**
    * Constructs a new arm position with the current length, but the angle of another arm position.
    *
    * @param other

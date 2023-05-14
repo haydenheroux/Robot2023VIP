@@ -67,6 +67,8 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
+    volts += ExtensionRotationFeedforward.calculateExtensionG(ArmPosition.fromValues(values));
+
     extensionMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }
 
@@ -95,6 +97,8 @@ public class ArmIOTalonFXBase implements ArmIO {
       rotationMotor.disable();
       return;
     }
+
+    volts += ExtensionRotationFeedforward.calculateRotationG(ArmPosition.fromValues(values));
 
     rotationMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
   }
