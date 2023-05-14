@@ -87,6 +87,21 @@ public class Constants {
       /** The maximum mobile section length error. */
       public static final double TOLERANCE = 0.01;
 
+      public static class Feedforward {
+        /** Voltage required to barely overcome gravity, causing positive movement. */
+        public static final double KG_MAX = 2;
+        /** Voltage required to barely not overcome gravity, causing negative moement. */
+        public static final double KG_MIN = 2;
+
+        /** Angle of the arm where KG_MIN and KG_MAX was measured. */
+        public static final double KG_ANGLE = Units.degreesToRadians(90);
+
+        /** Voltage required to overcome gravity in both directions. */
+        public static final double KG = ((KG_MAX + KG_MIN) / 2.0) / Math.sin(KG_ANGLE);
+        /** Voltage required to overcome static friction. */
+        public static final double KS = KG_MAX - KG_MIN;
+      }
+
       /** Constants for extension using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per meter of mobile section length error. */

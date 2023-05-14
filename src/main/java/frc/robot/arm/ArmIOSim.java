@@ -99,11 +99,14 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setExtensionVoltage(double volts) {
+    volts += Extension.Feedforward.KS;
+
     volts +=
         ExtensionRotationFeedforward.calculateExtensionG(
             ArmPosition.fromState(
                 new Arm.State(
                     extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))));
+
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     extensionVoltage = volts;
   }

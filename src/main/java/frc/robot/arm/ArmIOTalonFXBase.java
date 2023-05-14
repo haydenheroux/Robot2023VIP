@@ -67,6 +67,8 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
+    volts += Extension.Feedforward.KS;
+
     volts += ExtensionRotationFeedforward.calculateExtensionG(ArmPosition.fromValues(values));
 
     extensionMotor.set(ControlMode.PercentOutput, volts / Constants.NOMINAL_VOLTAGE);
