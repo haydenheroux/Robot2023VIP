@@ -22,22 +22,19 @@ public class Module {
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
 
-  private final double offsetAngleRadians;
-
   private SwerveModuleState state;
 
   public Module(ModuleConfiguration config) {
     this.config = config;
-    offsetAngleRadians = this.config.offsetAngleRadians;
 
     if (Robot.isSimulation()) {
       angleMotor = new AngleMotorIOSim();
       driveMotor = new DriveMotorIOSim();
-      azimuthEncoder = new AzimuthEncoderIOSim(offsetAngleRadians);
+      azimuthEncoder = new AzimuthEncoderIOSim(config.kOffsetAngleRadians);
     } else {
-      angleMotor = null;
-      driveMotor = null;
-      azimuthEncoder = null;
+      angleMotor = new AngleMotorIOTalonFX(config.kAngleMotorID, config.kCANBus);
+      driveMotor = new DriveMotorIOTalonFX(config.kDriveMotorID, config.kCANBus);
+      azimuthEncoder = new AzimuthEncoderIOCANCoder(config.kAzimuthEncoderID, config.kCANBus);
     }
 
     angleMotor.configure();
@@ -46,7 +43,7 @@ public class Module {
     azimuthEncoder.configure();
 
     azimuthEncoder.updateValues(azimuthEncoderValues);
-    angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRadians - offsetAngleRadians);
+    angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRadians - config.kOffsetAngleRadians);
 
     state = getState();
   }
@@ -86,7 +83,7 @@ public class Module {
   }
 
   public Translation2d getLocation() {
-    return config.locationRelativeToCenterMeters;
+    return config.kLocationRelativeToCenterMeters;
   }
 
   public SwerveModuleState getState() {

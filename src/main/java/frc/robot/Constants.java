@@ -336,32 +336,48 @@ public class Constants {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375));
       public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final int ANGLE_MOTOR_ID = 0;
+      public static final int DRIVE_MOTOR_ID = 0;
+      public static final int AZIMUTH_ENCODER_ID = 0;
+      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
     }
 
     public static class FrontRight {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375));
       public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final int ANGLE_MOTOR_ID = 0;
+      public static final int DRIVE_MOTOR_ID = 0;
+      public static final int AZIMUTH_ENCODER_ID = 0;
+      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
     }
 
     public static class BackLeft {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375));
       public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final int ANGLE_MOTOR_ID = 0;
+      public static final int DRIVE_MOTOR_ID = 0;
+      public static final int AZIMUTH_ENCODER_ID = 0;
+      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
     }
 
     public static class BackRight {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375));
       public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
+      public static final int ANGLE_MOTOR_ID = 0;
+      public static final int DRIVE_MOTOR_ID = 0;
+      public static final int AZIMUTH_ENCODER_ID = 0;
+      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS);
+          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
     }
   }
 
