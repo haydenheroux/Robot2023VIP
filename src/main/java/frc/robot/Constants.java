@@ -290,6 +290,22 @@ public class Constants {
     public static final double MAX_SPEED = Units.feetToMeters(20);
     public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
 
+    public static class Drive {
+      public static final double KP = 0.0;
+      public static final double KI = 0.0;
+      public static final double KD = 0.0;
+      public static final double KF = 0.0;
+      public static final double INTEGRAL_ZONE = 0.0;
+      public static final double CLOSED_LOOP_PEAK_OUTPUT = 0.0;
+      public static final double CURRENT_LIMIT = 0.0;
+      public static final double PEAK_CURRENT = 0.0;
+      public static final double PEAK_TIME = 0.0;
+      public static final boolean CURRENT_LIMIT_ENABLED = true;
+      public static final double CLOSED_LOOP_RAMP_TIME = 0.0;
+      public static final double OPEN_LOOP_RAMP_TIME = 0.0;
+      public static final boolean INVERTED = false;
+    }
+
     public static class FrontLeft {
       public static final Translation2d LOCATION =
           new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375));
