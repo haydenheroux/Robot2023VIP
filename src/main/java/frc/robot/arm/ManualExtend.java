@@ -29,7 +29,8 @@ public class ManualExtend extends CommandBase {
     boolean isLeavingBounds = isLeavingBounds(percent);
     boolean isLeavingRuleZone = isLeavingRuleZone(percent);
     boolean isIntersectingGrid = arm.isIntersectingGrid() && percent > 0;
-    boolean isAboveSafeExtensionAngle = arm.getPosition().isAbove(Constants.Arm.Positions.SAFE) && percent > 0;
+    boolean isAboveSafeExtensionAngle =
+        arm.getPosition().isAbove(Constants.Arm.Positions.SAFE) && percent > 0;
 
     if (isLeavingBounds || isLeavingRuleZone || isIntersectingGrid || isAboveSafeExtensionAngle) {
       arm.disable(Selector.kExtension);

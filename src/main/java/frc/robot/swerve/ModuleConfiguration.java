@@ -10,7 +10,12 @@ public class ModuleConfiguration {
   public final String kCANBus;
 
   public ModuleConfiguration(
-      Translation2d locationRelativeToCenterMeters, double offsetAngleRadians, int angleMotorID, int driveMotorID, int azimuthEncoderID, String canbus) {
+      Translation2d locationRelativeToCenterMeters,
+      double offsetAngleRadians,
+      int angleMotorID,
+      int driveMotorID,
+      int azimuthEncoderID,
+      String canbus) {
     kLocationRelativeToCenterMeters = locationRelativeToCenterMeters;
     kOffsetAngleRadians = offsetAngleRadians;
     kAngleMotorID = angleMotorID;

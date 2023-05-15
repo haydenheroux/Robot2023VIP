@@ -143,9 +143,7 @@ public class Constants {
         /** Voltage required to overcome static friction. */
         public static final double KS = KG_MAX - KG_MIN;
 
-        /**
-         * Voltage required to overcome the resistive force of the spring.
-         */
+        /** Voltage required to overcome the resistive force of the spring. */
         public static final double SPRING_VOLTAGE = 0.0; // TODO
       }
 
@@ -198,7 +196,7 @@ public class Constants {
        * Position for safely extending the arm. The arm is rotated up enough such at any extension
        * will not cause the arm to collide with the grid.
        */
-      public static final ArmPosition ABOVE_GRID =
+      public static final ArmPosition SAFE =
           ArmPosition.fromState(new State(0, Rotation2d.fromDegrees(30)));
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
       public static final ArmPosition FLOOR =
@@ -341,7 +339,13 @@ public class Constants {
       public static final int AZIMUTH_ENCODER_ID = 0;
       public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
+          new ModuleConfiguration(
+              LOCATION,
+              ANGLE_OFFSET_RADIANS,
+              ANGLE_MOTOR_ID,
+              DRIVE_MOTOR_ID,
+              AZIMUTH_ENCODER_ID,
+              CAN_BUS);
     }
 
     public static class FrontRight {
@@ -353,7 +357,13 @@ public class Constants {
       public static final int AZIMUTH_ENCODER_ID = 0;
       public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
+          new ModuleConfiguration(
+              LOCATION,
+              ANGLE_OFFSET_RADIANS,
+              ANGLE_MOTOR_ID,
+              DRIVE_MOTOR_ID,
+              AZIMUTH_ENCODER_ID,
+              CAN_BUS);
     }
 
     public static class BackLeft {
@@ -365,7 +375,13 @@ public class Constants {
       public static final int AZIMUTH_ENCODER_ID = 0;
       public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
+          new ModuleConfiguration(
+              LOCATION,
+              ANGLE_OFFSET_RADIANS,
+              ANGLE_MOTOR_ID,
+              DRIVE_MOTOR_ID,
+              AZIMUTH_ENCODER_ID,
+              CAN_BUS);
     }
 
     public static class BackRight {
@@ -377,7 +393,13 @@ public class Constants {
       public static final int AZIMUTH_ENCODER_ID = 0;
       public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(LOCATION, ANGLE_OFFSET_RADIANS, ANGLE_MOTOR_ID, DRIVE_MOTOR_ID, AZIMUTH_ENCODER_ID, CAN_BUS);
+          new ModuleConfiguration(
+              LOCATION,
+              ANGLE_OFFSET_RADIANS,
+              ANGLE_MOTOR_ID,
+              DRIVE_MOTOR_ID,
+              AZIMUTH_ENCODER_ID,
+              CAN_BUS);
     }
   }
 

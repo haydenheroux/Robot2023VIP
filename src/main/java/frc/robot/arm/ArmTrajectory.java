@@ -54,8 +54,8 @@ public class ArmTrajectory {
   }
 
   /**
-   * Adds a setpoint to the main trajectory to get to a safe extension angle if the main
-   * trajectory has extension and the start position is above the safe extension angle.
+   * Adds a setpoint to the main trajectory to get to a safe extension angle if the main trajectory
+   * has extension and the start position is above the safe extension angle.
    *
    * @param start the start position of the sub-trajectory.
    * @param end the end position of the sub-trajectory.

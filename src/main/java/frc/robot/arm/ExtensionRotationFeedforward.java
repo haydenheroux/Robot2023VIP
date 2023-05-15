@@ -19,6 +19,8 @@ public class ExtensionRotationFeedforward {
    * @return the voltage required to overcome resistive forces at the given position.
    */
   public static double calculateRotationG(ArmPosition position) {
-    return Constants.Arm.Rotation.Feedforward.KG * position.getAngle().getCos() * position.getLength();
+    return Constants.Arm.Rotation.Feedforward.KG
+        * position.getAngle().getCos()
+        * position.getLength();
   }
 }
