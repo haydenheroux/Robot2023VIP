@@ -76,19 +76,19 @@ public class Constants {
 
       /**
        * Difference between the total length of the arm (distance from the shoulder to end of claw)
-       * and the length of the mobile section.
+       * and the length of the extending section.
        */
       public static final double LENGTH_OFFSET =
           Physical.ARM_STATIC_SECTION_LENGTH + Physical.CLAW_LENGTH;
-      /** Minimum length of the mobile section. */
+      /** Minimum length of the extending section. */
       public static final double MIN_LENGTH = 0;
       /**
-       * Maximum length of the mobile section. Note that this does NOT equal the maximum TOTAL
+       * Maximum length of the extending section. Note that this does NOT equal the maximum TOTAL
        * extension length.
        */
       public static final double MAX_LENGTH = Units.feetToMeters(5);
 
-      /** The maximum mobile section length error. */
+      /** Maximum extending section length error. */
       public static final double TOLERANCE = 0.01;
 
       public static class Feedforward {
@@ -108,7 +108,7 @@ public class Constants {
 
       /** Constants for extension using a PID control algorithm. */
       public static class PID {
-        /** Volts to be applied per meter of mobile section length error. */
+        /** Volts to be applied per meter of extending section length error. */
         public static final double KP = 1.2 / 0.01; // 1.2V per cm
       }
     }
@@ -133,7 +133,7 @@ public class Constants {
       /** Maximum angle of the arm. */
       public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(60);
 
-      /** The maximum angle error of the arm. */
+      /** Maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
       public static class Feedforward {
@@ -288,72 +288,85 @@ public class Constants {
     }
   }
 
+  /** Swerve drive subsystem constants. */
   public static class Swerve {
+    /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);
+    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
+    /** Maximum angular speed achievable by the swerve drive, in radians per second. */
     public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
 
+    /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
     public static final boolean INVERTED = true;
 
+    /** Angle motor constants. */
     public static class Angle {
+      /** Proportional gain, in ??? per ???. */
       public static final double KP = 0.075;
+      /** Derivative gain, in ??? per ???. */
       public static final double KD = 0.4;
+      /** Current draw limit, in amps. */
       public static final double CURRENT_LIMIT = 10.0;
+      /** Time to go from zero to full, in seconds. */
       public static final double RAMP_TIME = 0.25;
+      /** Gear ratio between the angle motor and the wheel. */
       public static final double GEAR_RATIO = 21.42;
     }
 
+    /** Drive motor constants. */
     public static class Drive {
+      /** Proportional gain, in ??? per ???. */
       public static final double KP = 0.0020645;
+      /** Derivative gain, in ??? per ???. */
       public static final double KD = 0.0;
+      /** Current draw limit, in amps. */
       public static final double CURRENT_LIMIT = 65.0;
+      /** Time to go from zero to full, in seconds. */
       public static final double RAMP_TIME = 0.25;
+      /** Gear ratio between the drive motor and the wheel. */
       public static final double GEAR_RATIO = 6.75;
     }
 
-    public static class FrontLeft {
-      public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(
-              new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375)),
-              Units.degreesToRadians(0.0),
-              1,
-              3,
-              2,
-              "swerve");
-    }
+    /** Configuration for the front left swerve module. */
+    public static final ModuleConfiguration FRONT_LEFT_CONFIG =
+        new ModuleConfiguration(
+            new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375)),
+            Units.degreesToRadians(0.0),
+            1,
+            3,
+            2,
+            "swerve");
 
-    public static class FrontRight {
-      public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(
-              new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375)),
-              Units.degreesToRadians(0.0),
-              4,
-              6,
-              5,
-              "swerve");
-    }
+    /** Configuration for the front right swerve module. */
+    public static final ModuleConfiguration FRONT_RIGHT_CONFIG =
+        new ModuleConfiguration(
+            new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375)),
+            Units.degreesToRadians(0.0),
+            4,
+            6,
+            5,
+            "swerve");
 
-    public static class BackLeft {
-      public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(
-              new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375)),
-              Units.degreesToRadians(0.0),
-              11,
-              13,
-              12,
-              "swerve");
-    }
+    /** Configuration for the back left swerve module. */
+    public static final ModuleConfiguration BACK_LEFT_CONFIG =
+        new ModuleConfiguration(
+            new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375)),
+            Units.degreesToRadians(0.0),
+            11,
+            13,
+            12,
+            "swerve");
 
-    public static class BackRight {
-      public static final ModuleConfiguration CONFIG =
-          new ModuleConfiguration(
-              new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375)),
-              Units.degreesToRadians(0.0),
-              8,
-              10,
-              9,
-              "swerve");
-    }
+    /** Configuration for the back right swerve module. */
+    public static final ModuleConfiguration BACK_RIGHT_CONFIG =
+        new ModuleConfiguration(
+            new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375)),
+            Units.degreesToRadians(0.0),
+            8,
+            10,
+            9,
+            "swerve");
   }
 
   public static class Auto {

@@ -50,10 +50,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   /** Creates a new Swerve. */
   private Swerve() {
-    modules[0] = new Module(Constants.Swerve.FrontLeft.CONFIG);
-    modules[1] = new Module(Constants.Swerve.FrontRight.CONFIG);
-    modules[2] = new Module(Constants.Swerve.BackLeft.CONFIG);
-    modules[3] = new Module(Constants.Swerve.BackRight.CONFIG);
+    modules[0] = new Module(Constants.Swerve.FRONT_LEFT_CONFIG);
+    modules[1] = new Module(Constants.Swerve.FRONT_RIGHT_CONFIG);
+    modules[2] = new Module(Constants.Swerve.BACK_LEFT_CONFIG);
+    modules[3] = new Module(Constants.Swerve.BACK_RIGHT_CONFIG);
 
     kinematics =
         new SwerveDriveKinematics(
