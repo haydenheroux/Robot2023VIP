@@ -11,6 +11,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.robot.Constants.Physical;
+import frc.robot.Constants.Swerve;
 import frc.robot.Constants.Swerve.Drive;
 
 public class DriveMotorIOTalonFX implements DriveMotorIO {
@@ -38,23 +40,18 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.slot0.kP = Drive.KP;
-    config.slot0.kI = Drive.KI;
     config.slot0.kD = Drive.KD;
-    config.slot0.kF = Drive.KF;
-    config.slot0.integralZone = Drive.INTEGRAL_ZONE;
-    config.slot0.closedLoopPeakOutput = Drive.CLOSED_LOOP_PEAK_OUTPUT;
 
     config.voltageCompSaturation = Constants.NOMINAL_VOLTAGE;
     config.supplyCurrLimit.currentLimit = Drive.CURRENT_LIMIT;
-    config.supplyCurrLimit.triggerThresholdCurrent = Drive.PEAK_CURRENT;
-    config.supplyCurrLimit.triggerThresholdTime = Drive.PEAK_TIME;
-    config.supplyCurrLimit.enable = Drive.CURRENT_LIMIT_ENABLED;
+    config.supplyCurrLimit.triggerThresholdCurrent = Drive.CURRENT_LIMIT;
+    config.supplyCurrLimit.triggerThresholdTime = 0;
+    config.supplyCurrLimit.enable = true;
 
-    config.closedloopRamp = Drive.CLOSED_LOOP_RAMP_TIME;
-    config.openloopRamp = Drive.OPEN_LOOP_RAMP_TIME;
+    config.closedloopRamp = Drive.RAMP_TIME;
 
     Timer.delay(1);
-    motor.setInverted(Drive.INVERTED);
+    motor.setInverted(Swerve.INVERTED);
 
     motor.configAllSettings(config, 250);
   }
@@ -63,17 +60,17 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   public void updateValues(DriveMotorIOValues values) {
     values.positionMeters =
         Conversions.TalonFX.Position.toMeters(
-            motor.getSelectedSensorPosition(), Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
+            motor.getSelectedSensorPosition(), Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
     values.velocityMetersPerSecond =
         Conversions.TalonFX.Velocity.toMPS(
-            motor.getSelectedSensorVelocity(), Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
+            motor.getSelectedSensorVelocity(), Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
   }
 
   @Override
   public void setPosition(double distanceMeters) {
     motor.setSelectedSensorPosition(
         Conversions.TalonFX.Position.fromMeters(
-            distanceMeters, Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
+            distanceMeters, Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
         0,
         250);
   }
@@ -89,7 +86,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     motor.set(
         TalonFXControlMode.Velocity,
         Conversions.TalonFX.Velocity.fromMPS(
-            velocityMetersPerSecond, Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
+            velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
         DemandType.ArbitraryFeedForward,
         feedforward.calculate(velocityMetersPerSecond));
   }

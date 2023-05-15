@@ -36,6 +36,10 @@ public class Constants {
      * the bumpers.
      */
     public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
+
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+    public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+    public static final double WHEEL_COF = 1.19;
   }
 
   /** Pneumatics constants relating to the pneumatics module. */
@@ -286,120 +290,69 @@ public class Constants {
 
   public static class Swerve {
     public static final double MAX_SPEED = Units.feetToMeters(20);
-    public static final double MAX_ACCELERATION =
-        1.19 * 9.81; // TODO Product of wheel COF and gravity
+    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
+
+    public static final boolean INVERTED = true;
 
     public static class Angle {
       public static final double KP = 0.075;
-      public static final double KI = 0.0;
       public static final double KD = 0.4;
-      public static final double KF = 0.0;
-      public static final double INTEGRAL_ZONE = 0.0;
-      public static final double CLOSED_LOOP_PEAK_OUTPUT = 1.0; // TODO
       public static final double CURRENT_LIMIT = 10.0;
-      public static final double PEAK_CURRENT = 100.0;
-      public static final double PEAK_TIME = 1.0;
-      public static final boolean CURRENT_LIMIT_ENABLED = true;
-      public static final double CLOSED_LOOP_RAMP_TIME = 0.25;
-      public static final double OPEN_LOOP_RAMP_TIME = 0.25;
-      public static final boolean INVERTED = true;
+      public static final double RAMP_TIME = 0.25;
       public static final double GEAR_RATIO = 21.42;
-    }
-
-    public static class AzimuthEncoder {
-      public static final boolean INVERTED = true;
     }
 
     public static class Drive {
       public static final double KP = 0.0020645;
-      public static final double KI = 0.0;
       public static final double KD = 0.0;
-      public static final double KF = 0.0;
-      public static final double INTEGRAL_ZONE = 0.0;
-      public static final double CLOSED_LOOP_PEAK_OUTPUT = 1.0; // TODO
       public static final double CURRENT_LIMIT = 65.0;
-      public static final double PEAK_CURRENT = 100.0;
-      public static final double PEAK_TIME = 1.0;
-      public static final boolean CURRENT_LIMIT_ENABLED = true;
-      public static final double CLOSED_LOOP_RAMP_TIME = 0.25;
-      public static final double OPEN_LOOP_RAMP_TIME = 0.25;
-      public static final boolean INVERTED = true;
+      public static final double RAMP_TIME = 0.25;
       public static final double GEAR_RATIO = 6.75;
-      public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
-      public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     }
 
     public static class FrontLeft {
-      public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375));
-      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
-      public static final int ANGLE_MOTOR_ID = 0;
-      public static final int DRIVE_MOTOR_ID = 0;
-      public static final int AZIMUTH_ENCODER_ID = 0;
-      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
           new ModuleConfiguration(
-              LOCATION,
-              ANGLE_OFFSET_RADIANS,
-              ANGLE_MOTOR_ID,
-              DRIVE_MOTOR_ID,
-              AZIMUTH_ENCODER_ID,
-              CAN_BUS);
+              new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375)),
+              Units.degreesToRadians(0.0),
+              1,
+              3,
+              2,
+              "swerve");
     }
 
     public static class FrontRight {
-      public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375));
-      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
-      public static final int ANGLE_MOTOR_ID = 0;
-      public static final int DRIVE_MOTOR_ID = 0;
-      public static final int AZIMUTH_ENCODER_ID = 0;
-      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
           new ModuleConfiguration(
-              LOCATION,
-              ANGLE_OFFSET_RADIANS,
-              ANGLE_MOTOR_ID,
-              DRIVE_MOTOR_ID,
-              AZIMUTH_ENCODER_ID,
-              CAN_BUS);
+              new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375)),
+              Units.degreesToRadians(0.0),
+              4,
+              6,
+              5,
+              "swerve");
     }
 
     public static class BackLeft {
-      public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375));
-      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
-      public static final int ANGLE_MOTOR_ID = 0;
-      public static final int DRIVE_MOTOR_ID = 0;
-      public static final int AZIMUTH_ENCODER_ID = 0;
-      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
           new ModuleConfiguration(
-              LOCATION,
-              ANGLE_OFFSET_RADIANS,
-              ANGLE_MOTOR_ID,
-              DRIVE_MOTOR_ID,
-              AZIMUTH_ENCODER_ID,
-              CAN_BUS);
+              new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375)),
+              Units.degreesToRadians(0.0),
+              11,
+              13,
+              12,
+              "swerve");
     }
 
     public static class BackRight {
-      public static final Translation2d LOCATION =
-          new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375));
-      public static final double ANGLE_OFFSET_RADIANS = 0.0; // TODO
-      public static final int ANGLE_MOTOR_ID = 0;
-      public static final int DRIVE_MOTOR_ID = 0;
-      public static final int AZIMUTH_ENCODER_ID = 0;
-      public static final String CAN_BUS = "";
       public static final ModuleConfiguration CONFIG =
           new ModuleConfiguration(
-              LOCATION,
-              ANGLE_OFFSET_RADIANS,
-              ANGLE_MOTOR_ID,
-              DRIVE_MOTOR_ID,
-              AZIMUTH_ENCODER_ID,
-              CAN_BUS);
+              new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375)),
+              Units.degreesToRadians(0.0),
+              8,
+              10,
+              9,
+              "swerve");
     }
   }
 

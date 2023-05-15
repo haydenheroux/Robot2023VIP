@@ -6,7 +6,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import frc.lib.math.Conversions;
-import frc.robot.Constants.Swerve.AzimuthEncoder;
+import frc.robot.Constants.Swerve;
 
 public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
@@ -23,7 +23,7 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
     CANCoderConfiguration config = new CANCoderConfiguration();
 
     config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    config.sensorDirection = AzimuthEncoder.INVERTED;
+    config.sensorDirection = Swerve.INVERTED;
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     config.sensorTimeBase = SensorTimeBase.PerSecond;
 

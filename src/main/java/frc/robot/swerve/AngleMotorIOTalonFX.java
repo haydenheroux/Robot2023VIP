@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve;
 import frc.robot.Constants.Swerve.Angle;
 
 public class AngleMotorIOTalonFX implements AngleMotorIO {
@@ -31,23 +32,18 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     config.slot0.kP = Angle.KP;
-    config.slot0.kI = Angle.KI;
     config.slot0.kD = Angle.KD;
-    config.slot0.kF = Angle.KF;
-    config.slot0.integralZone = Angle.INTEGRAL_ZONE;
-    config.slot0.closedLoopPeakOutput = Angle.CLOSED_LOOP_PEAK_OUTPUT;
 
     config.voltageCompSaturation = Constants.NOMINAL_VOLTAGE;
     config.supplyCurrLimit.currentLimit = Angle.CURRENT_LIMIT;
-    config.supplyCurrLimit.triggerThresholdCurrent = Angle.PEAK_CURRENT;
-    config.supplyCurrLimit.triggerThresholdTime = Angle.PEAK_TIME;
-    config.supplyCurrLimit.enable = Angle.CURRENT_LIMIT_ENABLED;
+    config.supplyCurrLimit.triggerThresholdCurrent = Angle.CURRENT_LIMIT;
+    config.supplyCurrLimit.triggerThresholdTime = 0;
+    config.supplyCurrLimit.enable = true;
 
-    config.closedloopRamp = Angle.CLOSED_LOOP_RAMP_TIME;
-    config.openloopRamp = Angle.OPEN_LOOP_RAMP_TIME;
+    config.closedloopRamp = Angle.RAMP_TIME;
 
     Timer.delay(1);
-    motor.setInverted(Angle.INVERTED);
+    motor.setInverted(Swerve.INVERTED);
 
     motor.configAllSettings(config, 250);
   }
