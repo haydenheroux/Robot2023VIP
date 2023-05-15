@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
@@ -15,18 +16,25 @@ import frc.robot.Constants.Swerve.Drive;
 public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   private final WPI_TalonFX motor;
+  private final SimpleMotorFeedforward feedforward;
 
   public DriveMotorIOTalonFX(int id, String canbus) {
     motor = new WPI_TalonFX(id, canbus);
+
+    double kv = Constants.NOMINAL_VOLTAGE / Constants.Swerve.MAX_SPEED;
+    double ka = Constants.NOMINAL_VOLTAGE / Constants.Swerve.MAX_ACCELERATION;
+
+    feedforward = new SimpleMotorFeedforward(0.0, kv, ka);
   }
 
   @Override
   public void configure() {
     motor.configFactoryDefault();
     motor.setSensorPhase(true); // TODO
-    motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30); // TODO
-    motor.configNeutralDeadband(0.001); // TODO
-
+    motor.configSelectedFeedbackSensor(
+        TalonFXFeedbackDevice.IntegratedSensor,
+        0,
+        30); // TODO motor.configNeutralDeadband(0.001); // TODO
     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 250); // TODO
 
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -56,15 +64,20 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   @Override
   public void updateValues(DriveMotorIOValues values) {
     values.positionMeters =
-        Conversions.TalonFX.Position.toMeters(motor.getSelectedSensorPosition(), 0.0, 0.0);
+        Conversions.TalonFX.Position.toMeters(
+            motor.getSelectedSensorPosition(), Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
     values.velocityMetersPerSecond =
-        Conversions.TalonFX.Velocity.toMPS(motor.getSelectedSensorVelocity(), 0.0, 0.0); // TODO
+        Conversions.TalonFX.Velocity.toMPS(
+            motor.getSelectedSensorVelocity(), Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
   }
 
   @Override
   public void setPosition(double distanceMeters) {
     motor.setSelectedSensorPosition(
-        Conversions.TalonFX.Position.fromMeters(distanceMeters, 0.0, 0.0), 0, 250); // TODO
+        Conversions.TalonFX.Position.fromMeters(
+            distanceMeters, Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
+        0,
+        250);
   }
 
   @Override
@@ -77,9 +90,10 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
     motor.set(
         TalonFXControlMode.Velocity,
-        Conversions.TalonFX.Velocity.fromMPS(velocityMetersPerSecond, 0.0, 0.0),
+        Conversions.TalonFX.Velocity.fromMPS(
+            velocityMetersPerSecond, Drive.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
         DemandType.ArbitraryFeedForward,
-        0.0); // TODO
+        feedforward.calculate(velocityMetersPerSecond));
   }
 
   @Override
