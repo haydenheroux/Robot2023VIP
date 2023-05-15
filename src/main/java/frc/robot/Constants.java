@@ -309,6 +309,10 @@ public class Constants {
       public static final double GEAR_RATIO = 21.42;
     }
 
+    public static class AzimuthEncoder {
+      public static final boolean INVERTED = true;
+    }
+
     public static class Drive {
       public static final double KP = 0.0020645;
       public static final double KI = 0.0;
