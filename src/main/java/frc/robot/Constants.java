@@ -292,6 +292,23 @@ public class Constants {
         1.19 * 9.81; // TODO Product of wheel COF and gravity
     public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
 
+    public static class Angle {
+      public static final double KP = 0.075;
+      public static final double KI = 0.0;
+      public static final double KD = 0.4;
+      public static final double KF = 0.0;
+      public static final double INTEGRAL_ZONE = 0.0;
+      public static final double CLOSED_LOOP_PEAK_OUTPUT = 1.0; // TODO
+      public static final double CURRENT_LIMIT = 10.0;
+      public static final double PEAK_CURRENT = 100.0;
+      public static final double PEAK_TIME = 1.0;
+      public static final boolean CURRENT_LIMIT_ENABLED = true;
+      public static final double CLOSED_LOOP_RAMP_TIME = 0.25;
+      public static final double OPEN_LOOP_RAMP_TIME = 0.25;
+      public static final boolean INVERTED = true;
+      public static final double GEAR_RATIO = 21.42;
+    }
+
     public static class Drive {
       public static final double KP = 0.0020645;
       public static final double KI = 0.0;

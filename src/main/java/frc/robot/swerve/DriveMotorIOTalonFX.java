@@ -31,10 +31,8 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   public void configure() {
     motor.configFactoryDefault();
     motor.setSensorPhase(true); // TODO
-    motor.configSelectedFeedbackSensor(
-        TalonFXFeedbackDevice.IntegratedSensor,
-        0,
-        30); // TODO motor.configNeutralDeadband(0.001); // TODO
+    motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30); // TODO
+    motor.configNeutralDeadband(0.001); // TODO
     motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 250); // TODO
 
     TalonFXConfiguration config = new TalonFXConfiguration();

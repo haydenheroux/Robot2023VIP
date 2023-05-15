@@ -117,6 +117,28 @@ public class Conversions {
         double velocityTicks = fromRPM(wheelRPM, gearRatio);
         return velocityTicks;
       }
+
+      /**
+       * @param velocityTicks TalonFX velocity ticks.
+       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
+       * @return velocity of mechanism, in meters per second.
+       */
+      public static double toRPS(double velocityTicks, double gearRatio) {
+        double wheelRPM = toRPM(velocityTicks, gearRatio);
+        double wheelRPS = (wheelRPM * 2 * Math.PI) / 60;
+        return wheelRPS;
+      }
+
+      /**
+       * @param mps velocity of mechanism, in meters per second.
+       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
+       * @return TalonFX velocity ticks.
+       */
+      public static double fromRPS(double mps, double gearRatio) {
+        double wheelRPM = ((mps * 60) / (2 * Math.PI));
+        double velocityTicks = fromRPM(wheelRPM, gearRatio);
+        return velocityTicks;
+      }
     }
   }
 }
