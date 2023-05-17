@@ -61,10 +61,10 @@ public class ArmTrajectory {
    * @param end the end position of the sub-trajectory.
    */
   private void addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
-    boolean hasExtension = start.getLength() < end.getLength();
-    if (start.isAbove(Positions.SAFE) && hasExtension) {
-      setpoints.add(start.withAngle(Positions.SAFE));
-    }
+    boolean isExtending = start.getLength() < end.getLength();
+    if (start.isBelow(Positions.SAFE) && !isExtending) return;
+   
+    setpoints.add(start.withAngle(Positions.SAFE));
   }
 
   /**
@@ -75,20 +75,21 @@ public class ArmTrajectory {
    * @param end
    */
   private void addSafeIntermediateTrajectory(ArmPosition start, ArmPosition end) {
-    if (directTrajectoryIsUnsafe(start, end)) {
-      setpoints.add(start.withAngle(Positions.SAFE));
-      setpoints.add(start.withAngle(Positions.SAFE).withLength(end));
-    }
+    if (directTrajectoryIsSafe(start, end)) return;
+
+    // FIXME Does not work for rotating from below to above
+    setpoints.add(start.withAngle(Positions.SAFE));
+    setpoints.add(start.withAngle(Positions.SAFE).withLength(end));
   }
 
   /**
-   * Returns true if the direct trajectory between two positions will be unsafe.
+   * Returns true if the direct trajectory between two positions will be safe.
    *
    * @param start the start posiiton of the trajectory.
    * @param end the end position of the trajectory.
-   * @return true if the direct trajectory between two positions will be unsafe.
+   * @return true if the direct trajectory between two positions will be safe.
    */
-  private boolean directTrajectoryIsUnsafe(ArmPosition start, ArmPosition end) {
+  private boolean directTrajectoryIsSafe(ArmPosition start, ArmPosition end) {
     Rotation2d startAngle, endAngle;
 
     // Since interpolating between two angles mandates that start is less than end,
@@ -110,10 +111,10 @@ public class ArmTrajectory {
       ArmPosition testPosition = new ArmPosition(worstCaseLength, testAngle);
 
       if (testPosition.isIntersectingGrid() || !testPosition.isWithinRuleZone()) {
-        return true;
+        return false;
       }
     }
 
-    return false;
+    return true;
   }
 }
