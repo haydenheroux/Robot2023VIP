@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
+import frc.robot.swerve.SwerveMath;
 import java.util.HashMap;
 
 public class Constants {
@@ -291,44 +292,6 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
-    /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(20);
-    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
-    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
-    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
-    public static final Rotation2d MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1);
-
-    /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
-    public static final boolean INVERTED = true;
-
-    /** Angle motor constants. */
-    public static class Angle {
-      /** Proportional gain, in ??? per ???. */
-      public static final double KP = 0.075;
-      /** Derivative gain, in ??? per ???. */
-      public static final double KD = 0.4;
-      /** Current draw limit, in amps. */
-      public static final double CURRENT_LIMIT = 10.0;
-      /** Time to go from zero to full, in seconds. */
-      public static final double RAMP_TIME = 0.25;
-      /** Gear ratio between the angle motor and the wheel. */
-      public static final double GEAR_RATIO = 21.42;
-    }
-
-    /** Drive motor constants. */
-    public static class Drive {
-      /** Proportional gain, in ??? per ???. */
-      public static final double KP = 0.0020645;
-      /** Derivative gain, in ??? per ???. */
-      public static final double KD = 0.0;
-      /** Current draw limit, in amps. */
-      public static final double CURRENT_LIMIT = 65.0;
-      /** Time to go from zero to full, in seconds. */
-      public static final double RAMP_TIME = 0.25;
-      /** Gear ratio between the drive motor and the wheel. */
-      public static final double GEAR_RATIO = 6.75;
-    }
-
     /** Configuration for the front left swerve module. */
     public static final ModuleConfiguration FRONT_LEFT_CONFIG =
         new ModuleConfiguration(
@@ -368,6 +331,47 @@ public class Constants {
             10,
             9,
             "swerve");
+
+    /** Maximum speed achievable by the swerve drive, in meters per second. */
+    public static final double MAX_SPEED = Units.feetToMeters(20);
+    /** Minimum speed before applying dejittering algorithm, in meters per second. */
+    public static final double DEJITTER_SPEED = Units.inchesToMeters(4);
+    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
+    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
+    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
+    public static final Rotation2d MAX_ANGULAR_SPEED =
+        SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, FRONT_LEFT_CONFIG);
+
+    /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
+    public static final boolean INVERTED = true;
+
+    /** Angle motor constants. */
+    public static class Angle {
+      /** Proportional gain, in ??? per ???. */
+      public static final double KP = 0.075;
+      /** Derivative gain, in ??? per ???. */
+      public static final double KD = 0.4;
+      /** Current draw limit, in amps. */
+      public static final double CURRENT_LIMIT = 10.0;
+      /** Time to go from zero to full, in seconds. */
+      public static final double RAMP_TIME = 0.25;
+      /** Gear ratio between the angle motor and the wheel. */
+      public static final double GEAR_RATIO = 21.42;
+    }
+
+    /** Drive motor constants. */
+    public static class Drive {
+      /** Proportional gain, in ??? per ???. */
+      public static final double KP = 0.0020645;
+      /** Derivative gain, in ??? per ???. */
+      public static final double KD = 0.0;
+      /** Current draw limit, in amps. */
+      public static final double CURRENT_LIMIT = 65.0;
+      /** Time to go from zero to full, in seconds. */
+      public static final double RAMP_TIME = 0.25;
+      /** Gear ratio between the drive motor and the wheel. */
+      public static final double GEAR_RATIO = 6.75;
+    }
   }
 
   public static class Auto {

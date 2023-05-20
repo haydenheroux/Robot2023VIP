@@ -1,8 +1,15 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class SwerveMath {
+
+  public static Rotation2d calculateMaxAngularSpeed(
+      double maxSpeed, ModuleConfiguration farthestModule) {
+    double angularRadius = farthestModule.kLocationRelativeToCenterMeters.getNorm();
+    return Rotation2d.fromRadians(maxSpeed / angularRadius);
+  }
 
   public static Rotation2d placeInAppropriateScope(
       Rotation2d currentAngle, Rotation2d desiredAngle) {
@@ -36,5 +43,14 @@ public class SwerveMath {
     }
 
     return Rotation2d.fromDegrees(desiredAngleDegrees);
+  }
+
+  public static SwerveModuleState dejitter(
+      SwerveModuleState state, Rotation2d previousAngle, double minimumSpeed) {
+    if (Math.abs(state.speedMetersPerSecond) > minimumSpeed) {
+      return state;
+    }
+
+    return new SwerveModuleState(state.speedMetersPerSecond, previousAngle);
   }
 }

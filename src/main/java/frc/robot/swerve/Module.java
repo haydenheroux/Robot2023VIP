@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants.Swerve;
 import frc.robot.Robot;
 import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
@@ -72,7 +73,7 @@ public class Module {
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
 
     if (isForced == false) {
-      // TODO anti-jitter
+      setpoint = SwerveMath.dejitter(setpoint, state.angle, Swerve.DEJITTER_SPEED);
     }
 
     boolean angleChanged = setpoint.angle.equals(state.angle) == false;
