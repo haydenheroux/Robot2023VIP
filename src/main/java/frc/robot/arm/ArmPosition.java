@@ -136,6 +136,14 @@ public class ArmPosition extends Translation2d {
     return this.getAngle().getRadians() < other.getAngle().getRadians();
   }
 
+  public boolean isAboveHorizon() {
+    return this.getAngle().getRadians() > 0;
+  }
+
+  public boolean isBelowHorizon() {
+    return this.getAngle().getRadians() < 0;
+  }
+
   /**
    * Returns true if this arm position is at the angle and length of another arm position.
    *

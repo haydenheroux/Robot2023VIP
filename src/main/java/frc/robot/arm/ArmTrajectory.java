@@ -21,10 +21,11 @@ public class ArmTrajectory {
   public ArmTrajectory(ArmPosition start, ArmPosition end) {
     setpoints = new LinkedList<ArmPosition>();
 
-    setpoints.add(start);
+    ArmPosition previous = start;
 
-    addSafeExtensionAngle(get(), end);
-    addSafeIntermediateTrajectory(get(), end);
+    previous = addSafeBelowHorizonRetraction(start, end);
+    previous = addSafeExtensionAngle(previous, end);
+    previous = addSafeIntermediateTrajectory(previous, end);
 
     setpoints.add(end);
   }
@@ -53,18 +54,32 @@ public class ArmTrajectory {
     return get();
   }
 
+  private ArmPosition addSafeBelowHorizonRetraction(ArmPosition start, ArmPosition end) {
+    if (start.isAboveHorizon()) return start;
+    if (start.isBelowHorizon() && end.isBelowHorizon()) return start;
+
+    ArmPosition setpoint = start.withLength(Positions.SAFE);
+
+    setpoints.add(setpoint);
+    return setpoint;
+  }
+
   /**
    * Adds a setpoint to the main trajectory to get to a safe extension angle if the main trajectory
    * has extension and the start position is above the safe extension angle.
    *
    * @param start the start position of the sub-trajectory.
    * @param end the end position of the sub-trajectory.
+   * @return the generated setpoint.
    */
-  private void addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
+  private ArmPosition addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
     boolean isExtending = start.getLength() < end.getLength();
-    if (start.isBelow(Positions.SAFE) && !isExtending) return;
+    if (start.isBelow(Positions.SAFE) && !isExtending) return start;
 
-    setpoints.add(start.withAngle(Positions.SAFE));
+    ArmPosition setpoint = start.withAngle(Positions.SAFE);
+
+    setpoints.add(setpoint);
+    return setpoint;
   }
 
   /**
@@ -74,12 +89,15 @@ public class ArmTrajectory {
    * @param start
    * @param end
    */
-  private void addSafeIntermediateTrajectory(ArmPosition start, ArmPosition end) {
-    if (directTrajectoryIsSafe(start, end)) return;
+  private ArmPosition addSafeIntermediateTrajectory(ArmPosition start, ArmPosition end) {
+    if (directTrajectoryIsSafe(start, end)) return start;
 
-    // FIXME Does not work for rotating from below to above
     setpoints.add(start.withAngle(Positions.SAFE));
-    setpoints.add(start.withAngle(Positions.SAFE).withLength(end));
+
+    ArmPosition setpoint = start.withAngle(Positions.SAFE).withLength(end);
+    setpoints.add(setpoint);
+
+    return setpoint;
   }
 
   /**
