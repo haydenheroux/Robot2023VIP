@@ -50,9 +50,11 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setExtensionPosition(double lengthMeters) {
-    double ticks =
-        Conversions.TalonFX.Position.fromMeters(
-            lengthMeters, Extension.DISTANCE_PER_ROTATION, Extension.GEAR_RATIO);
+    double rotations =
+        Conversions.General.toRotations(lengthMeters, Extension.DISTANCE_PER_ROTATION);
+
+    double ticks = Conversions.TalonFX.Position.fromRotations(rotations, Extension.GEAR_RATIO);
+
     extensionMotor.setSelectedSensorPosition(ticks);
   }
 
@@ -123,10 +125,11 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   protected double getExtensionPosition() {
-    return Conversions.TalonFX.Position.toMeters(
-        extensionMotor.getSelectedSensorPosition(),
-        Constants.Arm.Extension.DISTANCE_PER_ROTATION,
-        Constants.Arm.Extension.GEAR_RATIO);
+    double rotations =
+        Conversions.TalonFX.Position.toRotations(
+            extensionMotor.getSelectedSensorPosition(), Extension.GEAR_RATIO);
+
+    return Conversions.General.toMeters(rotations, Constants.Arm.Extension.DISTANCE_PER_ROTATION);
   }
 
   protected double getExtensionVoltage() {

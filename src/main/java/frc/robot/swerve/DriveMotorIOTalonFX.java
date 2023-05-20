@@ -58,21 +58,26 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
+    double positionRotations =
+        Conversions.TalonFX.Position.toRotations(
+            motor.getSelectedSensorPosition(), Drive.GEAR_RATIO);
+
+    double velocityRotationsPerSecond =
+        Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorVelocity(), Drive.GEAR_RATIO);
+
     values.positionMeters =
-        Conversions.TalonFX.Position.toMeters(
-            motor.getSelectedSensorPosition(), Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
+        Conversions.General.toMeters(positionRotations, Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
-        Conversions.TalonFX.Velocity.toMPS(
-            motor.getSelectedSensorVelocity(), Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO);
+        Conversions.General.toMeters(velocityRotationsPerSecond, Physical.WHEEL_CIRCUMFERENCE);
   }
 
   @Override
   public void setPosition(double distanceMeters) {
+    double rotations =
+        Conversions.General.toRotations(distanceMeters, Physical.WHEEL_CIRCUMFERENCE);
+
     motor.setSelectedSensorPosition(
-        Conversions.TalonFX.Position.fromMeters(
-            distanceMeters, Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
-        0,
-        250);
+        Conversions.TalonFX.Position.fromRotations(rotations, Drive.GEAR_RATIO), 0, 250);
   }
 
   @Override
@@ -83,10 +88,12 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
+    double rotationsPerSecond =
+        Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
+
     motor.set(
         TalonFXControlMode.Velocity,
-        Conversions.TalonFX.Velocity.fromMPS(
-            velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE, Drive.GEAR_RATIO),
+        Conversions.TalonFX.Velocity.fromRPS(rotationsPerSecond, Drive.GEAR_RATIO),
         DemandType.ArbitraryFeedForward,
         feedforward.calculate(velocityMetersPerSecond));
   }
