@@ -4,7 +4,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants;
 
 public class SwerveMath {
 
@@ -57,28 +59,42 @@ public class SwerveMath {
     return new SwerveModuleState(state.speedMetersPerSecond, previousAngle);
   }
 
-  public static Twist2d poseLog(Pose2d transform) {
-    final var dtheta = transform.getRotation().getRadians();
+  private static Twist2d velocityPoseLog(Pose2d velocity) {
+    final var dtheta = velocity.getRotation().getRadians();
     final var halfDtheta = dtheta / 2.0;
 
-    final var cosMinusOne = transform.getRotation().getCos() - 1;
+    final var cosMinusOne = velocity.getRotation().getCos() - 1;
 
     double halfThetaByTanOfHalfDtheta;
     if (Math.abs(cosMinusOne) < 1E-9) {
       halfThetaByTanOfHalfDtheta = 1.0 - 1.0 / 12.0 * dtheta * dtheta;
     } else {
-      halfThetaByTanOfHalfDtheta = -(halfDtheta * transform.getRotation().getSin()) / cosMinusOne;
+      halfThetaByTanOfHalfDtheta = -(halfDtheta * velocity.getRotation().getSin()) / cosMinusOne;
     }
 
     Translation2d translationPart =
-        transform
-            .getTranslation()
-            .rotateBy(new Rotation2d(halfThetaByTanOfHalfDtheta, -halfDtheta));
+        velocity.getTranslation().rotateBy(new Rotation2d(halfThetaByTanOfHalfDtheta, -halfDtheta));
 
     // TODO
     // YAGSL does **not** perform this multiplication
     // .times(Math.hypot(halfThetaByTanOfHalfDtheta, halfDtheta));
 
     return new Twist2d(translationPart.getX(), translationPart.getY(), dtheta);
+  }
+
+  public static ChassisSpeeds getCorrectedChassisVelocity(ChassisSpeeds chassisVelocity) {
+    // https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/5
+    Pose2d chassisVelocityPose =
+        new Pose2d(
+            chassisVelocity.vxMetersPerSecond * Constants.LOOP_TIME,
+            chassisVelocity.vyMetersPerSecond * Constants.LOOP_TIME,
+            Rotation2d.fromRadians(chassisVelocity.omegaRadiansPerSecond * Constants.LOOP_TIME));
+
+    Twist2d chassisVelocityTwist = SwerveMath.velocityPoseLog(chassisVelocityPose);
+
+    return new ChassisSpeeds(
+        chassisVelocityTwist.dx / Constants.LOOP_TIME,
+        chassisVelocityTwist.dy / Constants.LOOP_TIME,
+        chassisVelocityTwist.dtheta / Constants.LOOP_TIME);
   }
 }

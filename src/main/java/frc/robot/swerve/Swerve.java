@@ -9,7 +9,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -272,24 +271,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             Units.rotationsToRadians(omegaRotationsPerSecond),
             getYaw());
 
-    // https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/5
-    Pose2d chassisVelocityPose =
-        new Pose2d(
-            chassisVelocity.vxMetersPerSecond * Constants.LOOP_TIME,
-            chassisVelocity.vyMetersPerSecond * Constants.LOOP_TIME,
-            Rotation2d.fromRotations(omegaRotationsPerSecond * Constants.LOOP_TIME));
+    chassisVelocity = SwerveMath.getCorrectedChassisVelocity(chassisVelocity);
 
-    Twist2d chassisVelocityTwist = SwerveMath.poseLog(chassisVelocityPose);
+    SwerveModuleState[] setpoints = kinematics.toSwerveModuleStates(chassisVelocity);
 
-    chassisVelocity =
-        new ChassisSpeeds(
-            chassisVelocityTwist.dx / Constants.LOOP_TIME,
-            chassisVelocityTwist.dy / Constants.LOOP_TIME,
-            chassisVelocityTwist.dtheta / Constants.LOOP_TIME);
-
-    SwerveModuleState[] desiredStates = kinematics.toSwerveModuleStates(chassisVelocity);
-
-    setSetpoints(desiredStates);
+    setSetpoints(setpoints);
   }
 
   public SwerveAutoBuilder getAutoBuilder() {
