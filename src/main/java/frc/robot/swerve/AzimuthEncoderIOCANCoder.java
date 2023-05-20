@@ -32,7 +32,7 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    values.absoluteAngleRadians =
-        Conversions.CANCoder.Position.toRadians(encoder.getAbsolutePosition(), 1);
+    values.absoluteAngleRotations =
+        Conversions.CANCoder.Position.toRotations(encoder.getAbsolutePosition(), 1);
   }
 }

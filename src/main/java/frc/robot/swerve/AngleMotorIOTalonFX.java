@@ -50,25 +50,27 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    values.angleRadians =
-        Conversions.TalonFX.Position.toRadians(motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
-    values.omegaRadiansPerSecond =
+    values.angleRotations =
+        Conversions.TalonFX.Position.toRotations(
+            motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
+    values.omegaRotationsPerSecond =
         Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
   }
 
   @Override
-  public void setPosition(double angleRadians) {
+  public void setPosition(double angleRotations) {
     // TODO
-    angleRadians = angleRadians < 0 ? (angleRadians % 2 * Math.PI) + 2 * Math.PI : angleRadians;
+    // angleRotations = angleRotations < 0 ? (angleRotations % 2 * Math.PI) + 2 * Math.PI :
+    // angleRotations;
     motor.setSelectedSensorPosition(
-        Conversions.TalonFX.Position.fromRadians(angleRadians, Angle.GEAR_RATIO), 0, 250);
+        Conversions.TalonFX.Position.fromRotations(angleRotations, Angle.GEAR_RATIO), 0, 250);
   }
 
   @Override
-  public void setSetpoint(double angleRadians) {
+  public void setSetpoint(double angleRotations) {
     motor.set(
         TalonFXControlMode.Position,
-        Conversions.TalonFX.Position.fromRadians(angleRadians, Angle.GEAR_RATIO),
+        Conversions.TalonFX.Position.fromRotations(angleRotations, Angle.GEAR_RATIO),
         DemandType.ArbitraryFeedForward,
         0.0); // TODO
   }

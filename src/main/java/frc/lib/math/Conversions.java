@@ -10,19 +10,19 @@ public class Conversions {
       /**
        * @param ticks CANCoder ticks.
        * @param gearRatio gear ratio of mechanism. Use 1 for CANCoder measurement.
-       * @return rotation of mechanism, in radians.
+       * @return rotation of mechanism, in rotations.
        */
-      public static double toRadians(double ticks, double gearRatio) {
-        return ticks * (2 * Math.PI / (gearRatio * 4096.0));
+      public static double toRotations(double ticks, double gearRatio) {
+        return ticks * (1 / (gearRatio * 4096.0));
       }
 
       /**
-       * @param radians rotation of the mechanism, in radians.
+       * @param rotations rotation of the mechanism, in rotations.
        * @param gearRatio gear ratio of mechanism. Use 1 for CANCoder measurement.
        * @return CANCoder ticks.
        */
-      public static double fromRadians(double radians, double gearRatio) {
-        return radians / (2 * Math.PI / (gearRatio * 4096.0));
+      public static double fromRotations(double rotations, double gearRatio) {
+        return rotations / (1 / (gearRatio * 4096.0));
       }
     }
   }
@@ -34,19 +34,19 @@ public class Conversions {
       /**
        * @param ticks TalonFX ticks.
        * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
-       * @return rotation of mechanism, in radians.
+       * @return rotation of mechanism, in rotations.
        */
-      public static double toRadians(double ticks, double gearRatio) {
-        return ticks * (2 * Math.PI / (gearRatio * 2048.0));
+      public static double toRotations(double ticks, double gearRatio) {
+        return ticks * (1 / (gearRatio * 2048.0));
       }
 
       /**
-       * @param radians rotation of mechanism, in radians.
+       * @param rotations rotation of mechanism, in rotations.
        * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
        * @return TalonFX ticks.
        */
-      public static double fromRadians(double radians, double gearRatio) {
-        return radians / (2 * Math.PI / (gearRatio * 2048.0));
+      public static double fromRotations(double rotations, double gearRatio) {
+        return rotations / (1 / (gearRatio * 2048.0));
       }
 
       /**

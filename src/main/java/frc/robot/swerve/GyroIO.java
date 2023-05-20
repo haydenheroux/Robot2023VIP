@@ -2,9 +2,9 @@ package frc.robot.swerve;
 
 public interface GyroIO {
   public static class GyroIOValues {
-    public double rollAngleRadians = 0.0;
-    public double pitchAngleRadians = 0.0;
-    public double yawAngleRadians = 0.0;
+    public double rollAngleRotations = 0.0;
+    public double pitchAngleRotations = 0.0;
+    public double yawAngleRotations = 0.0;
 
     public double xAccelerationMetersPerSecondSquared = 0.0;
     public double yAccelerationMetersPerSecondSquared = 0.0;
@@ -15,9 +15,9 @@ public interface GyroIO {
 
   public void updateValues(GyroIOValues values);
 
-  public void setRollAngle(double rollAngleRadians);
+  public void setRollAngle(double rollAngleRotations);
 
-  public void setPitchAngle(double pitchAngleRadians);
+  public void setPitchAngle(double pitchAngleRotations);
 
-  public void setYawAngle(double yawAngleRadians);
+  public void setYawAngle(double yawAngleRotations);
 }

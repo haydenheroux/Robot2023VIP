@@ -78,7 +78,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             this);
 
     if (Robot.isSimulation()) {
-      gyro = new GyroIOSim(() -> kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond);
+      gyro =
+          new GyroIOSim(
+              () ->
+                  Units.radiansToRotations(
+                      kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond));
     } else {
       gyro = null;
     }
@@ -127,15 +131,19 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     tab.add(field);
 
     tab.addNumber(
-        "omegaRadiansPerSecond",
-        () -> kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond);
+        "omegaRotationsPerSecond",
+        () ->
+            Units.radiansToRotations(
+                kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond));
 
     tab.addDoubleArray("Module States", this::getStatesAsArray);
 
     ShuffleboardLayout gyroLayout = tab.getLayout("Gyroscope", BuiltInLayouts.kList);
-    gyroLayout.addNumber("Roll (deg)", () -> Units.radiansToDegrees(gyroValues.rollAngleRadians));
-    gyroLayout.addNumber("Pitch (deg)", () -> Units.radiansToDegrees(gyroValues.pitchAngleRadians));
-    gyroLayout.addNumber("Yaw (deg)", () -> Units.radiansToDegrees(gyroValues.yawAngleRadians));
+    gyroLayout.addNumber(
+        "Roll (deg)", () -> Units.rotationsToDegrees(gyroValues.rollAngleRotations));
+    gyroLayout.addNumber(
+        "Pitch (deg)", () -> Units.rotationsToDegrees(gyroValues.pitchAngleRotations));
+    gyroLayout.addNumber("Yaw (deg)", () -> Units.rotationsToDegrees(gyroValues.yawAngleRotations));
 
     ShuffleboardLayout module0Layout = tab.getLayout("Module 0", BuiltInLayouts.kList);
     module0Layout.addNumber("Angle (deg)", () -> getStates()[0].angle.getDegrees());
@@ -166,27 +174,27 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   public void outputTelemetry() {}
 
   public Rotation2d getRoll() {
-    return Rotation2d.fromRadians(gyroValues.rollAngleRadians);
+    return Rotation2d.fromRotations(gyroValues.rollAngleRotations);
   }
 
   public Rotation2d getPitch() {
-    return Rotation2d.fromRadians(gyroValues.pitchAngleRadians);
+    return Rotation2d.fromRotations(gyroValues.pitchAngleRotations);
   }
 
   public Rotation2d getYaw() {
-    return Rotation2d.fromRadians(gyroValues.yawAngleRadians);
+    return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
   }
 
   public void setRoll(Rotation2d roll) {
-    gyro.setRollAngle(roll.getRadians());
+    gyro.setRollAngle(roll.getRotations());
   }
 
   public void setPitch(Rotation2d pitch) {
-    gyro.setPitchAngle(pitch.getRadians());
+    gyro.setPitchAngle(pitch.getRotations());
   }
 
   public void setYaw(Rotation2d yaw) {
-    gyro.setYawAngle(yaw.getRadians());
+    gyro.setYawAngle(yaw.getRotations());
 
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
@@ -249,17 +257,20 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public void drive(Translation2d velocity, Rotation2d heading) {
-    double omegaRadiansPerSecond =
-        thetaController.calculate(getYaw().getRadians(), heading.getRadians());
+    double omegaRotationsPerSecond =
+        thetaController.calculate(getYaw().getRotations(), heading.getRotations());
 
-    drive(velocity, omegaRadiansPerSecond);
+    drive(velocity, omegaRotationsPerSecond);
   }
 
-  public void drive(Translation2d velocity, double omegaRadiansPerSecond) {
+  public void drive(Translation2d velocity, double omegaRotationsPerSecond) {
     SwerveModuleState[] desiredStates =
         kinematics.toSwerveModuleStates(
             ChassisSpeeds.fromFieldRelativeSpeeds(
-                velocity.getX(), velocity.getY(), omegaRadiansPerSecond, getYaw()));
+                velocity.getX(),
+                velocity.getY(),
+                Units.rotationsToRadians(omegaRotationsPerSecond),
+                getYaw()));
 
     setSetpoints(desiredStates);
   }

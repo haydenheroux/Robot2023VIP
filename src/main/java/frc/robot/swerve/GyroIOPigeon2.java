@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 public class GyroIOPigeon2 implements GyroIO {
 
@@ -27,9 +28,9 @@ public class GyroIOPigeon2 implements GyroIO {
   public void updateValues(GyroIOValues values) {
     Rotation3d rotation = getRotation().minus(offset);
 
-    this.values.rollAngleRadians = rotation.getX();
-    this.values.pitchAngleRadians = rotation.getY();
-    this.values.yawAngleRadians = rotation.getZ();
+    this.values.rollAngleRotations = rotation.getX();
+    this.values.pitchAngleRotations = rotation.getY();
+    this.values.yawAngleRotations = rotation.getZ();
 
     Translation3d acceleration = getAcceleration();
 
@@ -41,30 +42,30 @@ public class GyroIOPigeon2 implements GyroIO {
   }
 
   @Override
-  public void setRollAngle(double rollAngleRadians) {
+  public void setRollAngle(double rollAngleRotations) {
     offset =
         new Rotation3d(
-            values.rollAngleRadians + rollAngleRadians,
-            values.pitchAngleRadians,
-            values.yawAngleRadians);
+            Units.rotationsToRadians(values.rollAngleRotations + rollAngleRotations),
+            Units.rotationsToRadians(values.pitchAngleRotations),
+            Units.rotationsToRadians(values.yawAngleRotations));
   }
 
   @Override
-  public void setPitchAngle(double pitchAngleRadians) {
+  public void setPitchAngle(double pitchAngleRotations) {
     offset =
         new Rotation3d(
-            values.rollAngleRadians,
-            values.pitchAngleRadians + pitchAngleRadians,
-            values.yawAngleRadians);
+            Units.rotationsToRadians(values.rollAngleRotations),
+            Units.rotationsToRadians(values.pitchAngleRotations + pitchAngleRotations),
+            Units.rotationsToRadians(values.yawAngleRotations));
   }
 
   @Override
-  public void setYawAngle(double yawAngleRadians) {
+  public void setYawAngle(double yawAngleRotations) {
     offset =
         new Rotation3d(
-            values.rollAngleRadians,
-            values.pitchAngleRadians,
-            values.yawAngleRadians + yawAngleRadians);
+            Units.rotationsToRadians(values.rollAngleRotations),
+            Units.rotationsToRadians(values.pitchAngleRotations),
+            Units.rotationsToRadians(values.yawAngleRotations + yawAngleRotations));
   }
 
   private Rotation3d getRotation() {

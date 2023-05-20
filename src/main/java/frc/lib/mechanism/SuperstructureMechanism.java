@@ -1,5 +1,6 @@
 package frc.lib.mechanism;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -164,10 +165,10 @@ public class SuperstructureMechanism {
   /**
    * Sets the angle of the arm superstructure component.
    *
-   * @param angleRadians angle of the arm, in radians.
+   * @param angle angle of the arm.
    */
-  private void setAngle(double angleRadians) {
-    armRotation.setAngle(Math.toDegrees(angleRadians));
+  private void setAngle(Rotation2d angle) {
+    armRotation.setAngle(angle);
   }
 
   /**
@@ -225,7 +226,7 @@ public class SuperstructureMechanism {
   public void updateArm(ArmPosition position, Arm.Selector isLocked) {
     Arm.State state = Arm.State.fromPosition(position);
 
-    setAngle(state.rotationAngle.getRadians());
+    setAngle(state.rotationAngle);
     setLength(state.extensionLengthMeters);
     setBrake(isLocked);
     setConstraint(position);

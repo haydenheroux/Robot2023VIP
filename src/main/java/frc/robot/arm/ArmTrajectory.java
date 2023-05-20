@@ -63,7 +63,7 @@ public class ArmTrajectory {
   private void addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
     boolean isExtending = start.getLength() < end.getLength();
     if (start.isBelow(Positions.SAFE) && !isExtending) return;
-   
+
     setpoints.add(start.withAngle(Positions.SAFE));
   }
 

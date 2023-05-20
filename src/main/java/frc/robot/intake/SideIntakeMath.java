@@ -1,6 +1,6 @@
 package frc.robot.intake;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Intake.SideIntake;
 
 public class SideIntakeMath {
@@ -8,22 +8,22 @@ public class SideIntakeMath {
   /**
    * Computes the measure of the angle between beta and the normal of alpha.
    *
-   * @param alphaRadians angle whose normal will be calculated.
-   * @param betaRadians angle who will be measured.
+   * @param alpha angle whose normal will be calculated.
+   * @param beta angle who will be measured.
    * @return the measure of the angle between beta and the normal of alpha.
    */
-  private static double getAngleRelativeToNormal(double alphaRadians, double betaRadians) {
-    double normalAngleRadians = alphaRadians - Units.degreesToRadians(90.0);
-    return normalAngleRadians + betaRadians;
+  private static Rotation2d getAngleRelativeToNormal(Rotation2d alpha, Rotation2d beta) {
+    Rotation2d normalAngle = alpha.plus(Rotation2d.fromDegrees(90.0));
+    return normalAngle.plus(beta);
   }
 
-  private static double getBiasFor(double alphaRadians, double betaRadians) {
-    double relativeAngle = getAngleRelativeToNormal(alphaRadians, betaRadians);
+  private static double getBiasFor(Rotation2d alpha, Rotation2d beta) {
+    Rotation2d relativeAngle = getAngleRelativeToNormal(alpha, beta);
     return getBiasFor(relativeAngle);
   }
 
-  private static double getBiasFor(double relativeAngleRadians) {
-    return SideIntake.Voltages.RELATIVE_BIAS * Math.sin(relativeAngleRadians);
+  private static double getBiasFor(Rotation2d relativeAngle) {
+    return SideIntake.Voltages.RELATIVE_BIAS * relativeAngle.getSin();
   }
 
   public static double getBias() {

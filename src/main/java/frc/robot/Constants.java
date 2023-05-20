@@ -98,10 +98,10 @@ public class Constants {
         public static final double KG_MIN = 2;
 
         /** Angle of the arm where KG_MIN and KG_MAX was measured. */
-        public static final double KG_ANGLE = Units.degreesToRadians(90);
+        public static final Rotation2d KG_ANGLE = Rotation2d.fromDegrees(90);
 
         /** Voltage required to overcome gravity in both directions. */
-        public static final double KG = ((KG_MAX + KG_MIN) / 2.0) / Math.sin(KG_ANGLE);
+        public static final double KG = ((KG_MAX + KG_MIN) / 2.0) / KG_ANGLE.getSin();
         /** Voltage required to overcome static friction. */
         public static final double KS = KG_MAX - KG_MIN;
       }
@@ -154,7 +154,7 @@ public class Constants {
       /** Constants for rotation using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per degree of angle error. */
-        public static final double KP = 0.9 / Units.degreesToRadians(10); // 0.9V per 10 degrees
+        public static final double KP = 0.9 / Units.degreesToRotations(10); // 0.9V per 10 degrees
       }
     }
 
@@ -256,11 +256,11 @@ public class Constants {
       public static final int TOP_CAN_ID = 5;
 
       /** Assumed angle of the side intake. Used for calculating speed variation based on angle. */
-      public static final double MECHANISM_ANGLE = Units.degreesToRadians(45);
+      public static final Rotation2d MECHANISM_ANGLE = Rotation2d.fromDegrees(45);
       /** Assumed angle for accepting game pieces using the side intake. */
-      public static final double ACCEPT_ANGLE = Units.degreesToRadians(60);
+      public static final Rotation2d ACCEPT_ANGLE = Rotation2d.fromDegrees(60);
       /** Assumed angle for ejecting game pieces using the side intake. */
-      public static final double EJECT_ANGLE = Units.degreesToRadians(30);
+      public static final Rotation2d EJECT_ANGLE = Rotation2d.fromDegrees(30);
 
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
@@ -294,8 +294,8 @@ public class Constants {
     public static final double MAX_SPEED = Units.feetToMeters(20);
     /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
-    /** Maximum angular speed achievable by the swerve drive, in radians per second. */
-    public static final double MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1).getRadians();
+    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
+    public static final Rotation2d MAX_ANGULAR_SPEED = Rotation2d.fromRotations(1);
 
     /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
     public static final boolean INVERTED = true;
@@ -332,7 +332,7 @@ public class Constants {
     public static final ModuleConfiguration FRONT_LEFT_CONFIG =
         new ModuleConfiguration(
             new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375)),
-            Units.degreesToRadians(0.0),
+            new Rotation2d(),
             1,
             3,
             2,
@@ -342,7 +342,7 @@ public class Constants {
     public static final ModuleConfiguration FRONT_RIGHT_CONFIG =
         new ModuleConfiguration(
             new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375)),
-            Units.degreesToRadians(0.0),
+            new Rotation2d(),
             4,
             6,
             5,
@@ -352,7 +352,7 @@ public class Constants {
     public static final ModuleConfiguration BACK_LEFT_CONFIG =
         new ModuleConfiguration(
             new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375)),
-            Units.degreesToRadians(0.0),
+            new Rotation2d(),
             11,
             13,
             12,
@@ -362,7 +362,7 @@ public class Constants {
     public static final ModuleConfiguration BACK_RIGHT_CONFIG =
         new ModuleConfiguration(
             new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375)),
-            Units.degreesToRadians(0.0),
+            new Rotation2d(),
             8,
             10,
             9,

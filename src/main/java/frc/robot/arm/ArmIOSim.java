@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -18,7 +19,7 @@ public class ArmIOSim implements ArmIO {
   private double extensionLengthMeters;
   private boolean extensionBrakeIsActive;
 
-  private double rotationAngleRadians;
+  private double rotationAngleRotations;
   private boolean rotationBrakeIsActive;
 
   private final double kMetersPerVolt = 0.0025;
@@ -56,7 +57,8 @@ public class ArmIOSim implements ArmIO {
     if (!extensionBrakeIsActive) {
       extensionLengthMeters += extensionVoltage * kMetersPerVolt;
 
-      double metersPulledByGravity = Math.sin(rotationAngleRadians) * kMetersPerGravity;
+      double metersPulledByGravity =
+          Math.sin(Units.rotationsToRadians(rotationAngleRotations)) * kMetersPerGravity;
 
       boolean atMin = extensionLengthMeters < Extension.MIN_LENGTH;
       boolean belowMin = atMin && metersPulledByGravity < 0;
@@ -78,10 +80,10 @@ public class ArmIOSim implements ArmIO {
       RoboRioSim.setVInVoltage(
           BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
 
-      rotationAngleRadians = rotationSim.getAngleRads();
+      rotationAngleRotations = Units.radiansToRotations(rotationSim.getAngleRads());
     }
 
-    values.rotationAngleRadians = rotationAngleRadians;
+    values.rotationAngleRotations = rotationAngleRotations;
     values.rotationBrakeIsActive = rotationBrakeIsActive;
     values.rotationVoltage = rotationVoltage;
   }
@@ -105,7 +107,7 @@ public class ArmIOSim implements ArmIO {
         ExtensionRotationFeedforward.calculateExtensionG(
             ArmPosition.fromState(
                 new Arm.State(
-                    extensionLengthMeters, Rotation2d.fromRadians(rotationAngleRadians))));
+                    extensionLengthMeters, Rotation2d.fromRotations(rotationAngleRotations))));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     extensionVoltage = volts;
@@ -122,13 +124,13 @@ public class ArmIOSim implements ArmIO {
   }
 
   @Override
-  public void setRotationPosition(double angleRadians) {
-    rotationAngleRadians = angleRadians;
+  public void setRotationPosition(double angleRotations) {
+    rotationAngleRotations = angleRotations;
   }
 
   @Override
-  public void setRotationSetpoint(double angleRadians) {
-    double volts = rotationPID.calculate(rotationAngleRadians, angleRadians);
+  public void setRotationSetpoint(double angleRotations) {
+    double volts = rotationPID.calculate(rotationAngleRotations, angleRotations);
     setRotationVoltage(volts);
   }
 
@@ -145,7 +147,7 @@ public class ArmIOSim implements ArmIO {
     volts +=
         ExtensionRotationFeedforward.calculateRotationG(
             ArmPosition.fromState(
-                new Arm.State(fakeSimLength, Rotation2d.fromRadians(rotationAngleRadians))));
+                new Arm.State(fakeSimLength, Rotation2d.fromRotations(rotationAngleRotations))));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     rotationVoltage = volts;

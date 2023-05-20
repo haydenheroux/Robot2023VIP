@@ -4,9 +4,9 @@ import frc.robot.Constants;
 
 public class AngleMotorIOSim implements AngleMotorIO {
 
-  private double angleRadians, omegaRadiansPerSecond;
+  private double angleRotations, omegaRotationsPerSecond;
 
-  private final double kRadiansPerSecondPerVolt = 2.0 * Math.PI / 12.0;
+  private final double kRotationsPerSecondPerVolt = 1 / 12.0;
 
   public AngleMotorIOSim() {}
 
@@ -15,30 +15,30 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    double previousAngleRadians = angleRadians;
-    angleRadians += omegaRadiansPerSecond * Constants.LOOP_TIME;
+    double previousAngleRotations = angleRotations;
+    angleRotations += omegaRotationsPerSecond * Constants.LOOP_TIME;
 
-    double deltaAngleRadians = angleRadians - previousAngleRadians;
+    double deltaAngleRotations = angleRotations - previousAngleRotations;
 
-    double calculatedOmegaRadiansPerSecond = deltaAngleRadians / Constants.LOOP_TIME;
+    double calculatedOmegaRadiansPerSecond = deltaAngleRotations / Constants.LOOP_TIME;
 
-    values.angleRadians = angleRadians;
-    values.omegaRadiansPerSecond = calculatedOmegaRadiansPerSecond;
+    values.angleRotations = angleRotations;
+    values.omegaRotationsPerSecond = calculatedOmegaRadiansPerSecond;
   }
 
   @Override
-  public void setPosition(double angleRadians) {
-    this.angleRadians = angleRadians;
+  public void setPosition(double angleRotations) {
+    this.angleRotations = angleRotations;
   }
 
   @Override
-  public void setSetpoint(double angleRadians) {
-    this.angleRadians = angleRadians;
+  public void setSetpoint(double angleRotations) {
+    this.angleRotations = angleRotations;
   }
 
   @Override
   public void setVoltage(double volts) {
-    omegaRadiansPerSecond = volts * kRadiansPerSecondPerVolt;
+    omegaRotationsPerSecond = volts * kRotationsPerSecondPerVolt;
   }
 
   @Override

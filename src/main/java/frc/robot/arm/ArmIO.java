@@ -7,7 +7,7 @@ public interface ArmIO {
     public double extensionVoltage = 0.0;
 
     public boolean rotationBrakeIsActive = true;
-    public double rotationAngleRadians = 0.0;
+    public double rotationAngleRotations = 0.0;
     public double rotationVoltage = 0.0;
   }
 
@@ -55,16 +55,16 @@ public interface ArmIO {
   /**
    * Sets the rotation motor position.
    *
-   * @param angleRadians
+   * @param angleRotations
    */
-  public void setRotationPosition(double angleRadians);
+  public void setRotationPosition(double angleRotations);
 
   /**
    * Sets the rotation motor setpoint.
    *
-   * @param angleRadians
+   * @param angleRotations
    */
-  public void setRotationSetpoint(double angleRadians);
+  public void setRotationSetpoint(double angleRotations);
 
   /**
    * Sets the rotation motor voltage.

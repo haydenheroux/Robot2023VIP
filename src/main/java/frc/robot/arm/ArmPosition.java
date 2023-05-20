@@ -41,7 +41,7 @@ public class ArmPosition extends Translation2d {
   public static ArmPosition fromValues(ArmIO.ArmIOValues values) {
     return ArmPosition.fromState(
         new Arm.State(
-            values.extensionLengthMeters, Rotation2d.fromRadians(values.rotationAngleRadians)));
+            values.extensionLengthMeters, Rotation2d.fromRotations(values.rotationAngleRotations)));
   }
 
   /**

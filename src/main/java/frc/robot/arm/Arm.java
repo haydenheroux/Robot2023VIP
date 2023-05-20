@@ -82,7 +82,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     State state = State.fromPosition(position);
     io.setExtensionPosition(state.extensionLengthMeters);
-    io.setRotationPosition(state.rotationAngle.getRadians());
+    io.setRotationPosition(state.rotationAngle.getRotations());
   }
 
   /**
@@ -233,7 +233,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return true if the rotation of the arm is at the maximum.
    */
   public boolean rotationIsAtMax() {
-    return values.rotationAngleRadians > Rotation.MAX_ANGLE.getRadians();
+    return values.rotationAngleRotations > Rotation.MAX_ANGLE.getRotations();
   }
 
   /**
@@ -242,7 +242,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return true if the rotation of the arm is at the minimum.
    */
   public boolean rotationIsAtMin() {
-    return values.rotationAngleRadians < Rotation.MIN_ANGLE.getRadians();
+    return values.rotationAngleRotations < Rotation.MIN_ANGLE.getRotations();
   }
 
   /**
@@ -275,7 +275,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     State state = State.fromPosition(setpoint);
 
     io.setExtensionSetpoint(state.extensionLengthMeters);
-    io.setRotationSetpoint(state.rotationAngle.getRadians());
+    io.setRotationSetpoint(state.rotationAngle.getRotations());
   }
 
   @Override
@@ -314,7 +314,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
     valuesLayout.addNumber(
-        "Rotation Angle (deg)", () -> Units.radiansToDegrees(values.rotationAngleRadians));
+        "Rotation Angle (deg)", () -> Units.rotationsToDegrees(values.rotationAngleRotations));
     valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
     valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
     valuesLayout.addNumber("Extension Voltage (V)", () -> values.extensionVoltage);

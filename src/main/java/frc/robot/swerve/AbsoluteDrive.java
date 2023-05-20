@@ -44,7 +44,7 @@ public class AbsoluteDrive extends CommandBase {
 
     if (isSpinning) {
       double omegaRadiansPerSecond =
-          heading.getAngle().getSin() * Constants.Swerve.MAX_ANGULAR_SPEED;
+          heading.getAngle().getSin() * Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
       swerve.drive(velocity, omegaRadiansPerSecond);
     } else if (isAngleSet) {
       swerve.drive(velocity, heading.getAngle());

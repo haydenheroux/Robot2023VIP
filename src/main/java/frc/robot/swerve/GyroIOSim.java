@@ -5,11 +5,11 @@ import java.util.function.DoubleSupplier;
 
 public class GyroIOSim implements GyroIO {
 
-  private double yawAngleRadians = 0.0;
-  private final DoubleSupplier omegaRadiansPerSecondSupplier;
+  private double yawAngleRotations = 0.0;
+  private final DoubleSupplier omegaRotationsPerSecondSupplier;
 
-  public GyroIOSim(DoubleSupplier omegaRadiansPerSecondSupplier) {
-    this.omegaRadiansPerSecondSupplier = omegaRadiansPerSecondSupplier;
+  public GyroIOSim(DoubleSupplier omegaRotationsPerSecondSupplier) {
+    this.omegaRotationsPerSecondSupplier = omegaRotationsPerSecondSupplier;
   }
 
   @Override
@@ -17,21 +17,21 @@ public class GyroIOSim implements GyroIO {
 
   @Override
   public void updateValues(GyroIOValues values) {
-    yawAngleRadians += omegaRadiansPerSecondSupplier.getAsDouble() * Constants.LOOP_TIME;
+    yawAngleRotations += omegaRotationsPerSecondSupplier.getAsDouble() * Constants.LOOP_TIME;
 
-    values.rollAngleRadians = 0.0;
-    values.pitchAngleRadians = 0.0;
-    values.yawAngleRadians = yawAngleRadians;
+    values.rollAngleRotations = 0.0;
+    values.pitchAngleRotations = 0.0;
+    values.yawAngleRotations = yawAngleRotations;
   }
 
   @Override
-  public void setRollAngle(double rollAngleRadians) {}
+  public void setRollAngle(double rollAngleRotations) {}
 
   @Override
-  public void setPitchAngle(double pitchAngleRadians) {}
+  public void setPitchAngle(double pitchAngleRotations) {}
 
   @Override
-  public void setYawAngle(double yawAngleRadians) {
-    this.yawAngleRadians = yawAngleRadians;
+  public void setYawAngle(double yawAngleRotations) {
+    this.yawAngleRotations = yawAngleRotations;
   }
 }

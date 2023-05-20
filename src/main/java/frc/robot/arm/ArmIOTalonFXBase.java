@@ -1,6 +1,5 @@
 package frc.robot.arm;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -41,7 +40,7 @@ public class ArmIOTalonFXBase implements ArmIO {
     this.values.extensionLengthMeters = getExtensionPosition();
     this.values.extensionVoltage = getExtensionVoltage();
 
-    this.values.rotationAngleRadians = getRotationPosition();
+    this.values.rotationAngleRotations = getRotationPosition();
     this.values.rotationBrakeIsActive = getRotationBrakeIsActive();
     this.values.rotationVoltage = getRotationVoltage();
 
@@ -85,13 +84,13 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   @Override
-  public void setRotationPosition(double angleRadians) {
-    double ticks = Conversions.TalonFX.Position.fromRadians(angleRadians, Rotation.GEAR_RATIO);
+  public void setRotationPosition(double angleRotations) {
+    double ticks = Conversions.TalonFX.Position.fromRotations(angleRotations, Rotation.GEAR_RATIO);
     rotationMotor.setSelectedSensorPosition(ticks);
   }
 
   @Override
-  public void setRotationSetpoint(double angleRadians) {}
+  public void setRotationSetpoint(double angleRotations) {}
 
   @Override
   public void setRotationVoltage(double volts) {
@@ -139,7 +138,7 @@ public class ArmIOTalonFXBase implements ArmIO {
   }
 
   protected double getRotationPosition() {
-    return Conversions.TalonFX.Position.toRadians(
+    return Conversions.TalonFX.Position.toRotations(
         rotationMotor.getSelectedSensorPosition(), Rotation.GEAR_RATIO);
   }
 

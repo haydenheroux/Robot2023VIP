@@ -30,7 +30,7 @@ public class Module {
     if (Robot.isSimulation()) {
       angleMotor = new AngleMotorIOSim();
       driveMotor = new DriveMotorIOSim();
-      azimuthEncoder = new AzimuthEncoderIOSim(config.kOffsetAngleRadians);
+      azimuthEncoder = new AzimuthEncoderIOSim(config.kOffsetAngle.getRotations());
     } else {
       angleMotor = new AngleMotorIOTalonFX(config.kAngleMotorID, config.kCANBus);
       driveMotor = new DriveMotorIOTalonFX(config.kDriveMotorID, config.kCANBus);
@@ -43,7 +43,8 @@ public class Module {
     azimuthEncoder.configure();
 
     azimuthEncoder.updateValues(azimuthEncoderValues);
-    angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRadians - config.kOffsetAngleRadians);
+    angleMotor.setPosition(
+        azimuthEncoderValues.absoluteAngleRotations - config.kOffsetAngle.getRotations());
 
     state = getState();
   }
@@ -65,7 +66,8 @@ public class Module {
 
   public void setSetpoint(SwerveModuleState setpoint, boolean isForced) {
     setpoint =
-        SwerveModuleState.optimize(setpoint, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+        SwerveModuleState.optimize(
+            setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
 
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
 
@@ -76,7 +78,7 @@ public class Module {
     boolean angleChanged = setpoint.angle.equals(state.angle) == false;
 
     if (angleChanged) {
-      angleMotor.setSetpoint(setpoint.angle.getRadians());
+      angleMotor.setSetpoint(setpoint.angle.getRotations());
     }
 
     state = setpoint;
@@ -89,16 +91,16 @@ public class Module {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         driveMotorValues.velocityMetersPerSecond,
-        Rotation2d.fromRadians(angleMotorValues.angleRadians));
+        Rotation2d.fromRotations(angleMotorValues.angleRotations));
   }
 
   public Rotation2d getAbsoluteAzimuthAngle() {
-    return Rotation2d.fromRadians(azimuthEncoderValues.absoluteAngleRadians);
+    return Rotation2d.fromRotations(azimuthEncoderValues.absoluteAngleRotations);
   }
 
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveMotorValues.positionMeters, Rotation2d.fromRadians(angleMotorValues.angleRadians));
+        driveMotorValues.positionMeters, Rotation2d.fromRotations(angleMotorValues.angleRotations));
   }
 
   public void setMotorBrake(boolean isActive) {

@@ -22,8 +22,8 @@ public class ArmIOTalonFXPID extends ArmIOTalonFXBase {
   }
 
   @Override
-  public void setRotationSetpoint(double angleRadians) {
-    double volts = rotationPID.calculate(getRotationPosition(), angleRadians);
+  public void setRotationSetpoint(double angleRotations) {
+    double volts = rotationPID.calculate(getRotationPosition(), angleRotations);
     setRotationVoltage(volts);
   }
 }
