@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Physical;
 
 /**
  * Represents the position of the arm as the point in space occupied by the farthest point of the
@@ -28,7 +29,7 @@ public class ArmPosition extends Translation2d {
    * @return the arm position for the given state.
    */
   public static ArmPosition fromState(Arm.State state) {
-    double length = state.extensionLengthMeters + Extension.LENGTH_OFFSET;
+    double length = state.extensionLengthMeters + Physical.LENGTH_OFFSET;
     return new ArmPosition(length, state.rotationAngle);
   }
 

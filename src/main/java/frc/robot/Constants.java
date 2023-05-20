@@ -32,6 +32,11 @@ public class Constants {
     /** Distance from the base of the claw to the end of the claw. */
     public static final double CLAW_LENGTH = Units.inchesToMeters(12);
     /**
+     * Difference between the total length of the arm (distance from the shoulder to end of claw)
+     * and the length of the extending section.
+     */
+    public static final double LENGTH_OFFSET = ARM_STATIC_SECTION_LENGTH + CLAW_LENGTH;
+    /**
      * Distance between the center axis of the robot (in line with the arm shoulder) to the edge of
      * the bumpers.
      */
@@ -70,16 +75,10 @@ public class Constants {
        * Change in distance per full revolution of the spool drum. This is usually the circumference
        * of the spool drum, plus a small constant to account for string diameter.
        */
-      public static final double DISTANCE_PER_REVOLUTION = Units.inchesToMeters(1) * Math.PI;
+      public static final double DISTANCE_PER_ROTATION = Units.inchesToMeters(1) * Math.PI;
       /** Total gear ratio between the motor and the spool drum. */
       public static final double GEAR_RATIO = 15.34;
 
-      /**
-       * Difference between the total length of the arm (distance from the shoulder to end of claw)
-       * and the length of the extending section.
-       */
-      public static final double LENGTH_OFFSET =
-          Physical.ARM_STATIC_SECTION_LENGTH + Physical.CLAW_LENGTH;
       /** Minimum length of the extending section. */
       public static final double MIN_LENGTH = 0;
       /**
@@ -109,7 +108,7 @@ public class Constants {
       /** Constants for extension using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per meter of extending section length error. */
-        public static final double KP = 1.2 / 0.01; // 1.2V per cm
+        public static final double KP = 120;
       }
     }
 
@@ -153,8 +152,8 @@ public class Constants {
 
       /** Constants for rotation using a PID control algorithm. */
       public static class PID {
-        /** Volts to be applied per degree of angle error. */
-        public static final double KP = 0.9 / Units.degreesToRotations(10); // 0.9V per 10 degrees
+        /** Volts to be applied per rotation of angle error. */
+        public static final double KP = 32.4;
       }
     }
 

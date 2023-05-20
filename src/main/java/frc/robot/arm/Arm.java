@@ -13,6 +13,7 @@ import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Physical;
 import frc.robot.Robot;
 import java.util.function.DoubleSupplier;
 
@@ -29,7 +30,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     }
 
     public static State fromPosition(ArmPosition position) {
-      double extensionLengthMeters = position.getLength() - Extension.LENGTH_OFFSET;
+      double extensionLengthMeters = position.getLength() - Physical.LENGTH_OFFSET;
       return new State(extensionLengthMeters, position.getAngle());
     }
   }
