@@ -1,6 +1,5 @@
 package frc.robot.arm;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -13,28 +12,10 @@ import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Arm.Rotation;
-import frc.robot.Constants.Physical;
 import frc.robot.Robot;
 import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase implements TelemetryOutputter {
-
-  public static class State {
-
-    public final double extensionLengthMeters;
-    public final Rotation2d rotationAngle;
-
-    public State(double extensionLengthMeters, Rotation2d rotationAngle) {
-      this.extensionLengthMeters = extensionLengthMeters;
-      this.rotationAngle = rotationAngle;
-    }
-
-    public static State fromPosition(ArmPosition position) {
-      double extensionLengthMeters = position.getLength() - Physical.LENGTH_OFFSET;
-      return new State(extensionLengthMeters, position.getAngle());
-    }
-  }
-
   public enum Selector {
     kBoth,
     kExtension,
@@ -81,9 +62,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setPosition(ArmPosition position) {
     this.position = position;
 
-    State state = State.fromPosition(position);
-    io.setExtensionPosition(state.extensionLengthMeters);
-    io.setRotationPosition(state.rotationAngle.getRotations());
+    io.setExtensionPosition(position.getSensorLength());
+    io.setRotationPosition(position.getSensorAngle());
   }
 
   /**
@@ -273,10 +253,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setSetpoint(ArmPosition setpoint) {
     this.setpoint = setpoint;
 
-    State state = State.fromPosition(setpoint);
-
-    io.setExtensionSetpoint(state.extensionLengthMeters);
-    io.setRotationSetpoint(state.rotationAngle.getRotations());
+    io.setExtensionSetpoint(setpoint.getSensorLength());
+    io.setRotationSetpoint(setpoint.getSensorAngle());
   }
 
   @Override

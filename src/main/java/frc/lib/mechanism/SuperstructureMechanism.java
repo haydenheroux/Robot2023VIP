@@ -165,10 +165,10 @@ public class SuperstructureMechanism {
   /**
    * Sets the angle of the arm superstructure component.
    *
-   * @param angle angle of the arm.
+   * @param angleRotations angle of the arm.
    */
-  private void setAngle(Rotation2d angle) {
-    armRotation.setAngle(angle);
+  private void setAngle(double angleRotations) {
+    armRotation.setAngle(Rotation2d.fromRotations(angleRotations));
   }
 
   /**
@@ -224,10 +224,8 @@ public class SuperstructureMechanism {
    * @param isLocked brake states of the arm.
    */
   public void updateArm(ArmPosition position, Arm.Selector isLocked) {
-    Arm.State state = Arm.State.fromPosition(position);
-
-    setAngle(state.rotationAngle);
-    setLength(state.extensionLengthMeters);
+    setAngle(position.getSensorAngle());
+    setLength(position.getSensorLength());
     setBrake(isLocked);
     setConstraint(position);
   }

@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.arm.Arm.State;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import java.util.HashMap;
@@ -91,16 +90,16 @@ public class Constants {
       public static final double TOLERANCE = 0.01;
 
       public static class Feedforward {
-        /** Voltage required to barely overcome gravity, causing positive movement. */
-        public static final double KG_MAX = 2;
-        /** Voltage required to barely not overcome gravity, causing negative moement. */
-        public static final double KG_MIN = 2;
-
         /** Angle of the arm where KG_MIN and KG_MAX was measured. */
         public static final Rotation2d KG_ANGLE = Rotation2d.fromDegrees(90);
 
+        /** Voltage required to barely overcome gravity, causing positive movement. */
+        public static final double KG_MAX = 2 / KG_ANGLE.getSin();
+        /** Voltage required to barely not overcome gravity, causing negative moement. */
+        public static final double KG_MIN = 2 / KG_ANGLE.getSin();
+
         /** Voltage required to overcome gravity in both directions. */
-        public static final double KG = ((KG_MAX + KG_MIN) / 2.0) / KG_ANGLE.getSin();
+        public static final double KG = ((KG_MAX + KG_MIN) / 2.0);
         /** Voltage required to overcome static friction. */
         public static final double KS = KG_MAX - KG_MIN;
       }
@@ -136,10 +135,13 @@ public class Constants {
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
       public static class Feedforward {
+        /** Length of the arm where KG_MIN and KG_MAX was measured. */
+        public static final double KG_LENGTH = Positions.STOW.getLength();
+
         /** Voltage required to barely overcome gravity, causing positive movement. */
-        public static final double KG_MAX = 0.764;
+        public static final double KG_MAX = 0.9709744 / KG_LENGTH;
         /** Voltage required to barely not overcome gravity, causing negative moement. */
-        public static final double KG_MIN = 0.764;
+        public static final double KG_MIN = 0.9709744 / KG_LENGTH;
 
         /** Voltage required to overcome gravity in both directions. */
         public static final double KG = (KG_MAX + KG_MIN) / 2.0;
@@ -194,13 +196,13 @@ public class Constants {
        * possible.
        */
       public static final ArmPosition STOW =
-          ArmPosition.fromState(new State(0, Rotation.MAX_ANGLE));
+          ArmPosition.fromSensorValues(0, Rotation.MAX_ANGLE.getRotations());
       /**
        * Position for safely extending the arm. The arm is rotated up enough such at any extension
        * will not cause the arm to collide with the grid.
        */
       public static final ArmPosition SAFE =
-          ArmPosition.fromState(new State(0, Rotation2d.fromDegrees(30)));
+          ArmPosition.fromSensorValues(0, Rotation2d.fromDegrees(30).getRotations());
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
       public static final ArmPosition FLOOR =
           new ArmPosition(Units.feetToMeters(2.5), Rotation.MIN_ANGLE);

@@ -2,7 +2,6 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -29,13 +28,13 @@ public class ArmIOSim implements ArmIO {
       new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
 
   // FIXME Simulation assumes constant length
-  private final double fakeSimLength = Constants.Arm.Positions.STOW.getLength();
+  private final ArmPosition fakeSimPosition = Constants.Arm.Positions.STOW;
   private final SingleJointedArmSim rotationSim =
       new SingleJointedArmSim(
           simMotor,
           Rotation.GEAR_RATIO,
-          SingleJointedArmSim.estimateMOI(fakeSimLength, Physical.ARM_MASS),
-          fakeSimLength,
+          SingleJointedArmSim.estimateMOI(fakeSimPosition.getLength(), Physical.ARM_MASS),
+          fakeSimPosition.getLength(),
           Rotation.MIN_ANGLE.getRadians(),
           Rotation.MAX_ANGLE.getRadians(),
           Constants.Physical.ARM_MASS,
@@ -105,9 +104,8 @@ public class ArmIOSim implements ArmIO {
 
     volts +=
         ExtensionRotationFeedforward.calculateExtensionG(
-            ArmPosition.fromState(
-                new Arm.State(
-                    extensionLengthMeters, Rotation2d.fromRotations(rotationAngleRotations))));
+            ArmPosition.fromSensorValues(
+                fakeSimPosition.getSensorLength(), rotationAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     extensionVoltage = volts;
@@ -146,8 +144,8 @@ public class ArmIOSim implements ArmIO {
 
     volts +=
         ExtensionRotationFeedforward.calculateRotationG(
-            ArmPosition.fromState(
-                new Arm.State(fakeSimLength, Rotation2d.fromRotations(rotationAngleRotations))));
+            ArmPosition.fromSensorValues(
+                fakeSimPosition.getSensorLength(), rotationAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     rotationVoltage = volts;

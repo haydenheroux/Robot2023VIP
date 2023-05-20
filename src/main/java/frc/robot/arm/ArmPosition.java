@@ -22,15 +22,11 @@ public class ArmPosition extends Translation2d {
     super(lengthMeters, angle);
   }
 
-  /**
-   * Constructs a new arm position derived from the given {@link Arm.State}.
-   *
-   * @param state
-   * @return the arm position for the given state.
-   */
-  public static ArmPosition fromState(Arm.State state) {
-    double length = state.extensionLengthMeters + Physical.LENGTH_OFFSET;
-    return new ArmPosition(length, state.rotationAngle);
+  public static ArmPosition fromSensorValues(
+      double sensorLengthMeters, double sensorAngleRotations) {
+    return new ArmPosition(
+        sensorLengthMeters + Physical.LENGTH_OFFSET,
+        Rotation2d.fromRotations(sensorAngleRotations));
   }
 
   /**
@@ -40,9 +36,7 @@ public class ArmPosition extends Translation2d {
    * @return the arm position for the given values.
    */
   public static ArmPosition fromValues(ArmIO.ArmIOValues values) {
-    return ArmPosition.fromState(
-        new Arm.State(
-            values.extensionLengthMeters, Rotation2d.fromRotations(values.rotationAngleRotations)));
+    return fromSensorValues(values.extensionLengthMeters, values.rotationAngleRotations);
   }
 
   /**
@@ -86,12 +80,40 @@ public class ArmPosition extends Translation2d {
   }
 
   /**
+   * Returns the angle of the arm in this position.
+   *
+   * @return the angle of the arm in this position.
+   */
+  @Override
+  public Rotation2d getAngle() {
+    return super.getAngle();
+  }
+
+  /**
+   * Returns the angle of the arm in this position according to the rotation sensor, in rotations.
+   *
+   * @return the angle of the arm in this position according to the rotation sensor, in rotations.
+   */
+  public double getSensorAngle() {
+    return this.getAngle().getRotations();
+  }
+
+  /**
    * Returns the length of the arm in this position, in meters.
    *
    * @return the length of the arm in this position, in meters.
    */
   public double getLength() {
     return this.getNorm();
+  }
+
+  /**
+   * Returns the length of the arm in this position according to the extension sensor, in meters.
+   *
+   * @return the length of the arm in this position according to the extension sensor, in meters.
+   */
+  public double getSensorLength() {
+    return this.getLength() - Physical.LENGTH_OFFSET;
   }
 
   /**
