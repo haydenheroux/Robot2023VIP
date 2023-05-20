@@ -163,10 +163,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   @Override
-  public void outputTelemetry() {
-    // TODO Auto-generated method stub
-
-  }
+  public void outputTelemetry() {}
 
   public Rotation2d getRoll() {
     return Rotation2d.fromRadians(gyroValues.rollAngleRadians);

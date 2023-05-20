@@ -104,8 +104,4 @@ public class Module {
   public void setMotorBrake(boolean isActive) {
     driveMotor.setBrake(isActive);
   }
-
-  public void zeroDrivePosition() {
-    driveMotor.setPosition(0);
-  }
 }

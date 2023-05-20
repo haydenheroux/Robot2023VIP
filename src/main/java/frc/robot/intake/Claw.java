@@ -135,8 +135,5 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
   }
 
   @Override
-  public void outputTelemetry() {
-    // TODO Auto-generated method stub
-
-  }
+  public void outputTelemetry() {}
 }
