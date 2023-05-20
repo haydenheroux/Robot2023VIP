@@ -13,7 +13,8 @@ public class Conversions {
        * @return rotation of mechanism, in rotations.
        */
       public static double toRotations(double ticks, double gearRatio) {
-        return ticks * (1 / (gearRatio * 4096.0));
+        double rotations = ticks / 4096;
+        return rotations / gearRatio;
       }
 
       /**
@@ -22,7 +23,7 @@ public class Conversions {
        * @return CANCoder ticks.
        */
       public static double fromRotations(double rotations, double gearRatio) {
-        return rotations / (1 / (gearRatio * 4096.0));
+        return rotations * 4096 * gearRatio;
       }
     }
   }
@@ -37,7 +38,8 @@ public class Conversions {
        * @return rotation of mechanism, in rotations.
        */
       public static double toRotations(double ticks, double gearRatio) {
-        return ticks * (1 / (gearRatio * 2048.0));
+        double rotations = ticks / 2048;
+        return rotations / gearRatio;
       }
 
       /**
@@ -46,7 +48,7 @@ public class Conversions {
        * @return TalonFX ticks.
        */
       public static double fromRotations(double rotations, double gearRatio) {
-        return rotations / (1 / (gearRatio * 2048.0));
+        return rotations * 2048 * gearRatio;
       }
 
       /**
@@ -56,7 +58,7 @@ public class Conversions {
        * @return position of mechanism, in meters.
        */
       public static double toMeters(double ticks, double circumference, double gearRatio) {
-        return ticks * (circumference / (gearRatio * 2048.0));
+        return circumference * toRotations(ticks, gearRatio);
       }
 
       /**
@@ -66,21 +68,41 @@ public class Conversions {
        * @return TalonFX ticks.
        */
       public static double fromMeters(double meters, double circumference, double gearRatio) {
-        return meters / (circumference / (gearRatio * 2048.0));
+        double rotations = meters / circumference;
+        return fromRotations(rotations, gearRatio);
       }
     }
 
     /** Converts TalonFX velocity units (units / 100 ms, 2048-tick basis) and mechanism velocity. */
     public static class Velocity {
       /**
+       * @param velocityTicks TalonFX velocity ticks.
+       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
+       * @return velocity of mechanism, in rotations per second.
+       */
+      public static double toRPS(double velocityTicks, double gearRatio) {
+        double velocityTicksPerSecond = velocityTicks * 10;
+        return Position.toRotations(velocityTicksPerSecond, gearRatio);
+      }
+
+      /**
+       * @param rps velocity of mechanism, in rotations per second.
+       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
+       * @return TalonFX velocity ticks.
+       */
+      public static double fromRPS(double rps, double gearRatio) {
+        double velocityTicksPerSecond = Position.fromRotations(rps, gearRatio);
+        double velocityTicksPer100ms = velocityTicksPerSecond / 10;
+        return velocityTicksPer100ms;
+      }
+
+      /**
        * @param ticks TalonFX velocity ticks.
        * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
        * @return rotation speed, in revolutions per minute.
        */
       public static double toRPM(double ticks, double gearRatio) {
-        double motorRPM = ticks * (600.0 / 2048.0);
-        double mechRPM = motorRPM / gearRatio;
-        return mechRPM;
+        return toRPS(ticks, gearRatio) * 60;
       }
 
       /**
@@ -89,9 +111,8 @@ public class Conversions {
        * @return TalonFX velocity ticks.
        */
       public static double fromRPM(double rpm, double gearRatio) {
-        double motorRPM = rpm * gearRatio;
-        double velocityTicks = motorRPM * (2048.0 / 600.0);
-        return velocityTicks;
+        double rps = rpm / 60;
+        return fromRPS(rps, gearRatio);
       }
 
       /**
@@ -101,9 +122,8 @@ public class Conversions {
        * @return velocity of mechanism, in meters per second.
        */
       public static double toMPS(double velocityTicks, double circumference, double gearRatio) {
-        double wheelRPM = toRPM(velocityTicks, gearRatio);
-        double wheelMPS = (wheelRPM * circumference) / 60;
-        return wheelMPS;
+        double rps = toRPS(velocityTicks, gearRatio);
+        return rps * circumference;
       }
 
       /**
@@ -113,31 +133,8 @@ public class Conversions {
        * @return TalonFX velocity ticks.
        */
       public static double fromMPS(double mps, double circumference, double gearRatio) {
-        double wheelRPM = ((mps * 60) / circumference);
-        double velocityTicks = fromRPM(wheelRPM, gearRatio);
-        return velocityTicks;
-      }
-
-      /**
-       * @param velocityTicks TalonFX velocity ticks.
-       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
-       * @return velocity of mechanism, in meters per second.
-       */
-      public static double toRPS(double velocityTicks, double gearRatio) {
-        double wheelRPM = toRPM(velocityTicks, gearRatio);
-        double wheelRPS = (wheelRPM * 2 * Math.PI) / 60;
-        return wheelRPS;
-      }
-
-      /**
-       * @param mps velocity of mechanism, in meters per second.
-       * @param gearRatio gear ratio of mechanism. Use 1 for TalonFX measurement.
-       * @return TalonFX velocity ticks.
-       */
-      public static double fromRPS(double mps, double gearRatio) {
-        double wheelRPM = ((mps * 60) / (2 * Math.PI));
-        double velocityTicks = fromRPM(wheelRPM, gearRatio);
-        return velocityTicks;
+        double rps = mps / circumference;
+        return fromRPS(rps, gearRatio);
       }
     }
   }
