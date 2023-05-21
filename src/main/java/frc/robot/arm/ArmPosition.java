@@ -99,6 +99,15 @@ public class ArmPosition extends Translation2d {
   }
 
   /**
+   * Returns the angle of the arm in this position, in degrees.
+   *
+   * @return the angle of the arm in this position, in degrees.
+   */
+  public double getAngleDegrees() {
+    return this.getAngle().getDegrees();
+  }
+
+  /**
    * Returns the length of the arm in this position, in meters.
    *
    * @return the length of the arm in this position, in meters.

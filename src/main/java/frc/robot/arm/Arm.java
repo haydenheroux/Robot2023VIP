@@ -302,21 +302,21 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout positionLayout =
         tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
 
-    positionLayout.addNumber("Arm Length (m)", () -> position.getLength());
-    positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngle().getDegrees());
+    positionLayout.addNumber("Arm Length (m)", position::getLength);
+    positionLayout.addNumber("Arm Angle (deg)", position::getAngleDegrees);
 
     ShuffleboardLayout setpointLayout =
         tab.getLayout("Setpoint", BuiltInLayouts.kList).withPosition(5, 0).withSize(2, 4);
 
-    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getLength());
-    setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngle().getDegrees());
+    setpointLayout.addNumber("Arm Length Setpoint (m)", setpoint::getLength);
+    setpointLayout.addNumber("Arm Angle Setpoint (deg)", setpoint::getAngleDegrees);
     setpointLayout.addBoolean("At Setpoint?", () -> at(setpoint));
 
     ShuffleboardLayout goalLayout =
         tab.getLayout("Goal", BuiltInLayouts.kList).withPosition(7, 0).withSize(2, 4);
 
-    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLength());
-    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
+    goalLayout.addNumber("Arm Length Goal (m)", goal::getLength);
+    goalLayout.addNumber("Arm Angle Goal (deg)", goal::getAngleDegrees);
     goalLayout.addBoolean("At Goal?", () -> at(goal));
   }
 
