@@ -334,4 +334,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public Command manualRotate(DoubleSupplier percentSupplier) {
     return new ManualRotate(this, percentSupplier);
   }
+
+  public Command characterize(Selector selector) {
+    return new Characterize(this, selector);
+  }
 }
