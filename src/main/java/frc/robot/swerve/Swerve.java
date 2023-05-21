@@ -1,7 +1,5 @@
 package frc.robot.swerve;
 
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,7 +30,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   // Singleton instance
   private static Swerve instance = null;
 
-  private final SwerveDriveKinematics kinematics;
+  public final SwerveDriveKinematics kinematics;
   private final SwerveDrivePoseEstimator poseEstimator;
 
   private final Matrix<N3, N1> stateStandardDeviations = VecBuilder.fill(0.1, 0.1, 0.1);
@@ -44,8 +42,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private final Module[] modules = new Module[4]; // FL=NW, FR=NE, BR=SE, BL=SW
 
   private final PIDController thetaController;
-
-  private final SwerveAutoBuilder autoBuilder;
 
   private final Field2d field = new Field2d();
 
@@ -65,18 +61,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     thetaController = new PIDController(4.0, 0, 0);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    autoBuilder =
-        new SwerveAutoBuilder(
-            this::getPose,
-            this::setPose,
-            this.kinematics,
-            new PIDConstants(5.0, 0, 0),
-            new PIDConstants(50, 0, 0),
-            this::setSetpoints,
-            Constants.Auto.EVENT_MAP,
-            true,
-            this);
 
     if (Robot.isSimulation()) {
       gyro =
@@ -285,10 +269,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     SwerveModuleState[] setpoints = kinematics.toSwerveModuleStates(chassisVelocity);
 
     setSetpoints(setpoints);
-  }
-
-  public SwerveAutoBuilder getAutoBuilder() {
-    return autoBuilder;
   }
 
   public Command lock() {

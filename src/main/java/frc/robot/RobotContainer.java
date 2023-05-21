@@ -67,16 +67,8 @@ public class RobotContainer {
 
   /** Configures the autonomous chooser with autonomous routines. */
   private void configureAutonomous() {
-    Constants.Auto.EVENT_MAP.put("toFloor", Auto.toFloor());
-    Constants.Auto.EVENT_MAP.put("toIntermediate", Auto.toIntermediate());
-    Constants.Auto.EVENT_MAP.put("toStow", Auto.toStow());
-    Constants.Auto.EVENT_MAP.put("accept", Auto.accept());
-    Constants.Auto.EVENT_MAP.put("scoreTop", Auto.scoreTop());
-
-    autoChooser.setDefaultOption(
-        "2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Constants.Auto.SPEEDS));
-    autoChooser.addOption(
-        "2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Constants.Auto.SPEEDS));
+    autoChooser.setDefaultOption("2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Auto.SPEEDS));
+    autoChooser.addOption("2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Auto.SPEEDS));
 
     SmartDashboard.putData(autoChooser);
   }
@@ -132,6 +124,6 @@ public class RobotContainer {
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    return swerve.getAutoBuilder().fullAuto(autoChooser.getSelected());
+    return Auto.BUILDER.fullAuto(autoChooser.getSelected());
   }
 }

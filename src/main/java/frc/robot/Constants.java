@@ -1,15 +1,12 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import frc.robot.swerve.SwerveMath;
-import java.util.HashMap;
 
 public class Constants {
 
@@ -285,10 +282,5 @@ public class Constants {
       /** Gear ratio between the drive motor and the wheel. */
       public static final double GEAR_RATIO = 6.75;
     }
-  }
-
-  public static class Auto {
-    public static final PathConstraints SPEEDS = new PathConstraints(4, 3);
-    public static final HashMap<String, Command> EVENT_MAP = new HashMap<>();
   }
 }
