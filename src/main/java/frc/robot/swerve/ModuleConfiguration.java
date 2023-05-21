@@ -2,8 +2,8 @@ package frc.robot.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
-import frc.robot.RobotMap;
 
 public class ModuleConfiguration {
 
@@ -36,13 +36,13 @@ public class ModuleConfiguration {
      */
     public static ModuleCAN get(boolean north, boolean west) {
       if (north && west) {
-        return RobotMap.NORTH_WEST;
+        return Ports.NORTH_WEST;
       } else if (north && !west) {
-        return RobotMap.NORTH_EAST;
+        return Ports.NORTH_EAST;
       } else if (!north && !west) {
-        return RobotMap.SOUTH_EAST;
+        return Ports.SOUTH_EAST;
       } else {
-        return RobotMap.SOUTH_WEST;
+        return Ports.SOUTH_WEST;
       }
     }
   }

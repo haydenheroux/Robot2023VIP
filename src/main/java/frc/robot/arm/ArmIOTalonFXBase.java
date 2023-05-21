@@ -9,7 +9,7 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Rotation;
-import frc.robot.RobotMap;
+import frc.robot.Constants.Ports;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
@@ -19,11 +19,11 @@ public class ArmIOTalonFXBase implements ArmIO {
   private final Solenoid extensionBrake, rotationBrake;
 
   public ArmIOTalonFXBase() {
-    extensionMotor = new WPI_TalonFX(RobotMap.EXTENSION);
-    extensionBrake = Hardware.getSolenoid(RobotMap.EXTENSION_BRAKE);
+    extensionMotor = new WPI_TalonFX(Ports.EXTENSION);
+    extensionBrake = Hardware.getSolenoid(Ports.EXTENSION_BRAKE);
 
-    rotationMotor = new WPI_TalonFX(RobotMap.ROTATION);
-    rotationBrake = Hardware.getSolenoid(RobotMap.ROTATION_BRAKE);
+    rotationMotor = new WPI_TalonFX(Ports.ROTATION);
+    rotationBrake = Hardware.getSolenoid(Ports.ROTATION_BRAKE);
   }
 
   @Override

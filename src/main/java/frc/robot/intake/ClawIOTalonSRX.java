@@ -1,14 +1,14 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.RobotMap;
+import frc.robot.Constants.Ports;
 
 public class ClawIOTalonSRX implements ClawIO {
 
   private final WPI_TalonSRX motor;
 
   public ClawIOTalonSRX() {
-    motor = new WPI_TalonSRX(RobotMap.CLAW);
+    motor = new WPI_TalonSRX(Ports.CLAW);
   }
 
   @Override

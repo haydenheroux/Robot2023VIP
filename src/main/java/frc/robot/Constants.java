@@ -3,9 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
+import frc.robot.swerve.ModuleConfiguration.ModuleCAN;
 import frc.robot.swerve.SwerveMath;
 
 public class Constants {
@@ -16,6 +18,28 @@ public class Constants {
   public static final double ITERATIONS_PER_SECOND = 1.0 / LOOP_TIME;
   /** Expected nominal operating voltage of robot subsystems, in volts. */
   public static final double NOMINAL_VOLTAGE = 12.0;
+
+  public static class Ports {
+
+    public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
+    public static final int PNEUMATICS_MODULE = 30;
+
+    public static final int EXTENSION = 3;
+    public static final int EXTENSION_BRAKE = 10;
+
+    public static final int ROTATION = 2;
+    public static final int ROTATION_BRAKE = 9;
+
+    public static final int CLAW = 7;
+
+    public static final int BOTTOM_ROLLER = 6;
+    public static final int TOP_ROLLER = 5;
+
+    public static final ModuleCAN NORTH_WEST = new ModuleCAN(1, 2, 3, "swerve");
+    public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, "swerve");
+    public static final ModuleCAN SOUTH_EAST = new ModuleCAN(7, 8, 9, "swerve");
+    public static final ModuleCAN SOUTH_WEST = new ModuleCAN(10, 11, 12, "swerve");
+  }
 
   /** Physical robot constants including masses, distances, and other critical measurements. */
   public static class Physical {

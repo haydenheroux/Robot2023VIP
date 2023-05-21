@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.SuperstructureMechanism;
 import frc.lib.telemetry.TelemetryManager;
+import frc.robot.Constants.Ports;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
 import frc.robot.intake.Claw;
@@ -41,7 +42,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Initialize subsystems
     arm = Arm.getInstance();
-    compressor = new Compressor(RobotMap.PNEUMATICS_MODULE, RobotMap.PNEUMATICS_MODULE_TYPE);
+    compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
