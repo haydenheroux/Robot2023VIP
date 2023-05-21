@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import frc.robot.swerve.SwerveMath;
@@ -74,20 +75,9 @@ public class Constants {
       /** Maximum extending section length error. */
       public static final double TOLERANCE = 0.01;
 
-      public static class Feedforward {
-        /** Angle of the arm where KG_MIN and KG_MAX was measured. */
-        public static final Rotation2d KG_ANGLE = Rotation2d.fromDegrees(90);
-
-        /** Voltage required to barely overcome gravity, causing positive movement. */
-        public static final double KG_MAX = 2 / KG_ANGLE.getSin();
-        /** Voltage required to barely not overcome gravity, causing negative moement. */
-        public static final double KG_MIN = 2 / KG_ANGLE.getSin();
-
-        /** Voltage required to overcome gravity in both directions. */
-        public static final double KG = ((KG_MAX + KG_MIN) / 2.0);
-        /** Voltage required to overcome static friction. */
-        public static final double KS = KG_MAX - KG_MIN;
-      }
+      public static final TelescopingArmFeedforward FEEDFORWARD =
+          TelescopingArmFeedforward.createTelescopingGravityCompensation(
+              2, 2, Rotation2d.fromDegrees(90));
 
       /** Constants for extension using a PID control algorithm. */
       public static class PID {
@@ -111,22 +101,12 @@ public class Constants {
       /** Maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
-      public static class Feedforward {
-        /** Length of the arm where KG_MIN and KG_MAX was measured. */
-        public static final double KG_LENGTH = Positions.STOW.getLength();
+      // TODO Calculate lever length
+      public static final TelescopingArmFeedforward FEEDFORWARD =
+          TelescopingArmFeedforward.createPivotGravityCompensation(0.9709744, 0.9709744, 0.635);
 
-        /** Voltage required to barely overcome gravity, causing positive movement. */
-        public static final double KG_MAX = 0.9709744 / KG_LENGTH;
-        /** Voltage required to barely not overcome gravity, causing negative moement. */
-        public static final double KG_MIN = 0.9709744 / KG_LENGTH;
-
-        /** Voltage required to overcome gravity in both directions. */
-        public static final double KG = (KG_MAX + KG_MIN) / 2.0;
-        /** Voltage required to overcome static friction. */
-        public static final double KS = KG_MAX - KG_MIN;
-
-        /** Voltage required to overcome the resistive force of the spring. */
-        public static final double SPRING_VOLTAGE = 0.0; // TODO
+      static {
+        FEEDFORWARD.kO = 0.0; // Offset voltage
       }
 
       /** Constants for rotation using a PID control algorithm. */

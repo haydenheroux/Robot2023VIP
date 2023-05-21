@@ -69,10 +69,8 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts += Extension.Feedforward.KS;
-
     volts +=
-        ExtensionRotationFeedforward.calculateExtensionG(
+        Extension.FEEDFORWARD.calculateTelescoping(
             Rotation2d.fromRotations(values.rotationAngleRotations));
 
     extensionMotor.setVoltage(volts);
@@ -104,14 +102,10 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts += Rotation.Feedforward.SPRING_VOLTAGE;
-
-    volts += Rotation.Feedforward.KS;
-
     volts +=
-        ExtensionRotationFeedforward.calculateRotationG(
+        Rotation.FEEDFORWARD.calculatePivot(
             Rotation2d.fromRotations(values.rotationAngleRotations),
-            ArmPosition.fromValues(values).getLeverLength());
+            ArmPosition.fromSensorValues(values.extensionLengthMeters, 0).getLeverLength());
 
     rotationMotor.setVoltage(volts);
   }

@@ -101,10 +101,8 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setExtensionVoltage(double volts) {
-    volts += Extension.Feedforward.KS;
-
     volts +=
-        ExtensionRotationFeedforward.calculateExtensionG(
+        Extension.FEEDFORWARD.calculateTelescoping(
             Rotation2d.fromRotations(rotationAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
@@ -134,16 +132,8 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setRotationVoltage(double volts) {
-    // Spring takes away some voltage
-    volts -= Rotation.Feedforward.SPRING_VOLTAGE;
-
-    // Compensate for the voltage the spring takes away
-    volts += Rotation.Feedforward.SPRING_VOLTAGE;
-
-    volts += Rotation.Feedforward.KS;
-
     volts +=
-        ExtensionRotationFeedforward.calculateRotationG(
+        Rotation.FEEDFORWARD.calculatePivot(
             Rotation2d.fromRotations(rotationAngleRotations), fakeSimLength);
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
