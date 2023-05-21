@@ -292,45 +292,22 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
-    /** Configuration for the front left swerve module. */
-    public static final ModuleConfiguration FRONT_LEFT_CONFIG =
-        new ModuleConfiguration(
-            new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(11.375)),
-            new Rotation2d(),
-            1,
-            3,
-            2,
-            "swerve");
+    public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
+    public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 
-    /** Configuration for the front right swerve module. */
-    public static final ModuleConfiguration FRONT_RIGHT_CONFIG =
-        new ModuleConfiguration(
-            new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(11.375)),
-            new Rotation2d(),
-            4,
-            6,
-            5,
-            "swerve");
+    public static final String CAN_BUS = "swerve";
 
-    /** Configuration for the back left swerve module. */
-    public static final ModuleConfiguration BACK_LEFT_CONFIG =
-        new ModuleConfiguration(
-            new Translation2d(Units.inchesToMeters(-11.375), Units.inchesToMeters(-11.375)),
-            new Rotation2d(),
-            11,
-            13,
-            12,
-            "swerve");
+    /** Configuration for the north west swerve module. */
+    public static final ModuleConfiguration NORTH_WEST = new ModuleConfiguration(true, true);
 
-    /** Configuration for the back right swerve module. */
-    public static final ModuleConfiguration BACK_RIGHT_CONFIG =
-        new ModuleConfiguration(
-            new Translation2d(Units.inchesToMeters(11.375), Units.inchesToMeters(-11.375)),
-            new Rotation2d(),
-            8,
-            10,
-            9,
-            "swerve");
+    /** Configuration for the north east swerve module. */
+    public static final ModuleConfiguration NORTH_EAST = new ModuleConfiguration(true, false);
+
+    /** Configuration for the south east swerve module. */
+    public static final ModuleConfiguration SOUTH_EAST = new ModuleConfiguration(false, false);
+
+    /** Configuration for the south west swerve module. */
+    public static final ModuleConfiguration SOUTH_WEST = new ModuleConfiguration(false, true);
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);
@@ -340,7 +317,7 @@ public class Constants {
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, FRONT_LEFT_CONFIG);
+        SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, NORTH_WEST);
 
     /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
     public static final boolean INVERTED = true;

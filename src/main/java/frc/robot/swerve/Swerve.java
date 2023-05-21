@@ -40,7 +40,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private final GyroIO gyro;
   private final GyroIOValues gyroValues = new GyroIOValues();
 
-  private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+  private final Module[] modules = new Module[4]; // FL=NW, FR=NE, BR=SE, BL=SW
 
   private final PIDController thetaController;
 
@@ -50,10 +50,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   /** Creates a new Swerve. */
   private Swerve() {
-    modules[0] = new Module(Constants.Swerve.FRONT_LEFT_CONFIG);
-    modules[1] = new Module(Constants.Swerve.FRONT_RIGHT_CONFIG);
-    modules[2] = new Module(Constants.Swerve.BACK_LEFT_CONFIG);
-    modules[3] = new Module(Constants.Swerve.BACK_RIGHT_CONFIG);
+    modules[0] = new Module(Constants.Swerve.NORTH_WEST);
+    modules[1] = new Module(Constants.Swerve.NORTH_EAST);
+    modules[2] = new Module(Constants.Swerve.SOUTH_EAST);
+    modules[3] = new Module(Constants.Swerve.SOUTH_WEST);
 
     kinematics =
         new SwerveDriveKinematics(

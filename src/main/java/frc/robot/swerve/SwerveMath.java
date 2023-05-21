@@ -12,7 +12,7 @@ public class SwerveMath {
 
   public static Rotation2d calculateMaxAngularSpeed(
       double maxSpeed, ModuleConfiguration farthestModule) {
-    double angularRadius = farthestModule.kLocationRelativeToCenterMeters.getNorm();
+    double angularRadius = farthestModule.location.getNorm();
     return Rotation2d.fromRadians(maxSpeed / angularRadius);
   }
 
