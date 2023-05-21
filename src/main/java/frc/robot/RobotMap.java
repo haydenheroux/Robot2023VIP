@@ -8,11 +8,11 @@ public class RobotMap {
   public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
   public static final int PNEUMATICS_MODULE = 30;
 
-  public static final int ARM_EXTENSION = 3;
-  public static final int ARM_EXTENSION_BRAKE = 10;
+  public static final int EXTENSION = 3;
+  public static final int EXTENSION_BRAKE = 10;
 
-  public static final int ARM_ROTATION = 2;
-  public static final int ARM_ROTATION_BRAKE = 9;
+  public static final int ROTATION = 2;
+  public static final int ROTATION_BRAKE = 9;
 
   public static final int CLAW = 7;
 
