@@ -42,6 +42,31 @@ public class Constants {
      */
     public static final double BUMPER_DISTANCE = Units.inchesToMeters(14);
 
+    /** Maximum vertical distance from the floor to the end of the arm. */
+    public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
+    /** Minimum vertical distance from the floor to the end of the arm. */
+    public static final double MIN_HEIGHT = Units.inchesToMeters(4);
+    /** Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm. */
+    public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);
+
+    /**
+     * Distance from the bumpers to the front of the middle node, plus the distance from the arm to
+     * the bumpers.
+     */
+    public static final double MIDDLE_DISTANCE =
+        Units.feetToMeters(1) + Units.inchesToMeters(10.75) + Physical.BUMPER_DISTANCE;
+    /** Height from the floor to the top of the middle cone node. */
+    public static final double MIDDLE_HEIGHT = Units.feetToMeters(2) + Units.inchesToMeters(10);
+
+    /**
+     * Distance from the bumpers to the front of the top node, plus the distance from the arm to the
+     * bumpers.
+     */
+    public static final double TOP_DISTANCE =
+        Units.feetToMeters(3) + Units.inchesToMeters(3.75) + Physical.BUMPER_DISTANCE;
+    /** Height from the floor to the top of the top cone node. */
+    public static final double TOP_HEIGHT = Units.feetToMeters(3) + Units.inchesToMeters(10);
+
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double WHEEL_COF = 1.19;
@@ -114,36 +139,6 @@ public class Constants {
         /** Volts to be applied per rotation of angle error. */
         public static final double KP = 32.4;
       }
-    }
-
-    /** Arm motion constraint constants relating to the edge positions, and "danger" zones. */
-    public static class Constraints {
-      /** Maximum vertical distance from the floor to the end of the arm. */
-      public static final double MAX_HEIGHT = Units.feetToMeters(6) + Units.inchesToMeters(6);
-      /** Minimum vertical distance from the floor to the end of the arm. */
-      public static final double MIN_HEIGHT = Units.inchesToMeters(4);
-      /**
-       * Maxiumum horizontal distance from the edge of the frame perimeter to the end of the arm.
-       */
-      public static final double MAX_OUT_LENGTH = Units.inchesToMeters(48);
-
-      /**
-       * Distance from the bumpers to the front of the middle node, plus the distance from the arm
-       * to the bumpers.
-       */
-      public static final double MIDDLE_DISTANCE =
-          Units.feetToMeters(1) + Units.inchesToMeters(10.75) + Physical.BUMPER_DISTANCE;
-      /** Height from the floor to the top of the middle cone node. */
-      public static final double MIDDLE_HEIGHT = Units.feetToMeters(2) + Units.inchesToMeters(10);
-
-      /**
-       * Distance from the bumpers to the front of the top node, plus the distance from the arm to
-       * the bumpers.
-       */
-      public static final double TOP_DISTANCE =
-          Units.feetToMeters(3) + Units.inchesToMeters(3.75) + Physical.BUMPER_DISTANCE;
-      /** Height from the floor to the top of the top cone node. */
-      public static final double TOP_HEIGHT = Units.feetToMeters(3) + Units.inchesToMeters(10);
     }
 
     /** Arm positions. */

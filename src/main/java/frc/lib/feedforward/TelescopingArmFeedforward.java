@@ -46,12 +46,10 @@ public class TelescopingArmFeedforward {
   }
 
   public double calculatePivot(Rotation2d theta, double length) {
-    return calculatePivot(
-        theta, length, Rotation2d.fromRadians(0), Rotation2d.fromRadians(0));
+    return calculatePivot(theta, length, Rotation2d.fromRadians(0), Rotation2d.fromRadians(0));
   }
 
-  public double calculateTelescoping(
-      Rotation2d theta, double velocity, double acceleration) {
+  public double calculateTelescoping(Rotation2d theta, double velocity, double acceleration) {
     return kS * Math.signum(velocity)
         + kG * theta.getSin()
         + kV * velocity

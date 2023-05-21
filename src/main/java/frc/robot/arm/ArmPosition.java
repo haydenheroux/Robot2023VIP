@@ -190,10 +190,10 @@ public class ArmPosition extends Translation2d {
   }
 
   public boolean isIntersectingGrid() {
-    return ArmKinematics.isIntersectingGrid(this);
+    return ArmConstraints.isIntersectingGrid(this);
   }
 
   public boolean isWithinRuleZone() {
-    return ArmKinematics.isWithinRuleZone(this);
+    return ArmConstraints.isWithinRuleZone(this);
   }
 }

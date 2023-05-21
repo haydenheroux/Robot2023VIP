@@ -35,10 +35,10 @@ public class SuperstructureMechanism {
   }
 
   // Width of mechanism "canvas"
-  private final double kMechanismWidth =
-      metersToMechanism(Constants.Arm.Constraints.MAX_OUT_LENGTH * 2);
+  private final double kMechanismWidth = metersToMechanism(Units.inchesToMeters(48) * 2);
   // Height of mechanism "canvas"
-  private final double kMechanismHeight = metersToMechanism(Constants.Arm.Constraints.MAX_HEIGHT);
+  private final double kMechanismHeight =
+      metersToMechanism(Units.feetToMeters(6) + Units.inchesToMeters(6));
 
   // Colors for static superstructure components
   private final Color8Bit kDefaultColor = new Color8Bit(Color.kGray);

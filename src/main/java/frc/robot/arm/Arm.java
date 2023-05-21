@@ -89,7 +89,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return true if the arm is within the rule zone.
    */
   public boolean isWithinRuleZone() {
-    return ArmKinematics.isWithinRuleZone(position);
+    return ArmConstraints.isWithinRuleZone(position);
   }
 
   /**
