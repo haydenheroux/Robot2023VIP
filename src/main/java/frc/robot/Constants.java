@@ -298,16 +298,16 @@ public class Constants {
     public static final String CAN_BUS = "swerve";
 
     /** Configuration for the north west swerve module. */
-    public static final ModuleConfiguration NORTH_WEST = new ModuleConfiguration(true, true);
+    public static final ModuleConfiguration NORTH_WEST = new ModuleConfiguration(true, true).withName("North West");
 
     /** Configuration for the north east swerve module. */
-    public static final ModuleConfiguration NORTH_EAST = new ModuleConfiguration(true, false);
+    public static final ModuleConfiguration NORTH_EAST = new ModuleConfiguration(true, false).withName("North East");
 
     /** Configuration for the south east swerve module. */
-    public static final ModuleConfiguration SOUTH_EAST = new ModuleConfiguration(false, false);
+    public static final ModuleConfiguration SOUTH_EAST = new ModuleConfiguration(false, false).withName("South East");
 
     /** Configuration for the south west swerve module. */
-    public static final ModuleConfiguration SOUTH_WEST = new ModuleConfiguration(false, true);
+    public static final ModuleConfiguration SOUTH_WEST = new ModuleConfiguration(false, true).withName("South West");
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);

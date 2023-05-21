@@ -57,13 +57,13 @@ public class ModuleConfiguration {
     location = ModuleLocation.get(north, west);
   }
 
-  public ModuleConfiguration withAzimuthOffset(Rotation2d newAzimuthOffset) {
-    azimuthOffset = newAzimuthOffset;
+  public ModuleConfiguration withAzimuthOffset(Rotation2d azimuthOffset) {
+    this.azimuthOffset = azimuthOffset;
     return this;
   }
 
-  public ModuleConfiguration withName(String newName) {
-    name = newName;
+  public ModuleConfiguration withName(String name) {
+    this.name = name;
     return this;
   }
 }
