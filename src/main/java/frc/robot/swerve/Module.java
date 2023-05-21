@@ -1,7 +1,6 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Swerve;
@@ -12,7 +11,7 @@ import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 
 public class Module {
 
-  private final ModuleConfiguration config;
+  public final ModuleConfiguration config;
 
   private final AngleMotorIO angleMotor;
   private final AngleMotorIOValues angleMotorValues = new AngleMotorIOValues();
@@ -83,10 +82,6 @@ public class Module {
     }
 
     state = setpoint;
-  }
-
-  public Translation2d getLocation() {
-    return config.location;
   }
 
   public SwerveModuleState getState() {

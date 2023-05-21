@@ -57,10 +57,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     kinematics =
         new SwerveDriveKinematics(
-            modules[0].getLocation(),
-            modules[1].getLocation(),
-            modules[2].getLocation(),
-            modules[3].getLocation());
+            modules[0].config.location,
+            modules[1].config.location,
+            modules[2].config.location,
+            modules[3].config.location);
 
     thetaController = new PIDController(4.0, 0, 0);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);

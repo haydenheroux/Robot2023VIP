@@ -49,6 +49,9 @@ public class ModuleConfiguration {
   public String name;
   public final Translation2d location;
 
+  /*
+   * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system
+   */
   public ModuleConfiguration(boolean north, boolean west) {
     can = new ModuleCAN(north, west);
     location = ModuleLocation.get(north, west);
