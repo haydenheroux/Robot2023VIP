@@ -105,8 +105,10 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(compressor::enableDigital))
         .onFalse(Commands.runOnce(compressor::disable));
 
-    pit.a().onTrue(arm.characterize(Selector.kRotation));
-    pit.b().onTrue(arm.characterize(Selector.kExtension));
+    pit.a().whileTrue(arm.characterize(Selector.kRotation));
+    pit.b().whileTrue(arm.characterize(Selector.kExtension));
+    pit.x().whileTrue(arm.toGoal(Constants.Arm.Positions.STOW));
+    pit.y().whileTrue(arm.toGoal(Constants.Arm.Positions.SAFE));
   }
 
   /** Configures default commands for each subsystem. */
