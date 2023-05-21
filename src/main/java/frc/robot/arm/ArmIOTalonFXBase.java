@@ -2,6 +2,7 @@ package frc.robot.arm;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
@@ -70,7 +71,9 @@ public class ArmIOTalonFXBase implements ArmIO {
 
     volts += Extension.Feedforward.KS;
 
-    volts += ExtensionRotationFeedforward.calculateExtensionG(ArmPosition.fromValues(values));
+    volts +=
+        ExtensionRotationFeedforward.calculateExtensionG(
+            Rotation2d.fromRotations(values.rotationAngleRotations));
 
     extensionMotor.setVoltage(volts);
   }
@@ -105,7 +108,10 @@ public class ArmIOTalonFXBase implements ArmIO {
 
     volts += Rotation.Feedforward.KS;
 
-    volts += ExtensionRotationFeedforward.calculateRotationG(ArmPosition.fromValues(values));
+    volts +=
+        ExtensionRotationFeedforward.calculateRotationG(
+            Rotation2d.fromRotations(values.rotationAngleRotations),
+            ArmPosition.fromValues(values).getLeverLength());
 
     rotationMotor.setVoltage(volts);
   }

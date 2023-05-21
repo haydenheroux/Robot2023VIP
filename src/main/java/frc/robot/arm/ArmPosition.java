@@ -125,6 +125,11 @@ public class ArmPosition extends Translation2d {
     return this.getLength() - Physical.LENGTH_OFFSET;
   }
 
+  public double getLeverLength() {
+    // TODO
+    return this.getLength();
+  }
+
   /**
    * Returns true if this arm position has an angle greater than the angle of another arm position.
    *

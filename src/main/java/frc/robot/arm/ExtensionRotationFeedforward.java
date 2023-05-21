@@ -1,5 +1,6 @@
 package frc.robot.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 
 public class ExtensionRotationFeedforward {
@@ -9,8 +10,8 @@ public class ExtensionRotationFeedforward {
    *
    * @return the voltage required to overcome resistive forces at the given position.
    */
-  public static double calculateExtensionG(ArmPosition position) {
-    return Constants.Arm.Extension.Feedforward.KG * position.getAngle().getSin();
+  public static double calculateExtensionG(Rotation2d angle) {
+    return Constants.Arm.Extension.Feedforward.KG * angle.getSin();
   }
 
   /**
@@ -18,9 +19,7 @@ public class ExtensionRotationFeedforward {
    *
    * @return the voltage required to overcome resistive forces at the given position.
    */
-  public static double calculateRotationG(ArmPosition position) {
-    return Constants.Arm.Rotation.Feedforward.KG
-        * position.getAngle().getCos()
-        * position.getLength();
+  public static double calculateRotationG(Rotation2d angle, double leverLengthMeters) {
+    return Constants.Arm.Rotation.Feedforward.KG * angle.getCos() * leverLengthMeters;
   }
 }
