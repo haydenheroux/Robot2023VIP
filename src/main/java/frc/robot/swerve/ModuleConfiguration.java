@@ -45,8 +45,8 @@ public class ModuleConfiguration {
   }
 
   public final ModuleCAN can;
-  public Rotation2d azimuthOffset;
-  public String name;
+  public Rotation2d azimuthOffset = new Rotation2d();
+  public String name = "";
   public final Translation2d location;
 
   /*

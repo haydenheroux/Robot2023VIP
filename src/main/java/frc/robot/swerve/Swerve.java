@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
@@ -200,10 +201,14 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   public void setSetpoints(SwerveModuleState[] setpoints) {
+    setSetpoints(setpoints, false);
+  }
+
+  public void setSetpoints(SwerveModuleState[] setpoints, boolean force) {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Swerve.MAX_SPEED);
 
     for (int i = 0; i < 4; i++) {
-      modules[i].setSetpoint(setpoints[i]);
+      modules[i].setSetpoint(setpoints[i], force);
     }
   }
 
@@ -280,5 +285,19 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   public SwerveAutoBuilder getAutoBuilder() {
     return autoBuilder;
+  }
+
+  public Command lock() {
+    return this.runOnce(
+        () -> {
+          setSetpoints(
+              new SwerveModuleState[] {
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45))
+              },
+              true);
+        });
   }
 }
