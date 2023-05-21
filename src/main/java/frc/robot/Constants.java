@@ -4,7 +4,6 @@ import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
@@ -47,14 +46,6 @@ public class Constants {
     public static final double WHEEL_COF = 1.19;
   }
 
-  /** Pneumatics constants relating to the pneumatics module. */
-  public static class Pneumatics {
-    /** Type of the pneumatics module. */
-    public static final PneumaticsModuleType MODULE_TYPE = PneumaticsModuleType.REVPH;
-    /** CAN identifier for the pneumatics module. */
-    public static final int CAN_ID = 30;
-  }
-
   /** Arm constants relating to the operation of the arm subsystem. */
   public static class Arm {
 
@@ -63,13 +54,6 @@ public class Constants {
      * extension algorithms, etc.
      */
     public static class Extension {
-      /**
-       * CAN identifier for the extension motor. The extension motor must be assigned this CAN
-       * identifier and be on the RoboRIO CAN bus to function.
-       */
-      public static final int CAN_ID = 3;
-      /** Channel of the extension brake solenoid on the pneumatics controller. */
-      public static final int BRAKE_CHANNEL = 10;
 
       /**
        * Change in distance per full revolution of the spool drum. This is usually the circumference
@@ -116,14 +100,6 @@ public class Constants {
      * Rotation constants relating to the rotation motor, rotation brake, rotation algorithms, etc.
      */
     public static class Rotation {
-      /**
-       * CAN identifier for the rotation motor. The rotation motor must be assigned this CAN
-       * identifier and be on the RoboRIO CAN bus to function.
-       */
-      public static final int CAN_ID = 2;
-      /** Channel of the extension brake solenoid on the pneumatics controller. */
-      public static final int BRAKE_CHANNEL = 9;
-
       /** Total gear ratio between the motor and the arm rotation. */
       public static final double GEAR_RATIO = 812.0 / 11.0;
 
@@ -220,12 +196,6 @@ public class Constants {
 
     /** Claw subsystem constants. */
     public static class Claw {
-      /**
-       * CAN identifier for the claw motor. The claw motor must be assigned this CAN identifier and
-       * be on the RoboRIO CAN bus to function.
-       */
-      public static final int CAN_ID = 7;
-
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
         public static final double PERIOD = 0.5;
@@ -246,17 +216,6 @@ public class Constants {
 
     /** Side intake subsystem constants. */
     public static class SideIntake {
-      /**
-       * CAN identifier for the bottom motor. The bottom motor must be assigned this CAN identifier
-       * and be on the RoboRIO CAN bus to function.
-       */
-      public static final int BOTTOM_CAN_ID = 6;
-      /**
-       * CAN identifier for the top motor. The top motor must be assigned this CAN identifier and be
-       * on the RoboRIO CAN bus to function.
-       */
-      public static final int TOP_CAN_ID = 5;
-
       /** Assumed angle of the side intake. Used for calculating speed variation based on angle. */
       public static final Rotation2d MECHANISM_ANGLE = Rotation2d.fromDegrees(45);
       /** Assumed angle for accepting game pieces using the side intake. */
@@ -295,19 +254,21 @@ public class Constants {
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 
-    public static final String CAN_BUS = "swerve";
-
     /** Configuration for the north west swerve module. */
-    public static final ModuleConfiguration NORTH_WEST = new ModuleConfiguration(true, true).withName("North West");
+    public static final ModuleConfiguration NORTH_WEST =
+        new ModuleConfiguration(true, true).withName("North West");
 
     /** Configuration for the north east swerve module. */
-    public static final ModuleConfiguration NORTH_EAST = new ModuleConfiguration(true, false).withName("North East");
+    public static final ModuleConfiguration NORTH_EAST =
+        new ModuleConfiguration(true, false).withName("North East");
 
     /** Configuration for the south east swerve module. */
-    public static final ModuleConfiguration SOUTH_EAST = new ModuleConfiguration(false, false).withName("South East");
+    public static final ModuleConfiguration SOUTH_EAST =
+        new ModuleConfiguration(false, false).withName("South East");
 
     /** Configuration for the south west swerve module. */
-    public static final ModuleConfiguration SOUTH_WEST = new ModuleConfiguration(false, true).withName("South West");
+    public static final ModuleConfiguration SOUTH_WEST =
+        new ModuleConfiguration(false, true).withName("South West");
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);

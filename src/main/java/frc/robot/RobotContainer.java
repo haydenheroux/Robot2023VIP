@@ -41,7 +41,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Initialize subsystems
     arm = Arm.getInstance();
-    compressor = new Compressor(Constants.Pneumatics.CAN_ID, Constants.Pneumatics.MODULE_TYPE);
+    compressor = new Compressor(RobotMap.PNEUMATICS_MODULE, RobotMap.PNEUMATICS_MODULE_TYPE);
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();

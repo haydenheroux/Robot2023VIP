@@ -3,6 +3,7 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Swerve;
+import frc.robot.RobotMap;
 
 public class ModuleConfiguration {
 
@@ -23,24 +24,26 @@ public class ModuleConfiguration {
     public final int angle, azimuth, drive;
     public final String bus;
 
+    public ModuleCAN(int angle, int azimuth, int drive, String bus) {
+      this.angle = angle;
+      this.azimuth = azimuth;
+      this.drive = drive;
+      this.bus = bus;
+    }
+
     /*
      * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system
      */
-    public ModuleCAN(boolean north, boolean west) {
-      bus = "swerve";
-
+    public static ModuleCAN get(boolean north, boolean west) {
       if (north && west) {
-        angle = 1;
+        return RobotMap.NORTH_WEST;
       } else if (north && !west) {
-        angle = 4;
+        return RobotMap.NORTH_EAST;
       } else if (!north && !west) {
-        angle = 7;
+        return RobotMap.SOUTH_EAST;
       } else {
-        angle = 10;
+        return RobotMap.SOUTH_WEST;
       }
-
-      azimuth = angle + 1;
-      drive = angle + 2;
     }
   }
 
@@ -53,7 +56,7 @@ public class ModuleConfiguration {
    * https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system
    */
   public ModuleConfiguration(boolean north, boolean west) {
-    can = new ModuleCAN(north, west);
+    can = ModuleCAN.get(north, west);
     location = ModuleLocation.get(north, west);
   }
 

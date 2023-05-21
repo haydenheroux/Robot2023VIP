@@ -1,15 +1,15 @@
 package frc.robot.intake;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.Constants.Intake.SideIntake;
+import frc.robot.RobotMap;
 
 public class SideIntakeIOTalonSRX implements SideIntakeIO {
 
   private final WPI_TalonSRX bottomMotor, topMotor;
 
   public SideIntakeIOTalonSRX() {
-    bottomMotor = new WPI_TalonSRX(SideIntake.BOTTOM_CAN_ID);
-    topMotor = new WPI_TalonSRX(SideIntake.TOP_CAN_ID);
+    bottomMotor = new WPI_TalonSRX(RobotMap.BOTTOM_ROLLER);
+    topMotor = new WPI_TalonSRX(RobotMap.TOP_ROLLER);
   }
 
   @Override

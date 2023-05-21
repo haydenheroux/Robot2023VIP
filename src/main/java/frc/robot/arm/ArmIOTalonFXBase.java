@@ -8,7 +8,7 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Rotation;
-import frc.robot.Constants.Pneumatics;
+import frc.robot.RobotMap;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
@@ -18,12 +18,19 @@ public class ArmIOTalonFXBase implements ArmIO {
   private final Solenoid extensionBrake, rotationBrake;
 
   public ArmIOTalonFXBase() {
-    extensionMotor = new WPI_TalonFX(Extension.CAN_ID);
+    extensionMotor = new WPI_TalonFX(RobotMap.ARM_EXTENSION);
     extensionBrake =
-        new Solenoid(Pneumatics.CAN_ID, Pneumatics.MODULE_TYPE, Extension.BRAKE_CHANNEL);
+        new Solenoid(
+            RobotMap.PNEUMATICS_MODULE,
+            RobotMap.PNEUMATICS_MODULE_TYPE,
+            RobotMap.ARM_EXTENSION_BRAKE);
 
-    rotationMotor = new WPI_TalonFX(Rotation.CAN_ID);
-    rotationBrake = new Solenoid(Pneumatics.CAN_ID, Pneumatics.MODULE_TYPE, Rotation.BRAKE_CHANNEL);
+    rotationMotor = new WPI_TalonFX(RobotMap.ARM_ROTATION);
+    rotationBrake =
+        new Solenoid(
+            RobotMap.PNEUMATICS_MODULE,
+            RobotMap.PNEUMATICS_MODULE_TYPE,
+            RobotMap.ARM_ROTATION_BRAKE);
   }
 
   @Override
