@@ -61,7 +61,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     double positionRotations =
         Conversions.TalonFX.Position.toRotations(
             motor.getSelectedSensorPosition(), Drive.GEAR_RATIO);
-
+ 
     double velocityRotationsPerSecond =
         Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorVelocity(), Drive.GEAR_RATIO);
 

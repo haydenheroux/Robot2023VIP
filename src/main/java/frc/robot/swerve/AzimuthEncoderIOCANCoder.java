@@ -7,7 +7,6 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.util.Units;
-import frc.lib.math.Conversions;
 import frc.robot.Constants.Swerve;
 
 public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {

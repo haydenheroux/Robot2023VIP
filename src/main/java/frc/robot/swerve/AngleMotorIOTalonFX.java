@@ -42,8 +42,10 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
     config.closedloopRamp = Angle.RAMP_TIME;
 
-    Timer.delay(1);
-    motor.setInverted(Swerve.INVERTED);
+    for (int i = 0; i < 4; i++) {
+      Timer.delay(1);
+      motor.setInverted(Swerve.INVERTED);
+    }
 
     motor.configAllSettings(config, 250);
   }
@@ -54,7 +56,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
         Conversions.TalonFX.Position.toRotations(
             motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
     values.omegaRotationsPerSecond =
-        Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
+        Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorVelocity(), Angle.GEAR_RATIO);
   }
 
   @Override

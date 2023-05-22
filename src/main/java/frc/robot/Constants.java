@@ -254,28 +254,28 @@ public class Constants {
     public static final ModuleConfiguration NORTH_WEST =
         new ModuleConfiguration(true, true).withName("North West");
     static {
-      NORTH_WEST.azimuthOffset = Rotation2d.fromDegrees(245.43);
+      NORTH_WEST.azimuthOffset = Rotation2d.fromDegrees(293.2);
     }
 
     /** Configuration for the north east swerve module. */
     public static final ModuleConfiguration NORTH_EAST =
         new ModuleConfiguration(true, false).withName("North East");
     static {
-      NORTH_EAST.azimuthOffset = Rotation2d.fromDegrees(253.74);
+      NORTH_EAST.azimuthOffset = Rotation2d.fromDegrees(287.84);
     }
 
     /** Configuration for the south east swerve module. */
     public static final ModuleConfiguration SOUTH_EAST =
         new ModuleConfiguration(false, false).withName("South East");
     static {
-      SOUTH_EAST.azimuthOffset = Rotation2d.fromDegrees(186.715);
+      SOUTH_EAST.azimuthOffset = Rotation2d.fromDegrees(345.05);
     }
 
     /** Configuration for the south west swerve module. */
     public static final ModuleConfiguration SOUTH_WEST =
         new ModuleConfiguration(false, true).withName("South West");
     static {
-      SOUTH_WEST.azimuthOffset = Rotation2d.fromDegrees(162.15);
+      SOUTH_WEST.azimuthOffset = Rotation2d.fromDegrees(192.91);
     }
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
@@ -294,15 +294,15 @@ public class Constants {
     /** Angle motor constants. */
     public static class Angle {
       /** Proportional gain, in ??? per ???. */
-      public static final double KP = 0.075;
+      public static final double KP = 0.050953;
       /** Derivative gain, in ??? per ???. */
-      public static final double KD = 0.4;
+      public static final double KD = 0.09;
       /** Current draw limit, in amps. */
       public static final double CURRENT_LIMIT = 10.0;
       /** Time to go from zero to full, in seconds. */
       public static final double RAMP_TIME = 0.25;
       /** Gear ratio between the angle motor and the wheel. */
-      public static final double GEAR_RATIO = 21.42;
+      public static final double GEAR_RATIO = 150 / 7;
     }
 
     /** Drive motor constants. */

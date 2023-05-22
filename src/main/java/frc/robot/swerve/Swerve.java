@@ -14,11 +14,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryOutputter;
@@ -121,7 +123,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
             Units.radiansToRotations(
                 kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond));
 
-    tab.addDoubleArray("Module States", this::getStatesAsArray);
+    tab.addDoubleArray("Module States", () -> getStatesAsArray(getStates()));
 
     ShuffleboardLayout gyroLayout = tab.getLayout("Gyroscope", BuiltInLayouts.kList);
     gyroLayout.addNumber(
@@ -195,6 +197,8 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   public void setSetpoints(SwerveModuleState[] setpoints, boolean force) {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Swerve.MAX_SPEED);
 
+    SmartDashboard.putNumberArray("Setpoints", getStatesAsArray(setpoints));
+
     for (int i = 0; i < 4; i++) {
       modules[i].setSetpoint(setpoints[i], force);
     }
@@ -210,11 +214,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     return states;
   }
 
-  public double[] getStatesAsArray() {
+  public double[] getStatesAsArray(SwerveModuleState[] states) {
     double[] doubles = new double[8];
 
     for (int i = 0; i < 4; i++) {
-      SwerveModuleState state = modules[i].getState();
+      SwerveModuleState state = states[i];
       doubles[2 * i] = state.angle.getRadians();
       doubles[2 * i + 1] = state.speedMetersPerSecond;
     }

@@ -3,6 +3,7 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.Swerve;
 import frc.robot.Robot;
 import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
@@ -24,6 +25,8 @@ public class Module {
 
   private SwerveModuleState state;
 
+  private Timer timer = new Timer();
+
   public Module(ModuleConfiguration config) {
     this.config = config;
 
@@ -33,7 +36,8 @@ public class Module {
       azimuthEncoder = new AzimuthEncoderIOSim(config.azimuthOffset.getRotations());
     } else {
       angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.bus);
-      driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
+      //driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
+      driveMotor = new DriveMotorIOSim();
       azimuthEncoder = new AzimuthEncoderIOCANCoder(config.can.azimuth, config.can.bus);
     }
 
@@ -47,6 +51,8 @@ public class Module {
         azimuthEncoderValues.absoluteAngleRotations - config.azimuthOffset.getRotations());
 
     state = getState();
+
+    timer.start();
   }
 
   public void update() {
@@ -57,7 +63,7 @@ public class Module {
 
     state = getState();
 
-    // TODO angleMotor.setPosition({azimuthAngle})
+    //angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRotations - config.azimuthOffset.getRotations());
   }
 
   public void setSetpoint(SwerveModuleState setpoint) {
@@ -74,10 +80,10 @@ public class Module {
     if (isForced == false) {
       setpoint = SwerveMath.dejitter(setpoint, state.angle, Swerve.DEJITTER_SPEED);
     }
+    
+    //boolean angleChanged = setpoint.angle.equals(state.angle) == false;
 
-    boolean angleChanged = setpoint.angle.equals(state.angle) == false;
-
-    if (angleChanged) {
+    if (true) {
       angleMotor.setSetpoint(setpoint.angle.getRotations());
     }
 
