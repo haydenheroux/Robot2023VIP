@@ -122,7 +122,7 @@ public class Constants {
       public static final double TOLERANCE = 0.01;
 
       public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.createTelescopingGravityCompensation(
+          TelescopingArmFeedforward.telescopingGravityCompensation(
               2, 2, Rotation2d.fromDegrees(90));
 
       /** Constants for extension using a PID control algorithm. */
@@ -149,7 +149,7 @@ public class Constants {
 
       // TODO Calculate lever length
       public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.createPivotGravityCompensation(0.9709744, 0.9709744, 0.635);
+          TelescopingArmFeedforward.pivotGravityCompensation(0.9709744, 0.9709744, 0.635);
 
       static {
         FEEDFORWARD.kO = 0.0; // Offset voltage

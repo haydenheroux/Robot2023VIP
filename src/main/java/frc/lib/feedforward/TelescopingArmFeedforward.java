@@ -12,7 +12,7 @@ public class TelescopingArmFeedforward {
 
   public TelescopingArmFeedforward() {}
 
-  public static TelescopingArmFeedforward createGravityCompensation(double kgMin, double kgMax) {
+  private static TelescopingArmFeedforward gravityCompensation(double kgMin, double kgMax) {
     TelescopingArmFeedforward config = new TelescopingArmFeedforward();
     config.kG = (kgMin + kgMax) / 2.0;
     config.kS = kgMax - kgMin;
@@ -20,20 +20,20 @@ public class TelescopingArmFeedforward {
     return config;
   }
 
-  public static TelescopingArmFeedforward createPivotGravityCompensation(
-      double kgMin, double kgMax, double leverLengthMeters) {
-    kgMin /= leverLengthMeters;
-    kgMax /= leverLengthMeters;
+  public static TelescopingArmFeedforward pivotGravityCompensation(
+      double kgMin, double kgMax, double length) {
+    kgMin /= length;
+    kgMax /= length;
 
-    return createGravityCompensation(kgMin, kgMax);
+    return gravityCompensation(kgMin, kgMax);
   }
 
-  public static TelescopingArmFeedforward createTelescopingGravityCompensation(
+  public static TelescopingArmFeedforward telescopingGravityCompensation(
       double kgMin, double kgMax, Rotation2d angle) {
     kgMin /= angle.getSin();
     kgMax /= angle.getSin();
 
-    return createGravityCompensation(kgMin, kgMax);
+    return gravityCompensation(kgMin, kgMax);
   }
 
   public double calculatePivot(
