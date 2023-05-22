@@ -35,10 +35,10 @@ public class Constants {
     public static final int BOTTOM_ROLLER = 6;
     public static final int TOP_ROLLER = 5;
 
-    public static final ModuleCAN NORTH_WEST = new ModuleCAN(1, 2, 3, "swerve");
-    public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, "swerve");
-    public static final ModuleCAN SOUTH_EAST = new ModuleCAN(7, 8, 9, "swerve");
-    public static final ModuleCAN SOUTH_WEST = new ModuleCAN(10, 11, 12, "swerve");
+    public static final ModuleCAN NORTH_WEST = new ModuleCAN(1, 2, 3, "Drivetrain");
+    public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, "Drivetrain");
+    public static final ModuleCAN SOUTH_EAST = new ModuleCAN(8, 9, 10, "Drivetrain");
+    public static final ModuleCAN SOUTH_WEST = new ModuleCAN(11, 12, 13, "Drivetrain");
   }
 
   /** Physical robot constants including masses, distances, and other critical measurements. */
@@ -253,18 +253,30 @@ public class Constants {
     /** Configuration for the north west swerve module. */
     public static final ModuleConfiguration NORTH_WEST =
         new ModuleConfiguration(true, true).withName("North West");
+    static {
+      NORTH_WEST.azimuthOffset = Rotation2d.fromDegrees(245.43);
+    }
 
     /** Configuration for the north east swerve module. */
     public static final ModuleConfiguration NORTH_EAST =
         new ModuleConfiguration(true, false).withName("North East");
+    static {
+      NORTH_EAST.azimuthOffset = Rotation2d.fromDegrees(253.74);
+    }
 
     /** Configuration for the south east swerve module. */
     public static final ModuleConfiguration SOUTH_EAST =
         new ModuleConfiguration(false, false).withName("South East");
+    static {
+      SOUTH_EAST.azimuthOffset = Rotation2d.fromDegrees(186.715);
+    }
 
     /** Configuration for the south west swerve module. */
     public static final ModuleConfiguration SOUTH_WEST =
         new ModuleConfiguration(false, true).withName("South West");
+    static {
+      SOUTH_WEST.azimuthOffset = Rotation2d.fromDegrees(162.15);
+    }
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);

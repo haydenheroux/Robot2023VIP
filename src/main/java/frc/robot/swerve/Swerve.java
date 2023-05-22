@@ -69,7 +69,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
                   Units.radiansToRotations(
                       kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond));
     } else {
-      gyro = null;
+      gyro =  new GyroIOPigeon2(7, "Drivetrain");
     }
 
     Pose2d initialPoseMeters = new Pose2d();

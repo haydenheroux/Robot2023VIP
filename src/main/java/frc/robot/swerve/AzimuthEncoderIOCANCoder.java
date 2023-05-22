@@ -5,6 +5,8 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
+
+import edu.wpi.first.math.util.Units;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.Swerve;
 
@@ -32,7 +34,6 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    values.absoluteAngleRotations =
-        Conversions.CANCoder.Position.toRotations(encoder.getAbsolutePosition(), 1);
+    values.absoluteAngleRotations = Units.degreesToRotations(encoder.getAbsolutePosition());
   }
 }
