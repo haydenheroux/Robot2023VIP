@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -70,9 +71,17 @@ public class GyroIOPigeon2 implements GyroIO {
 
   private Rotation3d getRotation() {
     double[] wxyz = new double[4];
-    gyro.get6dQuaternion(wxyz);
 
-    return new Rotation3d(new Quaternion(wxyz[0], wxyz[1], wxyz[2], wxyz[3]));
+    ErrorCode error = gyro.get6dQuaternion(wxyz);
+
+    if (error == ErrorCode.OK) {
+      return new Rotation3d(new Quaternion(wxyz[0], wxyz[1], wxyz[2], wxyz[3]));
+    }
+
+    return new Rotation3d(
+        Units.rotationsToRadians(this.values.pitchAngleRotations),
+        Units.rotationsToRadians(this.values.rollAngleRotations),
+        Units.rotationsToRadians(this.values.yawAngleRotations));
   }
 
   private Translation3d getAcceleration() {
