@@ -26,11 +26,11 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void updateValues(GyroIOValues values) {
-    Rotation3d rotation = getRotation().minus(offset);
+    Rotation3d rotation = getRotation().plus(offset);
 
-    this.values.rollAngleRotations = rotation.getX();
-    this.values.pitchAngleRotations = rotation.getY();
-    this.values.yawAngleRotations = rotation.getZ();
+    this.values.rollAngleRotations = Units.radiansToRotations(rotation.getX());
+    this.values.pitchAngleRotations = Units.radiansToRotations(rotation.getY());
+    this.values.yawAngleRotations = Units.radiansToRotations(rotation.getZ());
 
     Translation3d acceleration = getAcceleration();
 
@@ -43,29 +43,29 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void setRollAngle(double rollAngleRotations) {
+    Rotation3d zero = getRotation().unaryMinus();
     offset =
-        new Rotation3d(
-            Units.rotationsToRadians(values.rollAngleRotations + rollAngleRotations),
-            Units.rotationsToRadians(values.pitchAngleRotations),
-            Units.rotationsToRadians(values.yawAngleRotations));
+        zero.plus(
+            new Rotation3d(
+                Units.rotationsToRadians(rollAngleRotations), offset.getY(), offset.getZ()));
   }
 
   @Override
   public void setPitchAngle(double pitchAngleRotations) {
+    Rotation3d zero = getRotation().unaryMinus();
     offset =
-        new Rotation3d(
-            Units.rotationsToRadians(values.rollAngleRotations),
-            Units.rotationsToRadians(values.pitchAngleRotations + pitchAngleRotations),
-            Units.rotationsToRadians(values.yawAngleRotations));
+        zero.plus(
+            new Rotation3d(
+                offset.getX(), Units.rotationsToRadians(pitchAngleRotations), offset.getZ()));
   }
 
   @Override
   public void setYawAngle(double yawAngleRotations) {
+    Rotation3d zero = getRotation().unaryMinus();
     offset =
-        new Rotation3d(
-            Units.rotationsToRadians(values.rollAngleRotations),
-            Units.rotationsToRadians(values.pitchAngleRotations),
-            Units.rotationsToRadians(values.yawAngleRotations + yawAngleRotations));
+        zero.plus(
+            new Rotation3d(
+                offset.getX(), offset.getY(), Units.rotationsToRadians(yawAngleRotations)));
   }
 
   private Rotation3d getRotation() {

@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -71,7 +70,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
                   Units.radiansToRotations(
                       kinematics.toChassisSpeeds(getStates()).omegaRadiansPerSecond));
     } else {
-      gyro =  new GyroIOPigeon2(7, "Drivetrain");
+      gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
 
     Pose2d initialPoseMeters = new Pose2d();
