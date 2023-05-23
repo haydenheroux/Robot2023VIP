@@ -28,7 +28,7 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
     config.MagnetSensor.MagnetOffset = magnetOffsetRotations;
 
     /*
-     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201 
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201
      */
     StatusCode status;
     do {
@@ -44,9 +44,9 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
   }
 
   /**
-   * Sets the current position of the magnet to be the zero. 
-   * 
-   * https://github.com/FRC3476/FRC-2023/blob/5a91e0a8a68047fc604b17d02e7192f63f010413/src/main/java/frc/subsytem/drive/DriveIOFalcon.java#L268 
+   * Sets the current position of the magnet to be the zero.
+   *
+   * <p>https://github.com/FRC3476/FRC-2023/blob/5a91e0a8a68047fc604b17d02e7192f63f010413/src/main/java/frc/subsytem/drive/DriveIOFalcon.java#L268
    */
   private void setMagnetZero() {
     MagnetSensorConfigs config = new MagnetSensorConfigs();

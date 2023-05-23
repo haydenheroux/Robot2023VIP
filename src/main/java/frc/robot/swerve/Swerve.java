@@ -133,28 +133,28 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
         tab.getLayout("[0] " + modules[0].config.name, BuiltInLayouts.kList);
     module0Layout.addNumber("Angle (deg)", () -> getStates()[0].angle.getDegrees());
     module0Layout.addNumber(
-        "Absolute Angle (deg)", () -> modules[0].getAbsoluteAzimuthAngle().getDegrees());
+        "Absolute Angle (deg)", () -> modules[0].getAzimuthAngle().getDegrees());
     module0Layout.addNumber("Velocity (mps)", () -> getStates()[0].speedMetersPerSecond);
 
     ShuffleboardLayout module1Layout =
         tab.getLayout("[1] " + modules[1].config.name, BuiltInLayouts.kList);
     module1Layout.addNumber("Angle (deg)", () -> getStates()[1].angle.getDegrees());
     module1Layout.addNumber(
-        "Absolute Angle (deg)", () -> modules[1].getAbsoluteAzimuthAngle().getDegrees());
+        "Absolute Angle (deg)", () -> modules[1].getAzimuthAngle().getDegrees());
     module1Layout.addNumber("Velocity (mps)", () -> getStates()[1].speedMetersPerSecond);
 
     ShuffleboardLayout module2Layout =
         tab.getLayout("[2] " + modules[2].config.name, BuiltInLayouts.kList);
     module2Layout.addNumber("Angle (deg)", () -> getStates()[2].angle.getDegrees());
     module2Layout.addNumber(
-        "Absolute Angle (deg)", () -> modules[2].getAbsoluteAzimuthAngle().getDegrees());
+        "Absolute Angle (deg)", () -> modules[2].getAzimuthAngle().getDegrees());
     module2Layout.addNumber("Velocity (mps)", () -> getStates()[2].speedMetersPerSecond);
 
     ShuffleboardLayout module3Layout =
         tab.getLayout("[3] " + modules[3].config.name, BuiltInLayouts.kList);
     module3Layout.addNumber("Angle (deg)", () -> getStates()[3].angle.getDegrees());
     module3Layout.addNumber(
-        "Absolute Angle (deg)", () -> modules[3].getAbsoluteAzimuthAngle().getDegrees());
+        "Absolute Angle (deg)", () -> modules[3].getAzimuthAngle().getDegrees());
     module3Layout.addNumber("Velocity (mps)", () -> getStates()[3].speedMetersPerSecond);
   }
 

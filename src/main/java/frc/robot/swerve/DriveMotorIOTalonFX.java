@@ -2,10 +2,11 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
@@ -36,7 +37,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
     // TODO
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     config.Slot0.kP = Drive.KP;
 
@@ -48,7 +48,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     config.Feedback.SensorToMechanismRatio = Drive.GEAR_RATIO;
 
     /*
-     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201 
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201
      */
     StatusCode status;
     do {
@@ -61,7 +61,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
-
     values.positionMeters =
         Conversions.General.toMeters(motor.getPosition().getValue(), Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
@@ -89,6 +88,10 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void setBrake(boolean isActive) {
-    // TODO
+    if (isActive) {
+      motor.setControl(new StaticBrake());
+    } else {
+      motor.setControl(new NeutralOut());
+    }
   }
 }

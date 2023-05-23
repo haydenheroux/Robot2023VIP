@@ -37,7 +37,9 @@ public class Module {
     } else {
       angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.bus);
       driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
-      azimuthEncoder = new AzimuthEncoderIOCANCoder(config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
+      azimuthEncoder =
+          new AzimuthEncoderIOCANCoder(
+              config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
     }
 
     angleMotor.configure();
@@ -47,8 +49,7 @@ public class Module {
 
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
-    angleMotor.setPosition(
-        azimuthEncoderValues.angleRotations);
+    angleMotor.setPosition(azimuthEncoderValues.angleRotations);
 
     state = getState();
 
@@ -56,15 +57,12 @@ public class Module {
   }
 
   public void update() {
+    azimuthEncoder.updateValues(azimuthEncoderValues);
+
     angleMotor.updateValues(angleMotorValues);
     driveMotor.updateValues(driveMotorValues);
 
-    azimuthEncoder.updateValues(azimuthEncoderValues);
-
     state = getState();
-
-    // angleMotor.setPosition(azimuthEncoderValues.absoluteAngleRotations -
-    // config.azimuthOffset.getRotations());
   }
 
   public void setSetpoint(SwerveModuleState setpoint) {
@@ -82,13 +80,7 @@ public class Module {
       setpoint = SwerveMath.dejitter(setpoint, state.angle, Swerve.DEJITTER_SPEED);
     }
 
-    // boolean angleChanged = setpoint.angle.equals(state.angle) == false;
-
-    if (true) {
-      angleMotor.setSetpoint(setpoint.angle.getRotations());
-    }
-
-    state = setpoint;
+    angleMotor.setSetpoint(setpoint.angle.getRotations());
   }
 
   public SwerveModuleState getState() {
@@ -97,7 +89,7 @@ public class Module {
         Rotation2d.fromRotations(angleMotorValues.angleRotations));
   }
 
-  public Rotation2d getAbsoluteAzimuthAngle() {
+  public Rotation2d getAzimuthAngle() {
     return Rotation2d.fromRotations(azimuthEncoderValues.angleRotations);
   }
 

@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants.Swerve.Angle;
 
 public class AngleMotorIOTalonFX implements AngleMotorIO {
@@ -24,9 +23,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   public void configure() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    // TODO
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     config.Slot0.kP = Angle.KP;
     config.Slot0.kD = Angle.KD;
@@ -41,7 +38,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
     config.Feedback.SensorToMechanismRatio = Angle.GEAR_RATIO;
 
     /*
-     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201 
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201
      */
     StatusCode status;
     do {
@@ -64,7 +61,6 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   @Override
   public void setPosition(double angleRotations) {
     motor.setRotorPosition(angleRotations);
-    // TODO
     motor.getPosition().waitForUpdate(0.1);
   }
 
@@ -73,13 +69,9 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
     motor.setControl(positionController.withPosition(angleRotations));
   }
 
-  @Override
-  public void setBrake(boolean isActive) {
-    // TODO
-  }
-
   /**
-   * Wraps a number of rotations to an absolute value in the range [0, 1) rotations.     
+   * Wraps a number of rotations to an absolute value in the range [0, 1) rotations.
+   *
    * @param rotations
    * @return rotations, [0, 1).
    */
@@ -88,6 +80,6 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
       rotations = 1 - (-rotations % 1);
     }
 
-    return rotations % 1; 
+    return rotations % 1;
   }
 }

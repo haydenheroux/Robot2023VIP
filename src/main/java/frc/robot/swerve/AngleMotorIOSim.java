@@ -33,7 +33,4 @@ public class AngleMotorIOSim implements AngleMotorIO {
   public void setSetpoint(double angleRotations) {
     this.angleRotations = angleRotations;
   }
-
-  @Override
-  public void setBrake(boolean isActive) {}
 }
