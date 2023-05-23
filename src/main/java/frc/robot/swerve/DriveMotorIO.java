@@ -12,11 +12,7 @@ public interface DriveMotorIO {
 
   public void setPosition(double distanceMeters);
 
-  public void setSetpoint(double distanceMeters);
-
   public void setVelocitySetpoint(double velocityMetersPerSecond);
-
-  public void setVoltage(double volts);
 
   public void setBrake(boolean isActive);
 }

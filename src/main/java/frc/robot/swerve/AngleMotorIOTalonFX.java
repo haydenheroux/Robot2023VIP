@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,11 +34,19 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
     config.CurrentLimits.StatorCurrentLimit = Angle.CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
 
+    config.ClosedLoopGeneral.ContinuousWrap = true;
+
     config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Angle.RAMP_TIME;
 
     config.Feedback.SensorToMechanismRatio = Angle.GEAR_RATIO;
 
-    motor.getConfigurator().apply(config);
+    /*
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201 
+     */
+    StatusCode status;
+    do {
+      status = motor.getConfigurator().apply(config);
+    } while (!status.isOK());
 
     motor.getPosition().setUpdateFrequency(100);
     motor.getVelocity().setUpdateFrequency(100);
@@ -45,13 +54,18 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    values.angleRotations = motor.getPosition().getValue();
+    /*
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L136
+     */
+    values.angleRotations = normalize(motor.getPosition().getValue());
     values.omegaRotationsPerSecond = motor.getVelocity().getValue();
   }
 
   @Override
   public void setPosition(double angleRotations) {
     motor.setRotorPosition(angleRotations);
+    // TODO
+    motor.getPosition().waitForUpdate(0.1);
   }
 
   @Override
@@ -60,12 +74,20 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   }
 
   @Override
-  public void setVoltage(double volts) {
-    motor.setVoltage(volts);
-  }
-
-  @Override
   public void setBrake(boolean isActive) {
     // TODO
+  }
+
+  /**
+   * Wraps a number of rotations to an absolute value in the range [0, 1) rotations.     
+   * @param rotations
+   * @return rotations, [0, 1).
+   */
+  private double normalize(double rotations) {
+    if (rotations < 0) {
+      rotations = 1 - (-rotations % 1);
+    }
+
+    return rotations % 1; 
   }
 }

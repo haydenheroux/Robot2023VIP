@@ -255,7 +255,7 @@ public class Constants {
         new ModuleConfiguration(true, true).withName("North West");
 
     static {
-      NORTH_WEST.azimuthOffset = Rotation2d.fromDegrees(293.2);
+      NORTH_WEST.azimuthOffsetRotations = Units.degreesToRotations(293.2);
     }
 
     /** Configuration for the north east swerve module. */
@@ -263,7 +263,7 @@ public class Constants {
         new ModuleConfiguration(true, false).withName("North East");
 
     static {
-      NORTH_EAST.azimuthOffset = Rotation2d.fromDegrees(287.84);
+      NORTH_EAST.azimuthOffsetRotations = Units.degreesToRotations(287.84);
     }
 
     /** Configuration for the south east swerve module. */
@@ -271,7 +271,7 @@ public class Constants {
         new ModuleConfiguration(false, false).withName("South East");
 
     static {
-      SOUTH_EAST.azimuthOffset = Rotation2d.fromDegrees(345.05);
+      SOUTH_EAST.azimuthOffsetRotations = Units.degreesToRotations(345.05);
     }
 
     /** Configuration for the south west swerve module. */
@@ -279,7 +279,7 @@ public class Constants {
         new ModuleConfiguration(false, true).withName("South West");
 
     static {
-      SOUTH_WEST.azimuthOffset = Rotation2d.fromDegrees(192.91);
+      SOUTH_WEST.azimuthOffsetRotations = Units.degreesToRotations(192.91);
     }
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */

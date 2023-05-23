@@ -1,6 +1,5 @@
 package frc.robot.swerve;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
@@ -48,7 +47,7 @@ public class ModuleConfiguration {
   }
 
   public final ModuleCAN can;
-  public Rotation2d azimuthOffset = new Rotation2d();
+  public double azimuthOffsetRotations;
   public String name = "";
   public final Translation2d location;
 
@@ -60,8 +59,8 @@ public class ModuleConfiguration {
     location = ModuleLocation.get(north, west);
   }
 
-  public ModuleConfiguration withAzimuthOffset(Rotation2d azimuthOffset) {
-    this.azimuthOffset = azimuthOffset;
+  public ModuleConfiguration withAzimuthOffset(double azimuthOffset) {
+    this.azimuthOffsetRotations = azimuthOffset;
     return this;
   }
 

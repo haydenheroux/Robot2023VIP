@@ -14,7 +14,5 @@ public interface AngleMotorIO {
 
   public void setSetpoint(double angleRotations);
 
-  public void setVoltage(double volts);
-
   public void setBrake(boolean isActive);
 }

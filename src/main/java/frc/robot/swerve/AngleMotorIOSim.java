@@ -6,8 +6,6 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
-  private final double kRotationsPerSecondPerVolt = 1 / 12.0;
-
   public AngleMotorIOSim() {}
 
   @Override
@@ -34,11 +32,6 @@ public class AngleMotorIOSim implements AngleMotorIO {
   @Override
   public void setSetpoint(double angleRotations) {
     this.angleRotations = angleRotations;
-  }
-
-  @Override
-  public void setVoltage(double volts) {
-    omegaRotationsPerSecond = volts * kRotationsPerSecondPerVolt;
   }
 
   @Override

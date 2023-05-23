@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -46,7 +47,13 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
     config.Feedback.SensorToMechanismRatio = Drive.GEAR_RATIO;
 
-    motor.getConfigurator().apply(config);
+    /*
+     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201 
+     */
+    StatusCode status;
+    do {
+      status = motor.getConfigurator().apply(config);
+    } while (!status.isOK());
 
     motor.getPosition().setUpdateFrequency(100);
     motor.getVelocity().setUpdateFrequency(100);
@@ -70,12 +77,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   }
 
   @Override
-  public void setSetpoint(double distanceMeters) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setSetpoint'");
-  }
-
-  @Override
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
     double rotationsPerSecond =
         Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
@@ -84,11 +85,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
         velocityController
             .withVelocity(rotationsPerSecond)
             .withFeedForward(feedforward.calculate(velocityMetersPerSecond)));
-  }
-
-  @Override
-  public void setVoltage(double volts) {
-    motor.setVoltage(volts);
   }
 
   @Override
