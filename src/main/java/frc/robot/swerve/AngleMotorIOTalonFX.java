@@ -1,80 +1,59 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.wpilibj.Timer;
-import frc.lib.math.Conversions;
-import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants.Swerve.Angle;
 
 public class AngleMotorIOTalonFX implements AngleMotorIO {
 
-  private final WPI_TalonFX motor;
+  private final TalonFX motor;
+
+  private final PositionVoltage positionController;
 
   public AngleMotorIOTalonFX(int id, String canbus) {
-    motor = new WPI_TalonFX(id, canbus);
+    motor = new TalonFX(id, canbus);
+
+    positionController = new PositionVoltage(0);
   }
 
   @Override
   public void configure() {
-    motor.configFactoryDefault();
-    motor.setSensorPhase(true); // TODO
-    motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30); // TODO
-    motor.configNeutralDeadband(0.001); // TODO
-    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 250); // TODO
-
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    config.slot0.kP = Angle.KP;
-    config.slot0.kD = Angle.KD;
+    // TODO
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    config.voltageCompSaturation = Constants.NOMINAL_VOLTAGE;
-    config.supplyCurrLimit.currentLimit = Angle.CURRENT_LIMIT;
-    config.supplyCurrLimit.triggerThresholdCurrent = Angle.CURRENT_LIMIT;
-    config.supplyCurrLimit.triggerThresholdTime = 0;
-    config.supplyCurrLimit.enable = true;
+    config.Slot0.kP = Angle.KP;
+    config.Slot0.kD = Angle.KD;
 
-    config.closedloopRamp = Angle.RAMP_TIME;
+    config.CurrentLimits.StatorCurrentLimit = Angle.CURRENT_LIMIT;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    for (int i = 0; i < 4; i++) {
-      Timer.delay(1);
-      motor.setInverted(Swerve.INVERTED);
-    }
+    config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Angle.RAMP_TIME;
 
-    motor.configAllSettings(config, 250);
+    config.Feedback.SensorToMechanismRatio = Angle.GEAR_RATIO;
+
+    motor.getConfigurator().apply(config);
   }
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    values.angleRotations =
-        Conversions.TalonFX.Position.toRotations(
-            motor.getSelectedSensorPosition(), Angle.GEAR_RATIO);
-    values.omegaRotationsPerSecond =
-        Conversions.TalonFX.Velocity.toRPS(motor.getSelectedSensorVelocity(), Angle.GEAR_RATIO);
+    values.angleRotations = motor.getPosition().getValue();
+    values.omegaRotationsPerSecond = motor.getVelocity().getValue();
   }
 
   @Override
   public void setPosition(double angleRotations) {
-    // TODO
-    // angleRotations = angleRotations < 0 ? (angleRotations % 2 * Math.PI) + 2 * Math.PI :
-    // angleRotations;
-    motor.setSelectedSensorPosition(
-        Conversions.TalonFX.Position.fromRotations(angleRotations, Angle.GEAR_RATIO), 0, 250);
+    motor.setRotorPosition(angleRotations);
   }
 
   @Override
   public void setSetpoint(double angleRotations) {
-    motor.set(
-        TalonFXControlMode.Position,
-        Conversions.TalonFX.Position.fromRotations(angleRotations, Angle.GEAR_RATIO),
-        DemandType.ArbitraryFeedForward,
-        0.0); // TODO
+    motor.setControl(positionController.withPosition(angleRotations));
   }
 
   @Override
@@ -84,6 +63,6 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void setBrake(boolean isActive) {
-    motor.setNeutralMode(isActive ? NeutralMode.Brake : NeutralMode.Coast);
+    // TODO
   }
 }

@@ -1,49 +1,43 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
-
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;
 
 public class GyroIOPigeon2 implements GyroIO {
 
-  private final GyroIO.GyroIOValues values = new GyroIOValues();
-
-  private final WPI_Pigeon2 gyro;
+  private final Pigeon2 gyro;
 
   public GyroIOPigeon2(int id, String canbus) {
-    gyro = new WPI_Pigeon2(id, canbus);
+    gyro = new Pigeon2(id, canbus);
   }
 
   @Override
   public void configure() {
-    gyro.configFactoryDefault();
+    Pigeon2Configuration config = new Pigeon2Configuration();
 
-    gyro.zeroGyroBiasNow();
-    gyro.configEnableCompass(false);
+    config.Pigeon2Features.EnableCompass = false;
+
+    gyro.getConfigurator().apply(config);
+
+    // TODO
+    // gyro.zeroGyroBiasNow();
+    gyro.setYaw(0);
   }
 
   @Override
   public void updateValues(GyroIOValues values) {
-    double[] rotations = new double[3];
-    gyro.getYawPitchRoll(rotations);
+    values.rollAngleRotations = Units.degreesToRotations(gyro.getRoll().getValue());
+    values.pitchAngleRotations = Units.degreesToRotations(gyro.getPitch().getValue());
+    values.yawAngleRotations = Units.degreesToRotations(gyro.getYaw().getValue());
 
-    this.values.rollAngleRotations = Units.degreesToRotations(rotations[2]);
-    this.values.pitchAngleRotations = Units.degreesToRotations(rotations[1]);
-    this.values.yawAngleRotations = Units.degreesToRotations(rotations[0]);
-
-    double[] accelerations = new double[3];
-    gyro.getRawGyro(accelerations);
-
-    this.values.rollVelocityRotationsPerSecond = accelerations[0];
-    this.values.pitchVelocityRotationsPerSecond = accelerations[1];
-    this.values.yawVelocityRotationsPerSecond = accelerations[2];
-
-    values = this.values;
+    values.rollAccelerationG = gyro.getAccelerationX().getValue();
+    values.pitchAccelerationG = gyro.getAccelerationY().getValue();
+    values.yawAccelerationG = gyro.getAccelerationZ().getValue();
   }
 
   @Override
   public void setYawAngle(double yawAngleRotations) {
     gyro.setYaw(Units.rotationsToDegrees(yawAngleRotations));
   }
-
 }

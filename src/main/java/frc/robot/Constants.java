@@ -292,15 +292,12 @@ public class Constants {
     public static final Rotation2d MAX_ANGULAR_SPEED =
         SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, NORTH_WEST);
 
-    /** True if all swerve modules are inverted, false is no swerve modules are inverted. */
-    public static final boolean INVERTED = true;
-
     /** Angle motor constants. */
     public static class Angle {
-      /** Proportional gain, in ??? per ???. */
-      public static final double KP = 0.050953;
-      /** Derivative gain, in ??? per ???. */
-      public static final double KD = 0.09;
+      /** Proportional gain, in pvolts per rotation. */
+      public static final double KP = 1.2240673782991203;
+      /** Derivative gain, in volts per rotation per second. */
+      public static final double KD = .0021621114369501466;
       /** Current draw limit, in amps. */
       public static final double CURRENT_LIMIT = 10.0;
       /** Time to go from zero to full, in seconds. */
@@ -311,10 +308,8 @@ public class Constants {
 
     /** Drive motor constants. */
     public static class Drive {
-      /** Proportional gain, in ??? per ???. */
-      public static final double KP = 0.0020645;
-      /** Derivative gain, in ??? per ???. */
-      public static final double KD = 0.0;
+      /** Proportional gain, in volts per rotation per second. */
+      public static final double KP = .00495964340175953;
       /** Current draw limit, in amps. */
       public static final double CURRENT_LIMIT = 65.0;
       /** Time to go from zero to full, in seconds. */

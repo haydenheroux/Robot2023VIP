@@ -6,9 +6,9 @@ public interface GyroIO {
     public double pitchAngleRotations = 0.0;
     public double yawAngleRotations = 0.0;
 
-    public double rollVelocityRotationsPerSecond = 0.0;
-    public double pitchVelocityRotationsPerSecond = 0.0;
-    public double yawVelocityRotationsPerSecond = 0.0;
+    public double rollAccelerationG = 0.0;
+    public double pitchAccelerationG = 0.0;
+    public double yawAccelerationG = 0.0;
   }
 
   public void configure();
