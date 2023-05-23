@@ -1,10 +1,7 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import edu.wpi.first.math.geometry.Quaternion;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
+
 import edu.wpi.first.math.util.Units;
 
 public class GyroIOPigeon2 implements GyroIO {
@@ -13,8 +10,6 @@ public class GyroIOPigeon2 implements GyroIO {
 
   private final WPI_Pigeon2 gyro;
 
-  private Rotation3d offset = new Rotation3d();
-
   public GyroIOPigeon2(int id, String canbus) {
     gyro = new WPI_Pigeon2(id, canbus);
   }
@@ -22,72 +17,33 @@ public class GyroIOPigeon2 implements GyroIO {
   @Override
   public void configure() {
     gyro.configFactoryDefault();
+
+    gyro.zeroGyroBiasNow();
     gyro.configEnableCompass(false);
   }
 
   @Override
   public void updateValues(GyroIOValues values) {
-    Rotation3d rotation = getRotation().plus(offset);
+    double[] rotations = new double[3];
+    gyro.getYawPitchRoll(rotations);
 
-    this.values.rollAngleRotations = Units.radiansToRotations(rotation.getX());
-    this.values.pitchAngleRotations = Units.radiansToRotations(rotation.getY());
-    this.values.yawAngleRotations = Units.radiansToRotations(rotation.getZ());
+    this.values.rollAngleRotations = Units.degreesToRotations(rotations[2]);
+    this.values.pitchAngleRotations = Units.degreesToRotations(rotations[1]);
+    this.values.yawAngleRotations = Units.degreesToRotations(rotations[0]);
 
-    Translation3d acceleration = getAcceleration();
+    double[] accelerations = new double[3];
+    gyro.getRawGyro(accelerations);
 
-    this.values.xAccelerationMetersPerSecondSquared = acceleration.getX();
-    this.values.yAccelerationMetersPerSecondSquared = acceleration.getY();
-    this.values.zAccelerationMetersPerSecondSquared = acceleration.getZ();
+    this.values.rollVelocityRotationsPerSecond = accelerations[0];
+    this.values.pitchVelocityRotationsPerSecond = accelerations[1];
+    this.values.yawVelocityRotationsPerSecond = accelerations[2];
 
     values = this.values;
   }
 
   @Override
-  public void setRollAngle(double rollAngleRotations) {
-    Rotation3d zero = getRotation().unaryMinus();
-    offset =
-        zero.plus(
-            new Rotation3d(
-                Units.rotationsToRadians(rollAngleRotations), offset.getY(), offset.getZ()));
-  }
-
-  @Override
-  public void setPitchAngle(double pitchAngleRotations) {
-    Rotation3d zero = getRotation().unaryMinus();
-    offset =
-        zero.plus(
-            new Rotation3d(
-                offset.getX(), Units.rotationsToRadians(pitchAngleRotations), offset.getZ()));
-  }
-
-  @Override
   public void setYawAngle(double yawAngleRotations) {
-    Rotation3d zero = getRotation().unaryMinus();
-    offset =
-        zero.plus(
-            new Rotation3d(
-                offset.getX(), offset.getY(), Units.rotationsToRadians(yawAngleRotations)));
+    gyro.setYaw(Units.rotationsToDegrees(yawAngleRotations));
   }
 
-  private Rotation3d getRotation() {
-    double[] wxyz = new double[4];
-
-    ErrorCode error = gyro.get6dQuaternion(wxyz);
-
-    if (error == ErrorCode.OK) {
-      return new Rotation3d(new Quaternion(wxyz[0], wxyz[1], wxyz[2], wxyz[3]));
-    }
-
-    return new Rotation3d(
-        Units.rotationsToRadians(this.values.pitchAngleRotations),
-        Units.rotationsToRadians(this.values.rollAngleRotations),
-        Units.rotationsToRadians(this.values.yawAngleRotations));
-  }
-
-  private Translation3d getAcceleration() {
-    short[] ba_xyz = new short[3];
-    gyro.getBiasedAccelerometer(ba_xyz);
-
-    return new Translation3d(ba_xyz[0], ba_xyz[1], ba_xyz[2]).times(9.81 / 16384.0);
-  }
 }

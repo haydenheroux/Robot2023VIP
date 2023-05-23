@@ -86,8 +86,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     gyro.configure();
     // Assume that we are flat on the ground
-    setRoll(Rotation2d.fromDegrees(0));
-    setPitch(Rotation2d.fromDegrees(0));
     setYaw(initialPoseMeters.getRotation());
   }
 
@@ -173,14 +171,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   public Rotation2d getYaw() {
     return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
-  }
-
-  public void setRoll(Rotation2d roll) {
-    gyro.setRollAngle(roll.getRotations());
-  }
-
-  public void setPitch(Rotation2d pitch) {
-    gyro.setPitchAngle(pitch.getRotations());
   }
 
   public void setYaw(Rotation2d yaw) {

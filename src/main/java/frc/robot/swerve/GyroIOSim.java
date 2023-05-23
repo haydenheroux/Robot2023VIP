@@ -25,12 +25,6 @@ public class GyroIOSim implements GyroIO {
   }
 
   @Override
-  public void setRollAngle(double rollAngleRotations) {}
-
-  @Override
-  public void setPitchAngle(double pitchAngleRotations) {}
-
-  @Override
   public void setYawAngle(double yawAngleRotations) {
     this.yawAngleRotations = yawAngleRotations;
   }
