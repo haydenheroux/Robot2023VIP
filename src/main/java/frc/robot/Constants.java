@@ -253,6 +253,7 @@ public class Constants {
     /** Configuration for the north west swerve module. */
     public static final ModuleConfiguration NORTH_WEST =
         new ModuleConfiguration(true, true).withName("North West");
+
     static {
       NORTH_WEST.azimuthOffset = Rotation2d.fromDegrees(293.2);
     }
@@ -260,6 +261,7 @@ public class Constants {
     /** Configuration for the north east swerve module. */
     public static final ModuleConfiguration NORTH_EAST =
         new ModuleConfiguration(true, false).withName("North East");
+
     static {
       NORTH_EAST.azimuthOffset = Rotation2d.fromDegrees(287.84);
     }
@@ -267,6 +269,7 @@ public class Constants {
     /** Configuration for the south east swerve module. */
     public static final ModuleConfiguration SOUTH_EAST =
         new ModuleConfiguration(false, false).withName("South East");
+
     static {
       SOUTH_EAST.azimuthOffset = Rotation2d.fromDegrees(345.05);
     }
@@ -274,6 +277,7 @@ public class Constants {
     /** Configuration for the south west swerve module. */
     public static final ModuleConfiguration SOUTH_WEST =
         new ModuleConfiguration(false, true).withName("South West");
+
     static {
       SOUTH_WEST.azimuthOffset = Rotation2d.fromDegrees(192.91);
     }

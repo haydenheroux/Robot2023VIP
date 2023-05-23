@@ -1,7 +1,5 @@
 package frc.robot.swerve;
 
-import java.util.Optional;
-
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
@@ -9,8 +7,8 @@ import com.ctre.phoenix.sensors.MagnetFieldStrength;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
-
 import edu.wpi.first.math.util.Units;
+import java.util.Optional;
 
 public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
@@ -27,7 +25,7 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
     CANCoderConfiguration config = new CANCoderConfiguration();
 
     config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-    config.sensorDirection = false; //Swerve.INVERTED;
+    config.sensorDirection = false; // Swerve.INVERTED;
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     config.sensorTimeBase = SensorTimeBase.PerSecond;
 
@@ -43,10 +41,11 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
     }
   }
 
-  private Optional<Double> attemptGetAbsoluteAngleRotations()  {
+  private Optional<Double> attemptGetAbsoluteAngleRotations() {
     MagnetFieldStrength health = encoder.getMagnetFieldStrength();
 
-    if (health == MagnetFieldStrength.Invalid_Unknown || health == MagnetFieldStrength.BadRange_RedLED) {
+    if (health == MagnetFieldStrength.Invalid_Unknown
+        || health == MagnetFieldStrength.BadRange_RedLED) {
       return Optional.empty();
     }
 
