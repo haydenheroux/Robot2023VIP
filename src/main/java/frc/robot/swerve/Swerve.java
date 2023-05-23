@@ -242,20 +242,21 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
-  public void drive(Translation2d velocity, Rotation2d heading) {
-    double omegaRotationsPerSecond =
-        thetaController.calculate(getYaw().getRotations(), heading.getRotations());
-
-    drive(velocity, omegaRotationsPerSecond);
+  public void drive(Translation2d velocity) {
+    drive(velocity, Rotation2d.fromRotations(0.0));
   }
 
-  public void drive(Translation2d velocity, double omegaRotationsPerSecond) {
+  public void driveHeading(Translation2d velocity, Rotation2d heading) {
+    double omegaRadiansPerSecond =
+        thetaController.calculate(getYaw().getRadians(), heading.getRadians());
+
+    drive(velocity, Rotation2d.fromRadians(omegaRadiansPerSecond));
+  }
+
+  public void drive(Translation2d velocity, Rotation2d omega) {
     ChassisSpeeds chassisVelocity =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            velocity.getX(),
-            velocity.getY(),
-            Units.rotationsToRadians(omegaRotationsPerSecond),
-            getYaw());
+            velocity.getX(), velocity.getY(), omega.getRadians(), getYaw());
 
     chassisVelocity = SwerveMath.getCorrectedChassisVelocity(chassisVelocity);
 

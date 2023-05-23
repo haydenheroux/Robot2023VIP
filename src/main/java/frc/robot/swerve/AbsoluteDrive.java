@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -35,21 +36,29 @@ public class AbsoluteDrive extends CommandBase {
 
   @Override
   public void execute() {
-    Translation2d velocity =
-        new Translation2d(vX.getAsDouble(), vY.getAsDouble()).times(Constants.Swerve.MAX_SPEED);
+    double x = vX.getAsDouble();
+    double y = vY.getAsDouble();
+
+    /*
+     * https://highlandersfrc.com/Documents/Presentations/Swerve%20Drive%20Presentation.pdf
+     */
+    x *= Math.sqrt(1 - 0.5 * y * y);
+    y *= Math.sqrt(1 - 0.5 * x * x);
+
+    Translation2d velocity = new Translation2d(x, y).times(Constants.Swerve.MAX_SPEED);
     Translation2d heading = new Translation2d(headingX.getAsDouble(), headingY.getAsDouble());
 
-    final boolean isSpinning = spinToggle.getAsBoolean();
-    final boolean isAngleSet = heading.getNorm() > 0.1;
+    final boolean spinningRequested = spinToggle.getAsBoolean();
+    final boolean headingRequested = heading.getNorm() > 0.1;
 
-    if (isSpinning) {
-      double omegaRadiansPerSecond =
-          heading.getAngle().getSin() * Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
-      swerve.drive(velocity, omegaRadiansPerSecond);
-    } else if (isAngleSet) {
-      swerve.drive(velocity, heading.getAngle());
+    if (spinningRequested) {
+      double omegaRotationsPerSecond =
+          heading.getAngle().getSin() * Constants.Swerve.MAX_ANGULAR_SPEED.getRotations();
+      swerve.drive(velocity, Rotation2d.fromRotations(omegaRotationsPerSecond));
+    } else if (headingRequested) {
+      swerve.driveHeading(velocity, heading.getAngle());
     } else {
-      swerve.drive(velocity, swerve.getYaw());
+      swerve.driveHeading(velocity, swerve.getYaw());
     }
   }
 
