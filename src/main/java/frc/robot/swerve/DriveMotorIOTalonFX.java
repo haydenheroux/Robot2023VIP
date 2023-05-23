@@ -47,6 +47,9 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     config.Feedback.SensorToMechanismRatio = Drive.GEAR_RATIO;
 
     motor.getConfigurator().apply(config);
+
+    motor.getPosition().setUpdateFrequency(100);
+    motor.getVelocity().setUpdateFrequency(100);
   }
 
   @Override

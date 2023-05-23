@@ -38,6 +38,9 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
     config.Feedback.SensorToMechanismRatio = Angle.GEAR_RATIO;
 
     motor.getConfigurator().apply(config);
+
+    motor.getPosition().setUpdateFrequency(100);
+    motor.getVelocity().setUpdateFrequency(100);
   }
 
   @Override

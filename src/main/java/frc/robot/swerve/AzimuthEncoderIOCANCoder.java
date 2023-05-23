@@ -24,6 +24,8 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
     config.MagnetSensor.MagnetOffset = 0.0;
 
     encoder.getConfigurator().apply(config);
+
+    encoder.getAbsolutePosition().setUpdateFrequency(100);
   }
 
   @Override
