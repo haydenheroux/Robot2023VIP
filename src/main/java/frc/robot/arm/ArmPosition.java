@@ -2,8 +2,8 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants.Arm.Extension;
-import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Arm.Pivot;
+import frc.robot.Constants.Arm.Telescoping;
 import frc.robot.Constants.Physical;
 
 /**
@@ -22,8 +22,7 @@ public class ArmPosition extends Translation2d {
     super(lengthMeters, angle);
   }
 
-  public static ArmPosition fromSensorValues(
-      double sensorLengthMeters, double sensorAngleRotations) {
+  public static ArmPosition fromValues(double sensorLengthMeters, double sensorAngleRotations) {
     return new ArmPosition(
         sensorLengthMeters + Physical.LENGTH_OFFSET,
         Rotation2d.fromRotations(sensorAngleRotations));
@@ -36,7 +35,7 @@ public class ArmPosition extends Translation2d {
    * @return the arm position for the given values.
    */
   public static ArmPosition fromValues(ArmIO.ArmIOValues values) {
-    return fromSensorValues(values.extensionLengthMeters, values.rotationAngleRotations);
+    return fromValues(values.telescopingLengthMeters, values.pivotAngleRotations);
   }
 
   /**
@@ -131,6 +130,42 @@ public class ArmPosition extends Translation2d {
   }
 
   /**
+   * Tests if the extension of the arm is at the maximum.
+   *
+   * @return true if the extension of the arm is at the maximum.
+   */
+  public boolean lengthAtMax() {
+    return getLength() > Telescoping.MAX_LENGTH;
+  }
+
+  /**
+   * Tests if the extension of the arm is at the minimum.
+   *
+   * @return true if the extension of the arm is at the minimum.
+   */
+  public boolean lengthAtMin() {
+    return getLength() < Telescoping.MIN_LENGTH;
+  }
+
+  /**
+   * Tests if the rotation of the arm is at the maximum.
+   *
+   * @return true if the rotation of the arm is at the maximum.
+   */
+  public boolean angleAtMax() {
+    return getAngle().getRotations() > Pivot.MAX_ANGLE.getRotations();
+  }
+
+  /**
+   * Tests if the rotation of the arm is at the minimum.
+   *
+   * @return true if the rotation of the arm is at the minimum.
+   */
+  public boolean angleAtMin() {
+    return getAngle().getRotations() < Pivot.MIN_ANGLE.getRotations();
+  }
+
+  /**
    * Returns true if this arm position has an angle greater than the angle of another arm position.
    *
    * @param other
@@ -176,7 +211,7 @@ public class ArmPosition extends Translation2d {
    */
   public boolean atAngleOf(ArmPosition other) {
     Rotation2d difference = this.getAngle().minus(other.getAngle());
-    return Math.abs(difference.getRadians()) < Rotation.TOLERANCE.getRadians();
+    return Math.abs(difference.getRadians()) < Pivot.TOLERANCE.getRadians();
   }
 
   /**
@@ -186,7 +221,7 @@ public class ArmPosition extends Translation2d {
    * @return true if this arm position is at the length of another arm position.
    */
   public boolean atLengthOf(ArmPosition other) {
-    return Math.abs(this.getLength() - other.getLength()) < Extension.TOLERANCE;
+    return Math.abs(this.getLength() - other.getLength()) < Telescoping.TOLERANCE;
   }
 
   public boolean isIntersectingGrid() {

@@ -19,7 +19,7 @@ public class ManualRotate extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Selector.kRotation);
+    arm.unlock(Selector.kPivot);
   }
 
   @Override
@@ -30,19 +30,19 @@ public class ManualRotate extends CommandBase {
     boolean isIntersectingGrid = arm.isIntersectingGrid() && percent < 0;
 
     if (isLeavingBounds || isIntersectingGrid) {
-      arm.disable(Selector.kRotation);
-      arm.lock(Selector.kRotation);
+      arm.disable(Selector.kPivot);
+      arm.lock(Selector.kPivot);
     } else {
-      arm.unlock(Selector.kRotation);
+      arm.unlock(Selector.kPivot);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
-      arm.setVoltage(Selector.kRotation, volts);
+      arm.setVoltage(Selector.kPivot, volts);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Selector.kRotation);
-    arm.lock(Selector.kRotation);
+    arm.disable(Selector.kPivot);
+    arm.lock(Selector.kPivot);
   }
 
   @Override
@@ -51,8 +51,8 @@ public class ManualRotate extends CommandBase {
   }
 
   private boolean isLeavingBounds(double percent) {
-    boolean aboveMax = arm.rotationIsAtMax() && percent > 0;
-    boolean belowMin = arm.rotationIsAtMin() && percent < 0;
+    boolean aboveMax = arm.getPosition().angleAtMax() && percent > 0;
+    boolean belowMin = arm.getPosition().angleAtMin() && percent < 0;
     return aboveMax || belowMin;
   }
 }

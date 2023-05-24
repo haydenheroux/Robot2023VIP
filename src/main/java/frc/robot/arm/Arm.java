@@ -8,20 +8,18 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.mechanism.SuperstructureMechanism;
+import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants.Arm.Extension;
 import frc.robot.Constants.Arm.Positions;
-import frc.robot.Constants.Arm.Rotation;
 import frc.robot.Robot;
 import java.util.function.DoubleSupplier;
 
 public class Arm extends SubsystemBase implements TelemetryOutputter {
   public enum Selector {
     kBoth,
-    kExtension,
+    kTelescoping,
     kNeither,
-    kRotation,
+    kPivot,
   }
 
   // Singleton instance
@@ -63,8 +61,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setPosition(ArmPosition position) {
     this.position = position;
 
-    io.setExtensionPosition(position.getSensorLength());
-    io.setRotationPosition(position.getSensorAngle());
+    io.setTelescopingPosition(position.getSensorLength());
+    io.setPivotPosition(position.getSensorAngle());
   }
 
   /**
@@ -101,16 +99,16 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void disable(Selector selector) {
     switch (selector) {
       case kBoth:
-        io.setExtensionDisabled();
-        io.setRotationDisabled();
+        io.setTelescopingDisabled();
+        io.setPivotDisabled();
         break;
-      case kExtension:
-        io.setExtensionDisabled();
+      case kTelescoping:
+        io.setTelescopingDisabled();
         break;
       case kNeither:
         break;
-      case kRotation:
-        io.setRotationDisabled();
+      case kPivot:
+        io.setPivotDisabled();
         break;
     }
   }
@@ -124,16 +122,16 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setVoltage(Selector selector, double volts) {
     switch (selector) {
       case kBoth:
-        io.setExtensionVoltage(volts);
-        io.setRotationVoltage(volts);
+        io.setTelescopingVoltage(volts);
+        io.setPivotVoltage(volts);
         break;
-      case kExtension:
-        io.setExtensionVoltage(volts);
+      case kTelescoping:
+        io.setTelescopingVoltage(volts);
         break;
       case kNeither:
         break;
-      case kRotation:
-        io.setRotationVoltage(volts);
+      case kPivot:
+        io.setPivotVoltage(volts);
         break;
     }
   }
@@ -144,9 +142,9 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    * @return the brakes that are active.
    */
   public Selector getLocked() {
-    if (values.extensionBrakeIsActive && values.rotationBrakeIsActive) return Selector.kBoth;
-    if (values.extensionBrakeIsActive) return Selector.kExtension;
-    if (values.rotationBrakeIsActive) return Selector.kRotation;
+    if (values.telescopingBrakeIsActive && values.pivotBrakeIsActive) return Selector.kBoth;
+    if (values.telescopingBrakeIsActive) return Selector.kTelescoping;
+    if (values.pivotBrakeIsActive) return Selector.kPivot;
     return Selector.kNeither;
   }
 
@@ -177,64 +175,18 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private void setBrake(Selector selector, boolean isActive) {
     switch (selector) {
       case kBoth:
-        io.setExtensionBrake(isActive);
-        io.setRotationBrake(isActive);
+        io.setTelescopingBrake(isActive);
+        io.setPivotBrake(isActive);
         break;
-      case kExtension:
-        io.setExtensionBrake(isActive);
+      case kTelescoping:
+        io.setTelescopingBrake(isActive);
         break;
       case kNeither:
         break;
-      case kRotation:
-        io.setRotationBrake(isActive);
+      case kPivot:
+        io.setPivotBrake(isActive);
         break;
     }
-  }
-
-  /**
-   * Tests if the extension of the arm is at the maximum.
-   *
-   * @return true if the extension of the arm is at the maximum.
-   */
-  public boolean extensionIsAtMax() {
-    return values.extensionLengthMeters > Extension.MAX_LENGTH;
-  }
-
-  /**
-   * Tests if the extension of the arm is at the minimum.
-   *
-   * @return true if the extension of the arm is at the minimum.
-   */
-  public boolean extensionIsAtMin() {
-    return values.extensionLengthMeters < Extension.MIN_LENGTH;
-  }
-
-  /**
-   * Tests if the rotation of the arm is at the maximum.
-   *
-   * @return true if the rotation of the arm is at the maximum.
-   */
-  public boolean rotationIsAtMax() {
-    return values.rotationAngleRotations > Rotation.MAX_ANGLE.getRotations();
-  }
-
-  /**
-   * Tests if the rotation of the arm is at the minimum.
-   *
-   * @return true if the rotation of the arm is at the minimum.
-   */
-  public boolean rotationIsAtMin() {
-    return values.rotationAngleRotations < Rotation.MIN_ANGLE.getRotations();
-  }
-
-  /**
-   * Tests if the arm is at the specified position.
-   *
-   * @param position the position to test.
-   * @return true if the arm is at the specified position.
-   */
-  public boolean at(ArmPosition position) {
-    return this.position.at(position);
   }
 
   /**
@@ -254,8 +206,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setSetpoint(ArmPosition setpoint) {
     this.setpoint = setpoint;
 
-    io.setExtensionSetpoint(setpoint.getSensorLength());
-    io.setRotationSetpoint(setpoint.getSensorAngle());
+    io.setTelescopingSetpoint(setpoint.getSensorLength());
+    io.setPivotSetpoint(setpoint.getSensorAngle());
   }
 
   @Override
@@ -266,7 +218,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     position = ArmPosition.fromValues(values);
 
     // Update the arm's mechanism with new position
-    SuperstructureMechanism.getInstance().updateArm(position, getLocked());
+    Mechanisms.getInstance().updateArm(position, getLocked());
   }
 
   @Override
@@ -292,33 +244,33 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout valuesLayout =
         tab.getLayout("Values", BuiltInLayouts.kList).withPosition(1, 0).withSize(2, 4);
 
-    valuesLayout.addNumber("Extension Length (m)", () -> values.extensionLengthMeters);
+    valuesLayout.addNumber("Telescoping Length (m)", () -> values.telescopingLengthMeters);
     valuesLayout.addNumber(
-        "Rotation Angle (deg)", () -> Units.rotationsToDegrees(values.rotationAngleRotations));
-    valuesLayout.addBoolean("Extension Brake Is Active?", () -> values.extensionBrakeIsActive);
-    valuesLayout.addBoolean("Rotation Brake Is Active?", () -> values.rotationBrakeIsActive);
-    valuesLayout.addNumber("Extension Voltage (V)", () -> values.extensionVoltage);
-    valuesLayout.addNumber("Rotation Voltage (V)", () -> values.rotationVoltage);
+        "Pivot Angle (deg)", () -> Units.rotationsToDegrees(values.pivotAngleRotations));
+    valuesLayout.addBoolean("Telescoping Brake Is Active?", () -> values.telescopingBrakeIsActive);
+    valuesLayout.addBoolean("Pivot Brake Is Active?", () -> values.pivotBrakeIsActive);
+    valuesLayout.addNumber("Telescoping Voltage (V)", () -> values.telescopingVoltage);
+    valuesLayout.addNumber("Pivot Voltage (V)", () -> values.pivotVoltage);
 
     ShuffleboardLayout positionLayout =
         tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
 
-    positionLayout.addNumber("Arm Length (m)", position::getLength);
-    positionLayout.addNumber("Arm Angle (deg)", position::getAngleDegrees);
+    positionLayout.addNumber("Arm Length (m)", () -> position.getLength());
+    positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngleDegrees());
 
     ShuffleboardLayout setpointLayout =
         tab.getLayout("Setpoint", BuiltInLayouts.kList).withPosition(5, 0).withSize(2, 4);
 
-    setpointLayout.addNumber("Arm Length Setpoint (m)", setpoint::getLength);
-    setpointLayout.addNumber("Arm Angle Setpoint (deg)", setpoint::getAngleDegrees);
-    setpointLayout.addBoolean("At Setpoint?", () -> at(setpoint));
+    setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getLength());
+    setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngleDegrees());
+    setpointLayout.addBoolean("At Setpoint?", () -> position.at(setpoint));
 
     ShuffleboardLayout goalLayout =
         tab.getLayout("Goal", BuiltInLayouts.kList).withPosition(7, 0).withSize(2, 4);
 
-    goalLayout.addNumber("Arm Length Goal (m)", goal::getLength);
-    goalLayout.addNumber("Arm Angle Goal (deg)", goal::getAngleDegrees);
-    goalLayout.addBoolean("At Goal?", () -> at(goal));
+    goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLength());
+    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngleDegrees());
+    goalLayout.addBoolean("At Goal?", () -> position.at(goal));
   }
 
   @Override
@@ -336,7 +288,6 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     return new ManualRotate(this, percentSupplier);
   }
 
-  // FIXME does not end on interrupt
   public Command characterize(Selector selector) {
     return new FunctionalCommand(
             () -> unlock(selector),

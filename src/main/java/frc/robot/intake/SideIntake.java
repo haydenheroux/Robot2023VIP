@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.mechanism.SuperstructureMechanism;
+import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Constants.Intake.SideIntake.Thresholds;
@@ -131,7 +131,7 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
         break;
     }
 
-    SuperstructureMechanism.getInstance().updateSideIntake(state);
+    Mechanisms.getInstance().updateSideIntake(state);
   }
 
   @Override

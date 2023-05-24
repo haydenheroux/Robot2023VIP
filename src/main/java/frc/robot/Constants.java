@@ -24,11 +24,11 @@ public class Constants {
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
     public static final int PNEUMATICS_MODULE = 30;
 
-    public static final int EXTENSION = 3;
-    public static final int EXTENSION_BRAKE = 10;
+    public static final int TELESCOPING_MOTOR = 3;
+    public static final int TELESCOPING_BRAKE = 10;
 
-    public static final int ROTATION = 2;
-    public static final int ROTATION_BRAKE = 9;
+    public static final int PIVOT_MOTOR = 2;
+    public static final int PIVOT_BRAKE = 9;
 
     public static final int CLAW = 7;
 
@@ -97,10 +97,10 @@ public class Constants {
   public static class Arm {
 
     /**
-     * Extension constants. All constants relating to the extension motor, extension brake,
-     * extension algorithms, etc.
+     * Telescoping constants. All constants relating to the telescoping motor, telescoping brake,
+     * telescoping algorithms, etc.
      */
-    public static class Extension {
+    public static class Telescoping {
 
       /**
        * Change in distance per full revolution of the spool drum. This is usually the circumference
@@ -110,33 +110,31 @@ public class Constants {
       /** Total gear ratio between the motor and the spool drum. */
       public static final double GEAR_RATIO = 15.34;
 
-      /** Minimum length of the extending section. */
-      public static final double MIN_LENGTH = 0;
+      /** Minimum length of the arm. */
+      public static final double MIN_LENGTH = Positions.STOW.getLength();
       /**
-       * Maximum length of the extending section. Note that this does NOT equal the maximum TOTAL
+       * Maximum length of the telescoping section. Note that this does NOT equal the maximum TOTAL
        * extension length.
        */
       public static final double MAX_LENGTH = Units.feetToMeters(5);
 
-      /** Maximum extending section length error. */
+      /** Maximum telescoping section length error. */
       public static final double TOLERANCE = 0.01;
 
       public static final TelescopingArmFeedforward FEEDFORWARD =
           TelescopingArmFeedforward.telescopingGravityCompensation(
               2, 2, Rotation2d.fromDegrees(90));
 
-      /** Constants for extension using a PID control algorithm. */
+      /** Constants for telescoping using a PID control algorithm. */
       public static class PID {
-        /** Volts to be applied per meter of extending section length error. */
+        /** Volts to be applied per meter of telescoping length error. */
         public static final double KP = 120;
       }
     }
 
-    /**
-     * Rotation constants relating to the rotation motor, rotation brake, rotation algorithms, etc.
-     */
-    public static class Rotation {
-      /** Total gear ratio between the motor and the arm rotation. */
+    /** Pivot constants relating to the pivot motor, pivot brake, pivot algorithms, etc. */
+    public static class Pivot {
+      /** Total gear ratio between the pivot motor and the arm pivot. */
       public static final double GEAR_RATIO = 812.0 / 11.0;
 
       /** Minimum angle of the arm. */
@@ -155,7 +153,7 @@ public class Constants {
         FEEDFORWARD.kO = 0.0; // Offset voltage
       }
 
-      /** Constants for rotation using a PID control algorithm. */
+      /** Constants for pivoting using a PID control algorithm. */
       public static class PID {
         /** Volts to be applied per rotation of angle error. */
         public static final double KP = 32.4;
@@ -169,16 +167,16 @@ public class Constants {
        * possible.
        */
       public static final ArmPosition STOW =
-          ArmPosition.fromSensorValues(0, Rotation.MAX_ANGLE.getRotations());
+          ArmPosition.fromValues(0, Pivot.MAX_ANGLE.getRotations());
       /**
        * Position for safely extending the arm. The arm is rotated up enough such at any extension
        * will not cause the arm to collide with the grid.
        */
       public static final ArmPosition SAFE =
-          ArmPosition.fromSensorValues(0, Rotation2d.fromDegrees(30).getRotations());
+          ArmPosition.fromValues(0, Rotation2d.fromDegrees(30).getRotations());
       /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
       public static final ArmPosition FLOOR =
-          new ArmPosition(Units.feetToMeters(2.5), Rotation.MIN_ANGLE);
+          new ArmPosition(Units.feetToMeters(2.5), Pivot.MIN_ANGLE);
       /** Position for ejecting game pieces onto the middle row. */
       public static final ArmPosition MIDDLE_ROW =
           new ArmPosition(1.15, Rotation2d.fromDegrees(14));

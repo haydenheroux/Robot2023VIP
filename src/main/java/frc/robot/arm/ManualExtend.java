@@ -19,7 +19,7 @@ public class ManualExtend extends CommandBase {
 
   @Override
   public void initialize() {
-    arm.unlock(Selector.kExtension);
+    arm.unlock(Selector.kTelescoping);
   }
 
   @Override
@@ -33,19 +33,19 @@ public class ManualExtend extends CommandBase {
         arm.getPosition().isAbove(Constants.Arm.Positions.SAFE) && percent > 0;
 
     if (isLeavingBounds || isLeavingRuleZone || isIntersectingGrid || isAboveSafeExtensionAngle) {
-      arm.disable(Selector.kExtension);
-      arm.lock(Selector.kExtension);
+      arm.disable(Selector.kTelescoping);
+      arm.lock(Selector.kTelescoping);
     } else {
-      arm.unlock(Selector.kExtension);
+      arm.unlock(Selector.kTelescoping);
       double volts = percent * Constants.NOMINAL_VOLTAGE;
-      arm.setVoltage(Selector.kExtension, volts);
+      arm.setVoltage(Selector.kTelescoping, volts);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    arm.disable(Selector.kExtension);
-    arm.lock(Selector.kExtension);
+    arm.disable(Selector.kTelescoping);
+    arm.lock(Selector.kTelescoping);
   }
 
   @Override
@@ -54,8 +54,8 @@ public class ManualExtend extends CommandBase {
   }
 
   private boolean isLeavingBounds(double percent) {
-    boolean aboveMax = arm.extensionIsAtMax() && percent > 0;
-    boolean belowMin = arm.extensionIsAtMin() && percent < 0;
+    boolean aboveMax = arm.getPosition().lengthAtMax() && percent > 0;
+    boolean belowMin = arm.getPosition().lengthAtMin() && percent < 0;
     return aboveMax || belowMin;
   }
 

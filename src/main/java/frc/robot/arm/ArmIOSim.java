@@ -10,17 +10,17 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
-import frc.robot.Constants.Arm.Extension;
-import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Arm.Pivot;
+import frc.robot.Constants.Arm.Telescoping;
 import frc.robot.Constants.Physical;
 
 public class ArmIOSim implements ArmIO {
 
-  private double extensionLengthMeters;
-  private boolean extensionBrakeIsActive;
+  private double telescopingLengthMeters;
+  private boolean telescopingBrakeIsActive;
 
-  private double rotationAngleRotations;
-  private boolean rotationBrakeIsActive;
+  private double pivotAngleRotations;
+  private boolean pivotBrakeIsActive;
 
   private final double kMetersPerVolt = 0.0025;
   private final double kMetersPerGravity = -0.005;
@@ -30,22 +30,22 @@ public class ArmIOSim implements ArmIO {
 
   // FIXME Simulation assumes constant length
   private final double fakeSimLength = Constants.Arm.Positions.STOW.getLength();
-  private final SingleJointedArmSim rotationSim =
+  private final SingleJointedArmSim pivotSim =
       new SingleJointedArmSim(
           simMotor,
-          Rotation.GEAR_RATIO,
+          Pivot.GEAR_RATIO,
           SingleJointedArmSim.estimateMOI(fakeSimLength, Physical.ARM_MASS),
           fakeSimLength,
-          Rotation.MIN_ANGLE.getRadians(),
-          Rotation.MAX_ANGLE.getRadians(),
+          Pivot.MIN_ANGLE.getRadians(),
+          Pivot.MAX_ANGLE.getRadians(),
           Constants.Physical.ARM_MASS,
           true);
 
-  private final PIDController extensionPID = new PIDController(Extension.PID.KP, 0, 0);
-  private final PIDController rotationPID = new PIDController(Rotation.PID.KP, 0, 0);
+  private final PIDController telescopingPID = new PIDController(Telescoping.PID.KP, 0, 0);
+  private final PIDController pivotPID = new PIDController(Pivot.PID.KP, 0, 0);
 
-  private double extensionVoltage = 0.0;
-  private double rotationVoltage = 0.0;
+  private double telescopingVoltage = 0.0;
+  private double pivotVoltage = 0.0;
 
   public ArmIOSim() {}
 
@@ -54,100 +54,99 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void updateValues(ArmIOValues values) {
-    if (!extensionBrakeIsActive) {
-      extensionLengthMeters += extensionVoltage * kMetersPerVolt;
+    if (!telescopingBrakeIsActive) {
+      telescopingLengthMeters += telescopingVoltage * kMetersPerVolt;
 
       double metersPulledByGravity =
-          Math.sin(Units.rotationsToRadians(rotationAngleRotations)) * kMetersPerGravity;
+          Math.sin(Units.rotationsToRadians(pivotAngleRotations)) * kMetersPerGravity;
 
-      boolean atMin = extensionLengthMeters < Extension.MIN_LENGTH;
+      boolean atMin = telescopingLengthMeters < Telescoping.MIN_LENGTH;
       boolean belowMin = atMin && metersPulledByGravity < 0;
 
       if (!belowMin) {
-        extensionLengthMeters += metersPulledByGravity;
+        telescopingLengthMeters += metersPulledByGravity;
       }
     }
 
-    values.extensionBrakeIsActive = extensionBrakeIsActive;
-    values.extensionLengthMeters = extensionLengthMeters;
-    values.extensionVoltage = extensionVoltage;
+    values.telescopingBrakeIsActive = telescopingBrakeIsActive;
+    values.telescopingLengthMeters = telescopingLengthMeters;
+    values.telescopingVoltage = telescopingVoltage;
 
-    if (!rotationBrakeIsActive) {
-      rotationSim.setInput(
-          rotationVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
-      rotationSim.update(Constants.LOOP_TIME);
+    if (!pivotBrakeIsActive) {
+      pivotSim.setInput(
+          pivotVoltage / Constants.NOMINAL_VOLTAGE * RobotController.getBatteryVoltage());
+      pivotSim.update(Constants.LOOP_TIME);
 
       RoboRioSim.setVInVoltage(
-          BatterySim.calculateDefaultBatteryLoadedVoltage(rotationSim.getCurrentDrawAmps()));
+          BatterySim.calculateDefaultBatteryLoadedVoltage(pivotSim.getCurrentDrawAmps()));
 
-      rotationAngleRotations = Units.radiansToRotations(rotationSim.getAngleRads());
+      pivotAngleRotations = Units.radiansToRotations(pivotSim.getAngleRads());
     }
 
-    values.rotationAngleRotations = rotationAngleRotations;
-    values.rotationBrakeIsActive = rotationBrakeIsActive;
-    values.rotationVoltage = rotationVoltage;
+    values.pivotAngleRotations = pivotAngleRotations;
+    values.pivotBrakeIsActive = pivotBrakeIsActive;
+    values.pivotVoltage = pivotVoltage;
   }
 
   @Override
-  public void setExtensionPosition(double lengthMeters) {
-    extensionLengthMeters = lengthMeters;
+  public void setTelescopingPosition(double lengthMeters) {
+    telescopingLengthMeters = lengthMeters;
   }
 
   @Override
-  public void setExtensionSetpoint(double lengthMeters) {
-    double volts = extensionPID.calculate(extensionLengthMeters, lengthMeters);
-    setExtensionVoltage(volts);
+  public void setTelescopingSetpoint(double lengthMeters) {
+    double volts = telescopingPID.calculate(telescopingLengthMeters, lengthMeters);
+    setTelescopingVoltage(volts);
   }
 
   @Override
-  public void setExtensionVoltage(double volts) {
+  public void setTelescopingVoltage(double volts) {
     volts +=
-        Extension.FEEDFORWARD.calculateTelescoping(
-            Rotation2d.fromRotations(rotationAngleRotations));
+        Telescoping.FEEDFORWARD.calculateTelescoping(Rotation2d.fromRotations(pivotAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
-    extensionVoltage = volts;
+    telescopingVoltage = volts;
   }
 
   @Override
-  public void setExtensionBrake(boolean isActive) {
-    extensionBrakeIsActive = isActive;
+  public void setTelescopingBrake(boolean isActive) {
+    telescopingBrakeIsActive = isActive;
   }
 
   @Override
-  public void setExtensionDisabled() {
-    setExtensionVoltage(0.0);
+  public void setTelescopingDisabled() {
+    setTelescopingVoltage(0.0);
   }
 
   @Override
-  public void setRotationPosition(double angleRotations) {
-    rotationAngleRotations = angleRotations;
+  public void setPivotPosition(double angleRotations) {
+    pivotAngleRotations = angleRotations;
   }
 
   @Override
-  public void setRotationSetpoint(double angleRotations) {
-    double volts = rotationPID.calculate(rotationAngleRotations, angleRotations);
-    setRotationVoltage(volts);
+  public void setPivotSetpoint(double angleRotations) {
+    double volts = pivotPID.calculate(pivotAngleRotations, angleRotations);
+    setPivotVoltage(volts);
   }
 
   @Override
-  public void setRotationVoltage(double volts) {
+  public void setPivotVoltage(double volts) {
     volts +=
-        Rotation.FEEDFORWARD.calculatePivot(
-            Rotation2d.fromRotations(rotationAngleRotations), fakeSimLength);
+        Pivot.FEEDFORWARD.calculatePivot(
+            Rotation2d.fromRotations(pivotAngleRotations), fakeSimLength);
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
-    rotationVoltage = volts;
+    pivotVoltage = volts;
   }
 
   @Override
-  public void setRotationBrake(boolean isActive) {
-    rotationBrakeIsActive = isActive;
+  public void setPivotBrake(boolean isActive) {
+    pivotBrakeIsActive = isActive;
   }
 
   @Override
-  public void setRotationDisabled() {
+  public void setPivotDisabled() {
     // FIXME Applies feedforward
-    setRotationVoltage(0.0);
+    setPivotVoltage(0.0);
   }
 }

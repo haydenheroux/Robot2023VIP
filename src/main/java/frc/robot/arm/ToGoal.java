@@ -29,7 +29,7 @@ public class ToGoal extends CommandBase {
   public void execute() {
     ArmPosition setpoint = trajectory.get();
 
-    if (arm.at(setpoint)) {
+    if (arm.getPosition().at(setpoint)) {
       setpoint = trajectory.next();
     }
 
@@ -44,6 +44,6 @@ public class ToGoal extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return arm.at(goal);
+    return arm.getPosition().at(goal);
   }
 }

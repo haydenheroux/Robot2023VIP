@@ -14,9 +14,9 @@ import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 
 /** Renders robot superstructure using a {@link Mechanism2d}. */
-public class SuperstructureMechanism {
+public class Mechanisms {
 
-  private static SuperstructureMechanism instance = null;
+  private static Mechanisms instance = null;
 
   /**
    * @param meters size, in meters.
@@ -73,7 +73,7 @@ public class SuperstructureMechanism {
   private final MechanismLigament2d sideIntake;
 
   /** Initializes superstructure components. */
-  private SuperstructureMechanism() {
+  private Mechanisms() {
     bumpersMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
     armMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
     sideIntakeMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
@@ -142,9 +142,9 @@ public class SuperstructureMechanism {
                 kBumpersColor));
   }
 
-  public static SuperstructureMechanism getInstance() {
+  public static Mechanisms getInstance() {
     if (instance == null) {
-      instance = new SuperstructureMechanism();
+      instance = new Mechanisms();
     }
 
     return instance;
@@ -191,7 +191,7 @@ public class SuperstructureMechanism {
         armExtension.setColor(kLockedColor);
         armRotation.setColor(kLockedColor);
         break;
-      case kExtension:
+      case kTelescoping:
         armExtension.setColor(kLockedColor);
         armRotation.setColor(kUnlockedColor);
         break;
@@ -199,7 +199,7 @@ public class SuperstructureMechanism {
         armExtension.setColor(kUnlockedColor);
         armRotation.setColor(kUnlockedColor);
         break;
-      case kRotation:
+      case kPivot:
         armExtension.setColor(kUnlockedColor);
         armRotation.setColor(kLockedColor);
         break;

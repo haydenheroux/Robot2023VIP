@@ -1,151 +1,142 @@
 package frc.robot.arm;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.hardware.Hardware;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
-import frc.robot.Constants.Arm.Extension;
-import frc.robot.Constants.Arm.Rotation;
+import frc.robot.Constants.Arm.Pivot;
+import frc.robot.Constants.Arm.Telescoping;
 import frc.robot.Constants.Ports;
 
 public class ArmIOTalonFXBase implements ArmIO {
 
   protected final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
-  protected final WPI_TalonFX extensionMotor, rotationMotor;
-  private final Solenoid extensionBrake, rotationBrake;
+  protected final TalonFX telescopingMotor, pivotMotor;
+  private final Solenoid telescopingBrake, pivotBrake;
 
   public ArmIOTalonFXBase() {
-    extensionMotor = new WPI_TalonFX(Ports.EXTENSION);
-    extensionBrake = Hardware.getSolenoid(Ports.EXTENSION_BRAKE);
+    telescopingMotor = new TalonFX(Ports.TELESCOPING_MOTOR);
+    telescopingBrake = Hardware.getSolenoid(Ports.TELESCOPING_BRAKE);
 
-    rotationMotor = new WPI_TalonFX(Ports.ROTATION);
-    rotationBrake = Hardware.getSolenoid(Ports.ROTATION_BRAKE);
+    pivotMotor = new TalonFX(Ports.PIVOT_MOTOR);
+    pivotBrake = Hardware.getSolenoid(Ports.PIVOT_BRAKE);
   }
 
   @Override
   public void configure() {
-    extensionMotor.setInverted(false);
-    extensionMotor.setNeutralMode(NeutralMode.Brake);
+    TalonFXConfiguration telescopingConfig = new TalonFXConfiguration();
 
-    rotationMotor.setInverted(true);
-    rotationMotor.setNeutralMode(NeutralMode.Brake);
+    telescopingConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    telescopingConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    telescopingConfig.Feedback.SensorToMechanismRatio = Telescoping.GEAR_RATIO;
+
+    StatusCode status;
+    do {
+      status = telescopingMotor.getConfigurator().apply(telescopingConfig);
+    } while (!status.isOK());
+
+    TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
+
+    pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+    pivotConfig.Feedback.SensorToMechanismRatio = Pivot.GEAR_RATIO;
+
+    do {
+      status = pivotMotor.getConfigurator().apply(pivotConfig);
+    } while (!status.isOK());
   }
 
   @Override
   public void updateValues(ArmIOValues values) {
-    this.values.extensionBrakeIsActive = getExtensionBrakeIsActive();
-    this.values.extensionLengthMeters = getExtensionPosition();
-    this.values.extensionVoltage = getExtensionVoltage();
+    this.values.telescopingLengthMeters =
+        Conversions.General.toMeters(
+            telescopingMotor.getPosition().getValue(),
+            Constants.Arm.Telescoping.DISTANCE_PER_ROTATION);
+    this.values.telescopingBrakeIsActive = !telescopingBrake.get();
+    this.values.telescopingVoltage = telescopingMotor.getSupplyVoltage().getValue();
 
-    this.values.rotationAngleRotations = getRotationPosition();
-    this.values.rotationBrakeIsActive = getRotationBrakeIsActive();
-    this.values.rotationVoltage = getRotationVoltage();
+    this.values.pivotAngleRotations = pivotMotor.getPosition().getValue();
+    this.values.pivotBrakeIsActive = !pivotBrake.get();
+    this.values.pivotVoltage = pivotMotor.getSupplyVoltage().getValue();
 
     // Copy our values up to the caller
     values = this.values;
   }
 
   @Override
-  public void setExtensionPosition(double lengthMeters) {
+  public void setTelescopingPosition(double lengthMeters) {
     double rotations =
-        Conversions.General.toRotations(lengthMeters, Extension.DISTANCE_PER_ROTATION);
+        Conversions.General.toRotations(lengthMeters, Telescoping.DISTANCE_PER_ROTATION);
 
-    double ticks = Conversions.TalonFX.Position.fromRotations(rotations, Extension.GEAR_RATIO);
-
-    extensionMotor.setSelectedSensorPosition(ticks);
+    telescopingMotor.setRotorPosition(rotations);
   }
 
   @Override
-  public void setExtensionSetpoint(double lengthMeters) {}
+  public void setTelescopingSetpoint(double lengthMeters) {}
 
   @Override
-  public void setExtensionVoltage(double volts) {
-    if (getExtensionBrakeIsActive()) {
-      extensionMotor.disable();
+  public void setTelescopingVoltage(double volts) {
+    if (this.values.telescopingBrakeIsActive) {
+      telescopingMotor.disable();
       return;
     }
 
     volts +=
-        Extension.FEEDFORWARD.calculateTelescoping(
-            Rotation2d.fromRotations(values.rotationAngleRotations));
+        Telescoping.FEEDFORWARD.calculateTelescoping(
+            Rotation2d.fromRotations(values.pivotAngleRotations));
 
-    extensionMotor.setVoltage(volts);
+    telescopingMotor.setVoltage(volts);
   }
 
   @Override
-  public void setExtensionBrake(boolean isActive) {
-    extensionBrake.set(!isActive);
+  public void setTelescopingBrake(boolean isActive) {
+    telescopingBrake.set(!isActive);
   }
 
   @Override
-  public void setExtensionDisabled() {
-    setExtensionVoltage(0);
+  public void setTelescopingDisabled() {
+    setTelescopingVoltage(0);
   }
 
   @Override
-  public void setRotationPosition(double angleRotations) {
-    double ticks = Conversions.TalonFX.Position.fromRotations(angleRotations, Rotation.GEAR_RATIO);
-    rotationMotor.setSelectedSensorPosition(ticks);
+  public void setPivotPosition(double angleRotations) {
+    pivotMotor.setRotorPosition(angleRotations);
   }
 
   @Override
-  public void setRotationSetpoint(double angleRotations) {}
+  public void setPivotSetpoint(double angleRotations) {}
 
   @Override
-  public void setRotationVoltage(double volts) {
-    if (getRotationBrakeIsActive()) {
-      rotationMotor.disable();
+  public void setPivotVoltage(double volts) {
+    if (this.values.pivotBrakeIsActive) {
+      pivotMotor.disable();
       return;
     }
 
     volts +=
-        Rotation.FEEDFORWARD.calculatePivot(
-            Rotation2d.fromRotations(values.rotationAngleRotations),
-            ArmPosition.fromSensorValues(values.extensionLengthMeters, 0).getLeverLength());
+        Pivot.FEEDFORWARD.calculatePivot(
+            Rotation2d.fromRotations(values.pivotAngleRotations),
+            ArmPosition.fromValues(values.telescopingLengthMeters, 0).getLeverLength());
 
-    rotationMotor.setVoltage(volts);
+    pivotMotor.setVoltage(volts);
   }
 
   @Override
-  public void setRotationBrake(boolean isActive) {
-    rotationBrake.set(!isActive);
+  public void setPivotBrake(boolean isActive) {
+    pivotBrake.set(!isActive);
   }
 
   @Override
-  public void setRotationDisabled() {
-    setRotationVoltage(0);
-  }
-
-  protected boolean getExtensionBrakeIsActive() {
-    return !extensionBrake.get();
-  }
-
-  protected double getExtensionPosition() {
-    double rotations =
-        Conversions.TalonFX.Position.toRotations(
-            extensionMotor.getSelectedSensorPosition(), Extension.GEAR_RATIO);
-
-    return Conversions.General.toMeters(rotations, Constants.Arm.Extension.DISTANCE_PER_ROTATION);
-  }
-
-  protected double getExtensionVoltage() {
-    return extensionMotor.getMotorOutputVoltage();
-  }
-
-  protected boolean getRotationBrakeIsActive() {
-    return !rotationBrake.get();
-  }
-
-  protected double getRotationPosition() {
-    return Conversions.TalonFX.Position.toRotations(
-        rotationMotor.getSelectedSensorPosition(), Rotation.GEAR_RATIO);
-  }
-
-  protected double getRotationVoltage() {
-    return rotationMotor.getMotorOutputVoltage();
+  public void setPivotDisabled() {
+    setPivotVoltage(0);
   }
 }

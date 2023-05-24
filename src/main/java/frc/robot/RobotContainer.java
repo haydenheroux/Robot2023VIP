@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.mechanism.SuperstructureMechanism;
+import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.Constants.Ports;
 import frc.robot.arm.Arm;
@@ -57,8 +57,7 @@ public class RobotContainer {
 
     TelemetryManager.getInstance().initializeDashboard();
 
-    SmartDashboard.putData(
-        "Arm Mechanism", SuperstructureMechanism.getInstance().getArmMechanism());
+    SmartDashboard.putData("Arm Mechanism", Mechanisms.getInstance().getArmMechanism());
 
     configureAutonomous();
     configureBindings();
@@ -105,8 +104,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(compressor::enableDigital))
         .onFalse(Commands.runOnce(compressor::disable));
 
-    pit.a().whileTrue(arm.characterize(Selector.kRotation));
-    pit.b().whileTrue(arm.characterize(Selector.kExtension));
+    pit.a().whileTrue(arm.characterize(Selector.kPivot));
+    pit.b().whileTrue(arm.characterize(Selector.kTelescoping));
     pit.x().whileTrue(arm.toGoal(Constants.Arm.Positions.STOW));
     pit.y().whileTrue(arm.toGoal(Constants.Arm.Positions.SAFE));
   }

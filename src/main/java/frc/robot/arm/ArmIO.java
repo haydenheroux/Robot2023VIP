@@ -2,13 +2,13 @@ package frc.robot.arm;
 
 public interface ArmIO {
   public static class ArmIOValues {
-    public boolean extensionBrakeIsActive = true;
-    public double extensionLengthMeters = 0.0;
-    public double extensionVoltage = 0.0;
+    public boolean telescopingBrakeIsActive = true;
+    public double telescopingLengthMeters = 0.0;
+    public double telescopingVoltage = 0.0;
 
-    public boolean rotationBrakeIsActive = true;
-    public double rotationAngleRotations = 0.0;
-    public double rotationVoltage = 0.0;
+    public boolean pivotBrakeIsActive = true;
+    public double pivotAngleRotations = 0.0;
+    public double pivotVoltage = 0.0;
   }
 
   /** Configures arm hardware to default. */
@@ -22,64 +22,64 @@ public interface ArmIO {
   public void updateValues(ArmIOValues values);
 
   /**
-   * Sets the extension motor position.
+   * Sets the telescoping motor position.
    *
    * @param lengthMeters
    */
-  public void setExtensionPosition(double lengthMeters);
+  public void setTelescopingPosition(double lengthMeters);
 
   /**
-   * Sets the extension motor setpoint.
+   * Sets the telescoping motor setpoint.
    *
    * @param lengthMeters
    */
-  public void setExtensionSetpoint(double lengthMeters);
+  public void setTelescopingSetpoint(double lengthMeters);
 
   /**
-   * Sets the extension motor voltage.
+   * Sets the telescoping motor voltage.
    *
    * @param volts
    */
-  public void setExtensionVoltage(double volts);
+  public void setTelescopingVoltage(double volts);
 
   /**
-   * Sets the extension brake.
+   * Sets the telescoping brake.
    *
    * @param isActive
    */
-  public void setExtensionBrake(boolean isActive);
+  public void setTelescopingBrake(boolean isActive);
 
-  /** Disables extension motor. */
-  public void setExtensionDisabled();
+  /** Disables telescoping motor. */
+  public void setTelescopingDisabled();
 
   /**
-   * Sets the rotation motor position.
+   * Sets the pivot motor position.
    *
    * @param angleRotations
    */
-  public void setRotationPosition(double angleRotations);
+  public void setPivotPosition(double angleRotations);
 
   /**
-   * Sets the rotation motor setpoint.
+   * Sets the pivot motor setpoint.
    *
    * @param angleRotations
    */
-  public void setRotationSetpoint(double angleRotations);
+  public void setPivotSetpoint(double angleRotations);
 
   /**
-   * Sets the rotation motor voltage.
+   * Sets the pivot motor voltage.
    *
    * @param volts
    */
-  public void setRotationVoltage(double volts);
+  public void setPivotVoltage(double volts);
 
   /**
-   * Sets the rotation brake.
+   * Sets the pivot brake.
    *
    * @param isActive
    */
-  public void setRotationBrake(boolean isActive);
+  public void setPivotBrake(boolean isActive);
 
-  /** Disables rotation motor. */
-  public void setRotationDisabled();
+  /** Disables pivot motor. */
+  public void setPivotDisabled();
 }
