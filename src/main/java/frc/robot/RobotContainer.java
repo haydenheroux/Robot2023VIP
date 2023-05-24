@@ -75,8 +75,6 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    driver.x().onTrue(swerve.lock());
-
     DoubleSupplier extensionAxis =
         () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.1);
     DoubleSupplier rotationAxis =

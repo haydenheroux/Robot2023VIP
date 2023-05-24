@@ -1,4 +1,4 @@
-package frc.robot.swerve;
+package frc.robot.pose;
 
 public interface GyroIO {
   public static class GyroIOValues {

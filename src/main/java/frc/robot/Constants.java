@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -308,6 +309,12 @@ public class Constants {
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
         SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, NORTH_WEST);
+
+    public static final Pigeon2Configuration GYRO_CONFIG = new Pigeon2Configuration();
+
+    static {
+      GYRO_CONFIG.Pigeon2Features.EnableCompass = false;
+    }
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = new CANcoderConfiguration();
 

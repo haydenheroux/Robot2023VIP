@@ -3,14 +3,17 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.Swerve;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
 import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 
-public class Module {
+public class Module implements TelemetryOutputter {
 
   public final ModuleConfiguration config;
 
@@ -22,10 +25,6 @@ public class Module {
 
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
-
-  private SwerveModuleState state;
-
-  private Timer timer = new Timer();
 
   public Module(ModuleConfiguration config) {
     this.config = config;
@@ -50,10 +49,6 @@ public class Module {
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
     angleMotor.setPosition(azimuthEncoderValues.angleRotations);
-
-    state = getState();
-
-    timer.start();
   }
 
   public void update() {
@@ -61,24 +56,10 @@ public class Module {
 
     angleMotor.updateValues(angleMotorValues);
     driveMotor.updateValues(driveMotorValues);
-
-    state = getState();
   }
 
   public void setSetpoint(SwerveModuleState setpoint) {
-    setSetpoint(setpoint, false);
-  }
-
-  public void setSetpoint(SwerveModuleState setpoint, boolean isForced) {
-    setpoint =
-        SwerveModuleState.optimize(
-            setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
-
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
-
-    if (isForced == false) {
-      setpoint = SwerveMath.dejitter(setpoint, state.angle, Swerve.DEJITTER_SPEED);
-    }
 
     angleMotor.setSetpoint(setpoint.angle.getRotations());
   }
@@ -98,7 +79,16 @@ public class Module {
         driveMotorValues.positionMeters, Rotation2d.fromRotations(angleMotorValues.angleRotations));
   }
 
-  public void setMotorBrake(boolean isActive) {
-    driveMotor.setBrake(isActive);
+  @Override
+  public void initializeDashboard() {
+    ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
+
+    ShuffleboardLayout layout = tab.getLayout(this.config.name, BuiltInLayouts.kList);
+    layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
+    layout.addNumber("Absolute Angle (deg)", () -> getAzimuthAngle().getDegrees());
+    layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
   }
+
+  @Override
+  public void outputTelemetry() {}
 }

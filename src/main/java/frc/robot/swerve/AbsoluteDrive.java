@@ -1,14 +1,15 @@
 package frc.robot.swerve;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.pose.PoseEstimator;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class AbsoluteDrive extends CommandBase {
-
   private final Swerve swerve;
 
   private final DoubleSupplier vX, vY, headingX, headingY;
@@ -51,15 +52,12 @@ public class AbsoluteDrive extends CommandBase {
     final boolean spinningRequested = spinToggle.getAsBoolean();
     final boolean headingRequested = heading.getNorm() > 0.1;
 
-    if (spinningRequested) {
-      double omegaRotationsPerSecond =
-          heading.getAngle().getSin() * Constants.Swerve.MAX_ANGULAR_SPEED.getRotations();
-      swerve.drive(velocity, Rotation2d.fromRotations(omegaRotationsPerSecond));
-    } else if (headingRequested) {
-      swerve.driveHeading(velocity, heading.getAngle());
-    } else {
-      swerve.driveHeading(velocity, swerve.getYaw());
-    }
+    ChassisSpeeds chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            velocity.getX(), velocity.getY(), 0.0, PoseEstimator.getInstance().getYaw());
+    SwerveModuleState[] setpoints = swerve.kinematics.toSwerveModuleStates(chassisSpeeds);
+
+    swerve.setSetpoints(setpoints);
   }
 
   @Override

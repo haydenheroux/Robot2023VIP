@@ -1,8 +1,9 @@
-package frc.robot.swerve;
+package frc.robot.pose;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;
+import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants.Swerve;
 
 public class GyroIOPigeon2 implements GyroIO {
 
@@ -14,14 +15,8 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void configure() {
-    Pigeon2Configuration config = new Pigeon2Configuration();
+    ConfigurationApplier.apply(Swerve.GYRO_CONFIG, gyro);
 
-    config.Pigeon2Features.EnableCompass = false;
-
-    gyro.getConfigurator().apply(config);
-
-    // TODO
-    // gyro.zeroGyroBiasNow();
     gyro.setYaw(0);
 
     gyro.getRoll().setUpdateFrequency(100);
