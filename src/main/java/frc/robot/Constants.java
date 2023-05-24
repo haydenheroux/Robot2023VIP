@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -101,6 +105,14 @@ public class Constants {
      * telescoping algorithms, etc.
      */
     public static class Telescoping {
+      public static final TalonFXConfiguration CONFIG = new TalonFXConfiguration();
+
+      static {
+        CONFIG.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+        CONFIG.Feedback.SensorToMechanismRatio = Telescoping.RATIO;
+      }
 
       /**
        * Change in distance per full revolution of the spool drum. This is usually the circumference
@@ -108,7 +120,7 @@ public class Constants {
        */
       public static final double DISTANCE_PER_ROTATION = Units.inchesToMeters(1) * Math.PI;
       /** Total gear ratio between the motor and the spool drum. */
-      public static final double GEAR_RATIO = 15.34;
+      public static final double RATIO = 15.34;
 
       /** Minimum length of the arm. */
       public static final double MIN_LENGTH = Positions.STOW.getLength();
@@ -134,8 +146,15 @@ public class Constants {
 
     /** Pivot constants relating to the pivot motor, pivot brake, pivot algorithms, etc. */
     public static class Pivot {
-      /** Total gear ratio between the pivot motor and the arm pivot. */
-      public static final double GEAR_RATIO = 812.0 / 11.0;
+      public static final TalonFXConfiguration CONFIG = new TalonFXConfiguration();
+
+      static {
+        CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        CONFIG.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        CONFIG.Feedback.SensorToMechanismRatio = Pivot.RATIO;
+      }
+
+      public static final double RATIO = 812.0 / 11.0;
 
       /** Minimum angle of the arm. */
       public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-45);
@@ -290,30 +309,42 @@ public class Constants {
     public static final Rotation2d MAX_ANGULAR_SPEED =
         SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, NORTH_WEST);
 
-    /** Angle motor constants. */
-    public static class Angle {
-      /** Proportional gain, in pvolts per rotation. */
-      public static final double KP = 1.2240673782991203;
-      /** Derivative gain, in volts per rotation per second. */
-      public static final double KD = .0021621114369501466;
-      /** Current draw limit, in amps. */
-      public static final double CURRENT_LIMIT = 10.0;
-      /** Time to go from zero to full, in seconds. */
-      public static final double RAMP_TIME = 0.25;
-      /** Gear ratio between the angle motor and the wheel. */
-      public static final double GEAR_RATIO = 150 / 7;
+    public static final CANcoderConfiguration AZIMUTH_CONFIG = new CANcoderConfiguration();
+
+    public static final TalonFXConfiguration ANGLE_CONFIG = new TalonFXConfiguration();
+
+    static {
+      ANGLE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+      ANGLE_CONFIG.Slot0.kP = 1.2240673782991203;
+      ANGLE_CONFIG.Slot0.kD = .0021621114369501466;
+
+      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimit = 10.0;
+      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+      ANGLE_CONFIG.ClosedLoopGeneral.ContinuousWrap = true;
+
+      ANGLE_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
+
+      ANGLE_CONFIG.Feedback.SensorToMechanismRatio = (double) (150 / 7);
     }
 
     /** Drive motor constants. */
     public static class Drive {
-      /** Proportional gain, in volts per rotation per second. */
-      public static final double KP = .00495964340175953;
-      /** Current draw limit, in amps. */
-      public static final double CURRENT_LIMIT = 65.0;
-      /** Time to go from zero to full, in seconds. */
-      public static final double RAMP_TIME = 0.25;
-      /** Gear ratio between the drive motor and the wheel. */
-      public static final double GEAR_RATIO = 6.75;
+      public static final TalonFXConfiguration CONFIG = new TalonFXConfiguration();
+
+      static {
+        CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+        CONFIG.Slot0.kP = .00495964340175953;
+
+        CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
+        CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
+
+        CONFIG.Feedback.SensorToMechanismRatio = 6.75;
+      }
     }
   }
 }

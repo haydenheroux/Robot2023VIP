@@ -1,12 +1,9 @@
 package frc.robot.arm;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.hardware.Hardware;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
@@ -31,28 +28,8 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration telescopingConfig = new TalonFXConfiguration();
-
-    telescopingConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    telescopingConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
-    telescopingConfig.Feedback.SensorToMechanismRatio = Telescoping.GEAR_RATIO;
-
-    StatusCode status;
-    do {
-      status = telescopingMotor.getConfigurator().apply(telescopingConfig);
-    } while (!status.isOK());
-
-    TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
-
-    pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-
-    pivotConfig.Feedback.SensorToMechanismRatio = Pivot.GEAR_RATIO;
-
-    do {
-      status = pivotMotor.getConfigurator().apply(pivotConfig);
-    } while (!status.isOK());
+    ConfigurationApplier.apply(Telescoping.CONFIG, telescopingMotor);
+    ConfigurationApplier.apply(Pivot.CONFIG, pivotMotor);
   }
 
   @Override

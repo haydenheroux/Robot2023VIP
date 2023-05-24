@@ -1,39 +1,29 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
+import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants.Swerve;
 
 public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
   private final CANcoder encoder;
-  private final double magnetOffsetRotations;
+  private final double magnetOffset;
 
   public AzimuthEncoderIOCANCoder(int id, String canbus, double offsetRotations) {
     encoder = new CANcoder(id, canbus);
-    magnetOffsetRotations = -offsetRotations;
+    magnetOffset = -offsetRotations;
   }
 
   @Override
   public void configure() {
-    CANcoderConfiguration config = new CANcoderConfiguration();
+    ConfigurationApplier.apply(Swerve.AZIMUTH_CONFIG, encoder);
 
-    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-    // TODO
-    config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    // TODO
-    config.MagnetSensor.MagnetOffset = magnetOffsetRotations;
+    // TODO Don't overwrite previous config
+    MagnetSensorConfigs offset = new MagnetSensorConfigs();
+    offset.MagnetOffset = magnetOffset;
 
-    /*
-     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201
-     */
-    StatusCode status;
-    do {
-      status = encoder.getConfigurator().apply(config);
-    } while (!status.isOK());
+    ConfigurationApplier.apply(offset, encoder);
 
     encoder.getAbsolutePosition().setUpdateFrequency(100);
   }
@@ -55,14 +45,14 @@ public class AzimuthEncoderIOCANCoder implements AzimuthEncoderIO {
 
     config.MagnetOffset = 0.0;
 
-    encoder.getConfigurator().apply(config);
+    ConfigurationApplier.apply(config, encoder);
     // TODO Reduce update timeout
     encoder.getAbsolutePosition().waitForUpdate(1);
 
     double newOffset = -encoder.getAbsolutePosition().getValue();
     // magnetOffsetRotations = newOffset;
     config.MagnetOffset = newOffset;
-    encoder.getConfigurator().apply(config);
+    ConfigurationApplier.apply(config, encoder);
 
     // TODO Reduce update timeout
     encoder.getAbsolutePosition().waitForUpdate(1);

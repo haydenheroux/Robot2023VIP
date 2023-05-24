@@ -33,7 +33,7 @@ public class ArmIOSim implements ArmIO {
   private final SingleJointedArmSim pivotSim =
       new SingleJointedArmSim(
           simMotor,
-          Pivot.GEAR_RATIO,
+          Pivot.RATIO,
           SingleJointedArmSim.estimateMOI(fakeSimLength, Physical.ARM_MASS),
           fakeSimLength,
           Pivot.MIN_ANGLE.getRadians(),

@@ -1,11 +1,9 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import frc.robot.Constants.Swerve.Angle;
+import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants.Swerve;
 
 public class AngleMotorIOTalonFX implements AngleMotorIO {
 
@@ -21,29 +19,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    config.Slot0.kP = Angle.KP;
-    config.Slot0.kD = Angle.KD;
-
-    config.CurrentLimits.StatorCurrentLimit = Angle.CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
-
-    config.ClosedLoopGeneral.ContinuousWrap = true;
-
-    config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Angle.RAMP_TIME;
-
-    config.Feedback.SensorToMechanismRatio = Angle.GEAR_RATIO;
-
-    /*
-     * https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L201
-     */
-    StatusCode status;
-    do {
-      status = motor.getConfigurator().apply(config);
-    } while (!status.isOK());
+    ConfigurationApplier.apply(Swerve.ANGLE_CONFIG, motor);
 
     motor.getPosition().setUpdateFrequency(100);
     motor.getVelocity().setUpdateFrequency(100);
