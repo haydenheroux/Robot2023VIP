@@ -1,4 +1,4 @@
-package frc.robot.pose;
+package frc.robot.odometry;
 
 public interface GyroIO {
   public static class GyroIOValues {

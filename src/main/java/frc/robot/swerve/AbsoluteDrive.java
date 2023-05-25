@@ -5,7 +5,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.pose.PoseEstimator;
+import frc.robot.odometry.Odometry;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -43,8 +44,6 @@ public class AbsoluteDrive extends CommandBase {
     /*
      * https://highlandersfrc.com/Documents/Presentations/Swerve%20Drive%20Presentation.pdf
      */
-    x *= Math.sqrt(1 - 0.5 * y * y);
-    y *= Math.sqrt(1 - 0.5 * x * x);
 
     Translation2d velocity = new Translation2d(x, y).times(Constants.Swerve.MAX_SPEED);
     Translation2d heading = new Translation2d(headingX.getAsDouble(), headingY.getAsDouble());
@@ -54,8 +53,8 @@ public class AbsoluteDrive extends CommandBase {
 
     ChassisSpeeds chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            velocity.getX(), velocity.getY(), 0.0, PoseEstimator.getInstance().getYaw());
-    SwerveModuleState[] setpoints = swerve.kinematics.toSwerveModuleStates(chassisSpeeds);
+            velocity.getX(), velocity.getY(), 0.0, Odometry.getInstance().getYaw());
+    SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
     swerve.setSetpoints(setpoints);
   }

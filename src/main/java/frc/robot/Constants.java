@@ -7,12 +7,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import frc.robot.swerve.ModuleConfiguration.ModuleCAN;
+import frc.robot.swerve.ModuleConfiguration.ModuleLocation;
 import frc.robot.swerve.SwerveMath;
 
 public class Constants {
@@ -96,6 +98,7 @@ public class Constants {
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double WHEEL_COF = 1.19;
+    public static final double FIELD_LENGTH = Units.inchesToMeters(651.25);
   }
 
   /** Arm constants relating to the operation of the arm subsystem. */
@@ -299,6 +302,13 @@ public class Constants {
     static {
       SOUTH_WEST.azimuthOffsetRotations = Units.degreesToRotations(192.91);
     }
+
+    public static final SwerveDriveKinematics KINEMATICS =
+        new SwerveDriveKinematics(
+            ModuleLocation.get(true, true),
+            ModuleLocation.get(true, false),
+            ModuleLocation.get(false, false),
+            ModuleLocation.get(false, true));
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);

@@ -1,4 +1,4 @@
-package frc.robot.pose;
+package frc.robot.odometry;
 
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;

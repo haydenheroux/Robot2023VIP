@@ -1,4 +1,4 @@
-package frc.robot.pose;
+package frc.robot.odometry;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;

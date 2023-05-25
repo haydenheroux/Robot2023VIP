@@ -18,6 +18,7 @@ import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
+import frc.robot.odometry.Odometry;
 import frc.robot.swerve.AbsoluteDrive;
 import frc.robot.swerve.Swerve;
 import java.util.function.DoubleSupplier;
@@ -29,6 +30,7 @@ public class RobotContainer {
   private final Claw claw;
   private final SideIntake sideIntake;
   private final Swerve swerve;
+  private final Odometry odometry; 
 
   // OI objects
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -46,6 +48,7 @@ public class RobotContainer {
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
+    odometry = Odometry.getInstance(); 
 
     TelemetryManager.getInstance()
         .register(
@@ -53,7 +56,8 @@ public class RobotContainer {
             // compressor,
             claw,
             sideIntake,
-            swerve);
+            swerve,
+            odometry);
 
     TelemetryManager.getInstance().initializeDashboard();
 

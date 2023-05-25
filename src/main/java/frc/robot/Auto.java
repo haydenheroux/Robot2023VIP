@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
-import frc.robot.pose.PoseEstimator;
+import frc.robot.odometry.Odometry;
 import frc.robot.swerve.Swerve;
 import java.util.HashMap;
 
@@ -15,7 +15,7 @@ public class Auto {
   private static final Arm arm = Arm.getInstance();
   private static final Claw claw = Claw.getInstance();
   private static final Swerve swerve = Swerve.getInstance();
-  private static final PoseEstimator poseEstimator = PoseEstimator.getInstance();
+  private static final Odometry odometry = Odometry.getInstance();
 
   public static final PathConstraints SPEEDS = new PathConstraints(4, 3);
   public static final HashMap<String, Command> EVENT_MAP = new HashMap<>();
@@ -30,9 +30,9 @@ public class Auto {
 
   public static final SwerveAutoBuilder BUILDER =
       new SwerveAutoBuilder(
-          poseEstimator::getPose,
-          poseEstimator::setPose,
-          swerve.kinematics,
+          odometry::getPose,
+          odometry::setPose,
+          Constants.Swerve.KINEMATICS,
           new PIDConstants(5.0, 0, 0),
           new PIDConstants(50, 0, 0),
           swerve::setSetpoints,
