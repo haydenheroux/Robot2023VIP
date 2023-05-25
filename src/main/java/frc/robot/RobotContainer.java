@@ -19,7 +19,7 @@ import frc.robot.arm.Arm.Selector;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.odometry.Odometry;
-import frc.robot.swerve.AbsoluteDrive;
+import frc.robot.swerve.Drive;
 import frc.robot.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 
@@ -115,7 +115,7 @@ public class RobotContainer {
   /** Configures default commands for each subsystem. */
   public void configureDefaultCommands() {
     swerve.setDefaultCommand(
-        new AbsoluteDrive(
+        new Drive(
             swerve,
             () -> MathUtil.applyDeadband(-driver.getLeftY(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),

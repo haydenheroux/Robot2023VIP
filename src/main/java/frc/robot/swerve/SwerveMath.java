@@ -10,7 +10,7 @@ import frc.robot.Constants;
 
 public class SwerveMath {
 
-  public static Rotation2d calculateMaxAngularSpeed(
+  public static Rotation2d calculateTheoreticalMaxAngularSpeed(
       double maxSpeed, ModuleConfiguration farthestModule) {
     double angularRadius = farthestModule.location.getNorm();
     return Rotation2d.fromRadians(maxSpeed / angularRadius);

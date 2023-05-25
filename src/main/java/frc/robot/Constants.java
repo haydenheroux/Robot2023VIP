@@ -318,7 +318,7 @@ public class Constants {
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateMaxAngularSpeed(MAX_SPEED, NORTH_WEST);
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, NORTH_WEST).times(0.5);
 
     public static final Pigeon2Configuration GYRO_CONFIG = new Pigeon2Configuration();
 
@@ -362,6 +362,10 @@ public class Constants {
 
         CONFIG.Feedback.SensorToMechanismRatio = 6.75;
       }
+    }
+
+    public static class Theta {
+      public static final double KP = 4.0;
     }
   }
 }
