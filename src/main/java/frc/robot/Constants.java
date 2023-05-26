@@ -321,7 +321,10 @@ public class Constants {
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.get(true, true)).times(0.5);
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.get(true, true))
+            .times(0.5);
+    /** Velocity scalar applied while driving in sniper mode. */
+    public static final double SNIPER_SCALAR = 0.25;
 
     public static final Pigeon2Configuration GYRO_CONFIG = new Pigeon2Configuration();
 

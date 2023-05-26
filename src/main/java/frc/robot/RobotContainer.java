@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
-import frc.robot.Constants.Ports;
 import frc.robot.Constants.Arm.Positions;
+import frc.robot.Constants.Ports;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
 import frc.robot.auto.Auto;
@@ -48,13 +48,7 @@ public class RobotContainer {
     swerve = Swerve.getInstance();
     odometry = Odometry.getInstance();
 
-    TelemetryManager.getInstance()
-        .register(
-            arm,
-            claw,
-            sideIntake,
-            swerve,
-            odometry);
+    TelemetryManager.getInstance().register(arm, claw, sideIntake, swerve, odometry);
 
     TelemetryManager.getInstance().initializeDashboard();
 
@@ -118,14 +112,16 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getRightY(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getRightX(), 0.1),
-            () -> driver.rightTrigger().getAsBoolean()));
+            () -> driver.rightTrigger().getAsBoolean(),
+            () -> driver.leftTrigger().getAsBoolean()));
   }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}
 
   /**
-   * Gets the command to run during autonomous. 
+   * Gets the command to run during autonomous.
+   *
    * @return the command to run during autonomous.
    */
   public Command getAutonomousCommand() {
