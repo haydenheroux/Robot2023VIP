@@ -11,18 +11,15 @@ import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 
 public class Swerve extends SubsystemBase implements TelemetryOutputter {
-  // Singleton instance
   private static Swerve instance = null;
 
-  private final Module[] modules = new Module[4]; // FL=NW, FR=NE, BR=SE, BL=SW
+  private final Module[] modules = new Module[4];
 
-  /** Creates a new Swerve. */
   private Swerve() {
     modules[0] = new Module(Constants.Swerve.NORTH_WEST);
     modules[1] = new Module(Constants.Swerve.NORTH_EAST);
     modules[2] = new Module(Constants.Swerve.SOUTH_EAST);
     modules[3] = new Module(Constants.Swerve.SOUTH_WEST);
-
   }
 
   public static Swerve getInstance() {
@@ -53,6 +50,13 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void outputTelemetry() {}
 
+  /**
+   * Sets the module setpoints.
+   *
+   * <p>Mutates setpoints if some are unreachable.
+   *
+   * @param setpoints the module setpoints.
+   */
   public void setSetpoints(SwerveModuleState[] setpoints) {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Swerve.MAX_SPEED);
 
@@ -61,6 +65,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
+  /**
+   * Gets the state of each module.
+   *
+   * @return the state of each module.
+   */
   public SwerveModuleState[] getStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -71,6 +80,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     return states;
   }
 
+  /**
+   * Gets the position of each module relative to the initial position.
+   *
+   * @return the position relative to the initial position.
+   */
   public SwerveModulePosition[] getPositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
@@ -80,5 +94,4 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     return positions;
   }
-
 }

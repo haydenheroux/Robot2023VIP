@@ -24,6 +24,14 @@ import frc.robot.odometry.GyroIO.GyroIOValues;
 import frc.robot.swerve.Swerve;
 import java.util.function.Supplier;
 
+/**
+ * Tracks the robot's position on the field over the course of a match using drivetrain sensor data
+ * and pose estimates from fudicial tracking.
+ *
+ * <p>Odometry data is used during the autonomous period for complex tasks such as path following,
+ * during the teleoperated period for aligning with field elements, and after the match for
+ * optimizing match play.
+ */
 public class Odometry extends SubsystemBase implements TelemetryOutputter {
   private static Odometry instance = null;
 
@@ -41,27 +49,29 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private Odometry() {
     if (Robot.isSimulation()) {
-      gyro = new GyroIOSim(() -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond));
+      gyro =
+          new GyroIOSim(() -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond));
     } else {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
 
     positions = () -> Swerve.getInstance().getPositions();
 
-    Pose2d initialPoseMeters = new Pose2d();
-
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.Swerve.KINEMATICS,
-            initialPoseMeters.getRotation(),
+            new Rotation2d(),
             positions.get(),
-            initialPoseMeters,
+            new Pose2d(),
             stateStandardDeviations,
             visionStandardDeviations);
 
     gyro.configure();
 
     field = new Field2d();
+
+    // TODO
+    setYaw(Rotation2d.fromDegrees(180));
   }
 
   public static Odometry getInstance() {
@@ -98,7 +108,9 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout robotVelocity = tab.getLayout("Robot Velocity", BuiltInLayouts.kList);
     robotVelocity.addNumber("X Velocity (mps)", () -> getRobotVelocity().vxMetersPerSecond);
     robotVelocity.addNumber("Y Velocity (mps)", () -> getRobotVelocity().vyMetersPerSecond);
-    robotVelocity.addNumber("Angular Velocity (dps)", () -> Units.radiansToDegrees(getRobotVelocity().omegaRadiansPerSecond));
+    robotVelocity.addNumber(
+        "Angular Velocity (dps)",
+        () -> Units.radiansToDegrees(getRobotVelocity().omegaRadiansPerSecond));
 
     ShuffleboardLayout fieldVelocity = tab.getLayout("Field Velocity", BuiltInLayouts.kList);
     fieldVelocity.addNumber("X Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getX());
@@ -108,54 +120,116 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void outputTelemetry() {}
 
-  public Rotation2d getRoll() {
-    return Rotation2d.fromRotations(gyroValues.rollAngleRotations);
-  }
-
-  public Rotation2d getPitch() {
-    return Rotation2d.fromRotations(gyroValues.pitchAngleRotations);
-  }
-
-  public Rotation2d getYaw() {
-    return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
-  }
-
+  /**
+   * Gets the estimated position of the robot on the field.
+   *
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
+   *     Reference Frame</a>
+   * @return the estimated position of the robot on the field.
+   */
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
 
-  // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system
-  public ChassisSpeeds getRobotVelocity() {
-    return Constants.Swerve.KINEMATICS.toChassisSpeeds(Swerve.getInstance().getStates());
+  /**
+   * Sets the position of the robot on the field.
+   *
+   * @param pose tne position of the robot on the field.
+   */
+  public void setPose(Pose2d pose) {
+    poseEstimator.resetPosition(getYaw(), positions.get(), pose);
   }
 
-  // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system
-  public Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
-    final Rotation2d yaw = getYaw(); 
-
-    // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
-    double vxMetersPerSecond = robotVelocity.vxMetersPerSecond * yaw.getCos() - robotVelocity.vyMetersPerSecond * yaw.getSin();
-    double vyMetersPerSecond = robotVelocity.vxMetersPerSecond * yaw.getSin() + robotVelocity.vyMetersPerSecond * yaw.getCos();
-
-    return new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
+  /**
+   * Sets the estimated position of the robot on the field.
+   *
+   * @param pose the estimated position of the robot on the field.
+   * @param timestamp the timestamp of the position estimate.
+   * @param hard if true, treat the estimated position as the position.
+   * @param confidence the confidence of the position estimate. Lower values are less confident.
+   */
+  public void setPose(Pose2d pose, double timestamp, boolean hard, double confidence) {
+    if (hard) {
+      setPose(pose);
+    } else {
+      poseEstimator.addVisionMeasurement(
+          pose, timestamp, visionStandardDeviations.times(1.0 / confidence));
+    }
   }
 
+  // TODO Are these robot axis relative or field axis relative?
+
+  /**
+   * Gets the angle of the robot relative to the robot X axis.
+   *
+   * @return the angle of the robot relative to the robot X axis.
+   */
+  public Rotation2d getRoll() {
+    return Rotation2d.fromRotations(gyroValues.rollAngleRotations);
+  }
+
+  /**
+   * Gets the angle of the robot relative to the robot Y axis.
+   *
+   * @return the angle of the robot relative to the robot Y axis.
+   */
+  public Rotation2d getPitch() {
+    return Rotation2d.fromRotations(gyroValues.pitchAngleRotations);
+  }
+  /**
+   * Gets the angle of the robot relative to the robot Z axis.
+   *
+   * @return the angle of the robot relative to the robot Z axis.
+   */
+  public Rotation2d getYaw() {
+    return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
+  }
+
+  /**
+   * Sets the angle of the robot relative to the robot Z axis.
+   *
+   * <p>Setting the angle also updates the robot pose measurement.
+   *
+   * @param yaw the angle of the robot relative to the robot Z axis.
+   */
   public void setYaw(Rotation2d yaw) {
     gyro.setYawAngle(yaw.getRotations());
 
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
 
-  public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), positions.get(), pose);
+  /**
+   * Gets the velocity of the robot in the robot reference frame.
+   *
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
+   *     Reference Frame</a>
+   * @return the velocity of the robot in the robot reference frame.
+   */
+  private ChassisSpeeds getRobotVelocity() {
+    return Constants.Swerve.KINEMATICS.toChassisSpeeds(Swerve.getInstance().getStates());
   }
 
-  public void setPose(Pose2d pose, double timestamp, boolean hard, double accuracy) {
-    if (hard) {
-      setPose(pose);
-    } else {
-      poseEstimator.addVisionMeasurement(
-          pose, timestamp, visionStandardDeviations.times(1.0 / accuracy));
-    }
+  /**
+   * Gets the velocity of the robot in the field reference frame.
+   *
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
+   *     Reference Frame</a>
+   * @return the velocity of the robot in the field reference frame.
+   */
+  private Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
+    final Rotation2d yaw = getYaw();
+
+    // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
+    double vxMetersPerSecond =
+        robotVelocity.vxMetersPerSecond * yaw.getCos()
+            - robotVelocity.vyMetersPerSecond * yaw.getSin();
+    double vyMetersPerSecond =
+        robotVelocity.vxMetersPerSecond * yaw.getSin()
+            + robotVelocity.vyMetersPerSecond * yaw.getCos();
+
+    return new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
   }
 }

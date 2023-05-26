@@ -5,12 +5,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.Theta;
 import frc.robot.odometry.Odometry;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -47,27 +45,37 @@ public class Drive extends CommandBase {
 
   @Override
   public void execute() {
-    Translation2d velocity = new Translation2d(forwardsVelocity.getAsDouble(), sidewaysVelocity.getAsDouble()).times(Constants.Swerve.MAX_SPEED);
-    Translation2d heading = new Translation2d(forwardsHeading.getAsDouble(), sidewaysHeading.getAsDouble());
+    Translation2d velocity =
+        new Translation2d(forwardsVelocity.getAsDouble(), sidewaysVelocity.getAsDouble())
+            .times(Constants.Swerve.MAX_SPEED);
+    Translation2d heading =
+        new Translation2d(forwardsHeading.getAsDouble(), sidewaysHeading.getAsDouble());
 
     double omegaRadiansPerSecond = 0.0;
 
-    boolean headingRequested = heading.getNorm() > 0.1;
+    boolean headingRequested = heading.getNorm() > 0.7;
 
     if (align.getAsBoolean() && headingRequested) {
-      omegaRadiansPerSecond = thetaController.calculate(Odometry.getInstance().getYaw().getRadians(), heading.getAngle().getRadians());
+      omegaRadiansPerSecond =
+          thetaController.calculate(
+              Odometry.getInstance().getYaw().getRadians(), heading.getAngle().getRadians());
     } else {
       double percent = MathUtil.clamp(heading.getY(), -1, 1);
       omegaRadiansPerSecond = percent * Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
     }
 
-    omegaRadiansPerSecond = MathUtil.clamp(omegaRadiansPerSecond, -Constants.Swerve.MAX_ANGULAR_SPEED.getRadians(), Constants.Swerve.MAX_ANGULAR_SPEED.getRadians());
-
-    SmartDashboard.putNumber("max", Constants.Swerve.MAX_ANGULAR_SPEED.getDegrees());
+    omegaRadiansPerSecond =
+        MathUtil.clamp(
+            omegaRadiansPerSecond,
+            -Constants.Swerve.MAX_ANGULAR_SPEED.getRadians(),
+            Constants.Swerve.MAX_ANGULAR_SPEED.getRadians());
 
     ChassisSpeeds chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            velocity.getX(), velocity.getY(), omegaRadiansPerSecond, Odometry.getInstance().getYaw());
+            velocity.getX(),
+            velocity.getY(),
+            omegaRadiansPerSecond,
+            Odometry.getInstance().getYaw());
 
     SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 

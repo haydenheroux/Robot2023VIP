@@ -30,7 +30,7 @@ public class RobotContainer {
   private final Claw claw;
   private final SideIntake sideIntake;
   private final Swerve swerve;
-  private final Odometry odometry; 
+  private final Odometry odometry;
 
   // OI objects
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -38,7 +38,7 @@ public class RobotContainer {
   private final CommandXboxController pit = new CommandXboxController(5);
 
   // Autonomous routine chooser
-  private final SendableChooser<PathPlannerTrajectory> autoChooser =
+  private final SendableChooser<PathPlannerTrajectory> pathChooser =
       new SendableChooser<PathPlannerTrajectory>();
 
   public RobotContainer() {
@@ -48,7 +48,7 @@ public class RobotContainer {
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
-    odometry = Odometry.getInstance(); 
+    odometry = Odometry.getInstance();
 
     TelemetryManager.getInstance()
         .register(
@@ -71,10 +71,10 @@ public class RobotContainer {
 
   /** Configures the autonomous chooser with autonomous routines. */
   private void configureAutonomous() {
-    autoChooser.setDefaultOption("2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Auto.SPEEDS));
-    autoChooser.addOption("2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Auto.SPEEDS));
+    pathChooser.setDefaultOption("2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Auto.SPEEDS));
+    pathChooser.addOption("2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Auto.SPEEDS));
 
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData(pathChooser);
   }
 
   /** Configures bindings for driver and operator controllers. */
@@ -121,13 +121,13 @@ public class RobotContainer {
             () -> MathUtil.applyDeadband(-driver.getLeftX(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getRightY(), 0.1),
             () -> MathUtil.applyDeadband(-driver.getRightX(), 0.1),
-            () -> driver.leftTrigger().getAsBoolean()));
+            () -> driver.rightTrigger().getAsBoolean()));
   }
 
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}
 
   public Command getAutonomousCommand() {
-    return Auto.BUILDER.fullAuto(autoChooser.getSelected());
+    return Auto.BUILDER.fullAuto(pathChooser.getSelected());
   }
 }

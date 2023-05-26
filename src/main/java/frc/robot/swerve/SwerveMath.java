@@ -10,53 +10,31 @@ import frc.robot.Constants;
 
 public class SwerveMath {
 
+  /**
+   * Calculates the theoretical maximum angular speed achievable by the swerve drive.
+   * @param maxSpeedMetersPerSecond the maximum linear speed achievable by the swerve drive.
+   * @param farthestModule the module farthest from the pivot point.
+   * @return the theoretical maximum angular speed.
+   */
   public static Rotation2d calculateTheoreticalMaxAngularSpeed(
-      double maxSpeed, ModuleConfiguration farthestModule) {
+      double maxSpeedMetersPerSecond, ModuleConfiguration farthestModule) {
     double angularRadius = farthestModule.location.getNorm();
-    return Rotation2d.fromRadians(maxSpeed / angularRadius);
+    return Rotation2d.fromRadians(maxSpeedMetersPerSecond / angularRadius);
   }
 
-  public static Rotation2d placeInAppropriateScope(
-      Rotation2d currentAngle, Rotation2d desiredAngle) {
-    double currentAngleDegrees = currentAngle.getDegrees();
-    double desiredAngleDegrees = desiredAngle.getDegrees();
-
-    double lowerBoundDegrees, upperBoundDegrees;
-
-    double lowerOffsetDegrees = currentAngleDegrees % 360;
-
-    if (lowerOffsetDegrees >= 0) {
-      lowerBoundDegrees = currentAngleDegrees - lowerOffsetDegrees;
-      upperBoundDegrees = currentAngleDegrees + (360 - lowerOffsetDegrees);
-    } else {
-      upperBoundDegrees = currentAngleDegrees - lowerOffsetDegrees;
-      lowerBoundDegrees = currentAngleDegrees - (360 + lowerOffsetDegrees);
-    }
-
-    while (desiredAngleDegrees < lowerBoundDegrees) {
-      desiredAngleDegrees += 360;
-    }
-
-    while (desiredAngleDegrees > upperBoundDegrees) {
-      desiredAngleDegrees -= 360;
-    }
-
-    if (desiredAngleDegrees - currentAngleDegrees > 180) {
-      desiredAngleDegrees -= 360;
-    } else if (desiredAngleDegrees - currentAngleDegrees < -180) {
-      desiredAngleDegrees += 360;
-    }
-
-    return Rotation2d.fromDegrees(desiredAngleDegrees);
-  }
-
+  /**
+   * Prevents the change in angle of a setpoint at low speeds.
+   * @param setpoint the setpoint.
+   * @param previousAngle the angle of the previous setpoint.
+   * @return the mutated setpoint.
+   */
   public static SwerveModuleState dejitter(
-      SwerveModuleState state, Rotation2d previousAngle, double minimumSpeed) {
-    if (Math.abs(state.speedMetersPerSecond) > minimumSpeed) {
-      return state;
+      SwerveModuleState setpoint, Rotation2d previousAngle) {
+    if (Math.abs(setpoint.speedMetersPerSecond) < Constants.Swerve.DEJITTER_SPEED) {
+      setpoint.angle = previousAngle;
     }
 
-    return new SwerveModuleState(state.speedMetersPerSecond, previousAngle);
+    return setpoint;
   }
 
   private static Twist2d velocityPoseLog(Pose2d velocity) {
