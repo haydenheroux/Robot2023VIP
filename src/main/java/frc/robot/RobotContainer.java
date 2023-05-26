@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.Constants.Ports;
+import frc.robot.Constants.Arm.Positions;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
+import frc.robot.auto.Auto;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.odometry.Odometry;
@@ -24,7 +26,6 @@ import frc.robot.swerve.Swerve;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-  // Subsystems
   private final Arm arm;
   private final Compressor compressor;
   private final Claw claw;
@@ -32,17 +33,14 @@ public class RobotContainer {
   private final Swerve swerve;
   private final Odometry odometry;
 
-  // OI objects
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
   private final CommandXboxController pit = new CommandXboxController(5);
 
-  // Autonomous routine chooser
   private final SendableChooser<PathPlannerTrajectory> pathChooser =
       new SendableChooser<PathPlannerTrajectory>();
 
   public RobotContainer() {
-    // Initialize subsystems
     arm = Arm.getInstance();
     compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
     claw = Claw.getInstance();
@@ -53,7 +51,6 @@ public class RobotContainer {
     TelemetryManager.getInstance()
         .register(
             arm,
-            // compressor,
             claw,
             sideIntake,
             swerve,
@@ -90,10 +87,10 @@ public class RobotContainer {
     shouldExtend.whileTrue(arm.manualExtend(extensionAxis));
     shouldRotate.whileTrue(arm.manualRotate(rotationAxis));
 
-    operator.a().whileTrue(arm.toGoal(Constants.Arm.Positions.FLOOR));
-    operator.b().whileTrue(arm.toGoal(Constants.Arm.Positions.MIDDLE_ROW));
-    operator.x().whileTrue(arm.toGoal(Constants.Arm.Positions.STOW));
-    operator.y().whileTrue(arm.toGoal(Constants.Arm.Positions.TOP_ROW));
+    operator.a().whileTrue(arm.toGoal(Positions.FLOOR));
+    operator.b().whileTrue(arm.toGoal(Positions.MIDDLE_ROW));
+    operator.x().whileTrue(arm.toGoal(Positions.STOW));
+    operator.y().whileTrue(arm.toGoal(Positions.TOP_ROW));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
@@ -108,8 +105,8 @@ public class RobotContainer {
 
     pit.a().whileTrue(arm.characterize(Selector.kPivot));
     pit.b().whileTrue(arm.characterize(Selector.kTelescoping));
-    pit.x().whileTrue(arm.toGoal(Constants.Arm.Positions.STOW));
-    pit.y().whileTrue(arm.toGoal(Constants.Arm.Positions.SAFE));
+    pit.x().whileTrue(arm.toGoal(Positions.STOW));
+    pit.y().whileTrue(arm.toGoal(Positions.SAFE));
   }
 
   /** Configures default commands for each subsystem. */
@@ -127,6 +124,10 @@ public class RobotContainer {
   /** Configures triggers for arbitrary events. */
   private void configureTriggers() {}
 
+  /**
+   * Gets the command to run during autonomous. 
+   * @return the command to run during autonomous.
+   */
   public Command getAutonomousCommand() {
     return Auto.BUILDER.fullAuto(pathChooser.getSelected());
   }

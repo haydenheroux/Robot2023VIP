@@ -276,7 +276,7 @@ public class Constants {
         new ModuleConfiguration(true, true).withName("North West");
 
     static {
-      NORTH_WEST.azimuthOffsetRotations = Units.degreesToRotations(293.2);
+      NORTH_WEST.azimuthOffsetRotations = Rotation2d.fromDegrees(293.2).unaryMinus().getRotations();
     }
 
     /** Configuration for the north east swerve module. */
@@ -284,7 +284,8 @@ public class Constants {
         new ModuleConfiguration(true, false).withName("North East");
 
     static {
-      NORTH_EAST.azimuthOffsetRotations = Units.degreesToRotations(287.84);
+      NORTH_EAST.azimuthOffsetRotations =
+          Rotation2d.fromDegrees(287.84).unaryMinus().getRotations();
     }
 
     /** Configuration for the south east swerve module. */
@@ -292,7 +293,8 @@ public class Constants {
         new ModuleConfiguration(false, false).withName("South East");
 
     static {
-      SOUTH_EAST.azimuthOffsetRotations = Units.degreesToRotations(345.05);
+      SOUTH_EAST.azimuthOffsetRotations =
+          Rotation2d.fromDegrees(345.05).unaryMinus().getRotations();
     }
 
     /** Configuration for the south west swerve module. */
@@ -300,7 +302,8 @@ public class Constants {
         new ModuleConfiguration(false, true).withName("South West");
 
     static {
-      SOUTH_WEST.azimuthOffsetRotations = Units.degreesToRotations(192.91);
+      SOUTH_WEST.azimuthOffsetRotations =
+          Rotation2d.fromDegrees(192.91).unaryMinus().getRotations();
     }
 
     public static final SwerveDriveKinematics KINEMATICS =
@@ -318,7 +321,7 @@ public class Constants {
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, NORTH_WEST).times(0.5);
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.get(true, true)).times(0.5);
 
     public static final Pigeon2Configuration GYRO_CONFIG = new Pigeon2Configuration();
 
@@ -346,22 +349,19 @@ public class Constants {
       ANGLE_CONFIG.Feedback.SensorToMechanismRatio = (double) (150 / 7);
     }
 
-    /** Drive motor constants. */
-    public static class Drive {
-      public static final TalonFXConfiguration CONFIG = new TalonFXConfiguration();
+    public static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
 
-      static {
-        CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    static {
+      DRIVE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        CONFIG.Slot0.kP = .00495964340175953;
+      DRIVE_CONFIG.Slot0.kP = .00495964340175953;
 
-        CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
-        CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+      DRIVE_CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
+      DRIVE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-        CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
+      DRIVE_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
 
-        CONFIG.Feedback.SensorToMechanismRatio = 6.75;
-      }
+      DRIVE_CONFIG.Feedback.SensorToMechanismRatio = 6.75;
     }
 
     public static class Theta {

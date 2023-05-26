@@ -15,9 +15,12 @@ import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 
 /**
- * Controls a swerve module. 
- * 
- * Each swerve module has a motor that controls the angle of the wheel, a motor that drives the wheel, and an encoder that tracks the position of the wheel. When the module is initialized, the position of the angle motor will be set to the position of the wheel, and the position of the drive motor will be set to zero.
+ * Controls a swerve module.
+ *
+ * <p>Each swerve module has a motor that controls the angle of the wheel, a motor that drives the
+ * wheel, and an encoder that tracks the position of the wheel. When the module is initialized, the
+ * position of the angle motor will be set to the position of the wheel, and the position of the
+ * drive motor will be set to zero.
  */
 public class Module implements TelemetryOutputter {
 

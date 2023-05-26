@@ -1,10 +1,12 @@
-package frc.robot;
+package frc.robot.auto;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
+import frc.robot.Constants.Arm.Positions;
 import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 import frc.robot.odometry.Odometry;
@@ -41,19 +43,19 @@ public class Auto {
           swerve);
 
   public static Command toFloor() {
-    return arm.toGoal(Constants.Arm.Positions.FLOOR);
+    return arm.toGoal(Positions.FLOOR);
   }
 
   public static Command toStow() {
-    return arm.toGoal(Constants.Arm.Positions.STOW);
+    return arm.toGoal(Positions.STOW);
   }
 
   public static Command toIntermediate() {
-    return arm.toGoal(Constants.Arm.Positions.STOW.withAngle(Constants.Arm.Positions.TOP_ROW));
+    return arm.toGoal(Positions.STOW.withAngle(Positions.TOP_ROW));
   }
 
   public static Command toTop() {
-    return arm.toGoal(Constants.Arm.Positions.TOP_ROW);
+    return arm.toGoal(Positions.TOP_ROW);
   }
 
   public static Command accept() {

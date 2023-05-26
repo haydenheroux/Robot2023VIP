@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -9,17 +10,21 @@ import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Physical;
-import frc.robot.Constants.Swerve.Drive;
+import frc.robot.Constants.Swerve;
 
 public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   private final TalonFX motor;
   private final SimpleMotorFeedforward feedforward;
 
+  private final StatusSignal<Double> position, velocity;
+
   private final VelocityVoltage velocityController;
 
   public DriveMotorIOTalonFX(int id, String canbus) {
     motor = new TalonFX(id, canbus);
+    position = motor.getPosition();
+    velocity = motor.getVelocity();
 
     double kv = Constants.NOMINAL_VOLTAGE / Constants.Swerve.MAX_SPEED;
     double ka = Constants.NOMINAL_VOLTAGE / Constants.Swerve.MAX_ACCELERATION;
@@ -31,19 +36,18 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void configure() {
+    ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, motor);
 
-    ConfigurationApplier.apply(Drive.CONFIG, motor);
-
-    motor.getPosition().setUpdateFrequency(100);
-    motor.getVelocity().setUpdateFrequency(100);
+    position.setUpdateFrequency(100);
+    velocity.setUpdateFrequency(100);
   }
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
     values.positionMeters =
-        Conversions.General.toMeters(motor.getPosition().getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(position.getValue(), Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
-        Conversions.General.toMeters(motor.getVelocity().getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
   }
 
   @Override

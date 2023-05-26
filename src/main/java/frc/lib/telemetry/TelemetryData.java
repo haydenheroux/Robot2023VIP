@@ -6,10 +6,10 @@ public class TelemetryData {
 
   /**
    * Gets an array of four swerve module states as a double array.
-   * 
+   *
    * @see SwerveModuleState
-   * @see <a href="https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/tabs/SWERVE.md#states"></a>
-   * 
+   * @see <a
+   *     href="https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/tabs/SWERVE.md#states"></a>
    * @param states
    * @return a double array representing four swerve module states.
    */
