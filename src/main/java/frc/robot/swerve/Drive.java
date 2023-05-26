@@ -109,9 +109,7 @@ public class Drive extends CommandBase {
   private ChassisSpeeds getChassisVelocity(Translation2d velocity, double omega, boolean sniping) {
     if (sniping) {
       velocity = velocity.times(Constants.Swerve.SNIPER_SCALAR);
-      omega *= Constants.Swerve.SNIPER_SCALAR;
-
-      return new ChassisSpeeds(velocity.getX(), velocity.getY(), omega);
+      return new ChassisSpeeds(velocity.getX(), velocity.getY(), 0);
     }
 
     return ChassisSpeeds.fromFieldRelativeSpeeds(
