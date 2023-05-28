@@ -87,13 +87,18 @@ public class Module implements TelemetryOutputter {
    * Sets the module setpoint.
    *
    * @param setpoint
+   * @param force true if module should skip optimization.
    */
-  public void setSetpoint(SwerveModuleState setpoint) {
+  public void setSetpoint(SwerveModuleState setpoint, boolean force) {
     setpoint =
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
 
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
+
+    if (force == false) {
+      SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
+    }
 
     // TODO Check for wheel rotating greater than one rotation
     double angleSetpoint = setpoint.angle.getRotations();

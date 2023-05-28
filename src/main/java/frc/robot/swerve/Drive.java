@@ -60,7 +60,7 @@ public class Drive extends CommandBase {
 
     SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-    swerve.setSetpoints(setpoints);
+    swerve.setSetpoints(setpoints, false);
   }
 
   @Override

@@ -83,7 +83,7 @@ public class Auto {
 
           SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speed);
 
-          swerve.setSetpoints(setpoints);
+          swerve.setSetpoints(setpoints, false);
         },
         swerve);
   }
