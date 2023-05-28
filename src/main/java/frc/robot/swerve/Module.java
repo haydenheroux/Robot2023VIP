@@ -91,7 +91,11 @@ public class Module implements TelemetryOutputter {
   public void setSetpoint(SwerveModuleState setpoint) {
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
 
-    angleMotor.setSetpoint(setpoint.angle.getRotations());
+    // TODO Check for wheel rotating greater than one rotation
+    double angleSetpoint = setpoint.angle.getRotations();
+    double closestAngleSetpoint = SwerveMath.placeInClosest0To1Scope(angleSetpoint, angleMotorValues.angleRotations);
+
+    angleMotor.setSetpoint(closestAngleSetpoint);
   }
 
   /**

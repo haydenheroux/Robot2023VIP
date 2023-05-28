@@ -11,6 +11,36 @@ import frc.robot.Constants;
 public class SwerveMath {
 
   /**
+   * Gets the target angle placed in the angle range of the reference angle.
+   * @param target target angle, in rotations.
+   * @param reference reference angle, in rotations.
+   * @return the target angle placed in the angle range of the reference angle.
+   */
+  public static double placeInClosest0To1Scope(double target, double reference) {
+    double reference0, reference1;
+    double offset = reference % 1;
+
+    if (offset >= 0) {
+      reference0 = reference - offset;
+      reference1 = reference + (1 - offset);
+    } else {
+      reference1 = reference - offset;
+      reference0 = reference - (1 + offset);
+    }
+
+    while (target++ < reference0) {}
+    while (target-- > reference1) {}
+
+    if (target - reference > 0.5) {
+      target--;
+    } else if (target - reference < -0.5) {
+      target++;
+    }
+
+    return target;
+  }
+
+  /**
    * Calculates the theoretical maximum angular speed achievable by the swerve drive.
    *
    * @param maxSpeedMetersPerSecond the maximum linear speed achievable by the swerve drive.
