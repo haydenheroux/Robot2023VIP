@@ -69,9 +69,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     gyro.configure();
 
     field = new Field2d();
-
-    // TODO
-    setYaw(Rotation2d.fromDegrees(180));
   }
 
   public static Odometry getInstance() {
@@ -85,7 +82,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     gyro.updateValues(gyroValues);
 
-    poseEstimator.update(getYaw(), ArmPosition.get());
+    poseEstimator.update(getGyroYaw(), ArmPosition.get());
 
     field.setRobotPose(getPose());
   }
@@ -99,9 +96,9 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
     rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
     rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
-    rotation.addNumber("Yaw (deg)", () -> getYaw().getDegrees());
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
-    rotation.addNumber("Pose Yaw (deg)", () -> getPose().getRotation().getDegrees());
+    // FIXME Gyro yaw and pose yaw are 180deg out of phase 
+    rotation.addNumber("Gyro Yaw (deg)", () -> getGyroYaw().getDegrees());
+    rotation.addNumber("Pose Yaw (deg)", () -> getPoseYaw().getDegrees());
 
     ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
     position.addNumber("X (m)", () -> getPose().getX());
@@ -140,7 +137,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param pose tne position of the robot on the field.
    */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), ArmPosition.get(), pose);
+    poseEstimator.resetPosition(getGyroYaw(), ArmPosition.get(), pose);
   }
 
   /**
@@ -179,13 +176,23 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public Rotation2d getPitch() {
     return Rotation2d.fromRotations(gyroValues.pitchAngleRotations);
   }
+
   /**
    * Gets the angle of the robot relative to the robot Z axis.
    *
    * @return the angle of the robot relative to the robot Z axis.
    */
-  public Rotation2d getYaw() {
+  public Rotation2d getGyroYaw() {
     return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
+  }
+
+  /**
+   * Gets the angle of the robot relative to the robot Z axis.
+   *
+   * @return the angle of the robot relative to the robot Z axis.
+   */
+  public Rotation2d getPoseYaw() {
+    return getPose().getRotation();
   }
 
   /**
@@ -196,12 +203,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param yaw the angle of the robot relative to the robot Z axis.
    */
   public void setYaw(Rotation2d yaw) {
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
-    // FIXME Test by exiting autonomous and using field-oriented driving
-    System.out.printf("Yaw set to: %f (deg)", yaw.getDegrees());
-
-    gyro.setYawAngle(yaw.getRotations());
-
     setPose(new Pose2d(getPose().getTranslation(), yaw));
   }
 
@@ -226,7 +227,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @return the velocity of the robot in the field reference frame.
    */
   private Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
-    final Rotation2d yaw = getYaw();
+    final Rotation2d yaw = getGyroYaw();
 
     // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
     double vxMetersPerSecond =

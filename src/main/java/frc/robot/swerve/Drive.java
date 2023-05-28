@@ -87,7 +87,7 @@ public class Drive extends CommandBase {
     }
 
     if (heading.getNorm() > 0.7) {
-      double yawRadians = Odometry.getInstance().getYaw().getRadians();
+      double yawRadians = Odometry.getInstance().getGyroYaw().getRadians();
       double headingRadians = heading.getAngle().getRadians();
 
       double omega = thetaController.calculate(yawRadians, headingRadians);
@@ -113,6 +113,6 @@ public class Drive extends CommandBase {
     }
 
     return ChassisSpeeds.fromFieldRelativeSpeeds(
-        velocity.getX(), velocity.getY(), omega, Odometry.getInstance().getYaw());
+        velocity.getX(), velocity.getY(), omega, Odometry.getInstance().getPoseYaw());
   }
 }
