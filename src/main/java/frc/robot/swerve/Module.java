@@ -41,7 +41,7 @@ public class Module implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       angleMotor = new AngleMotorIOSim();
       driveMotor = new DriveMotorIOSim();
-      azimuthEncoder = new AzimuthEncoderIOSim(config.azimuthOffsetRotations);
+      azimuthEncoder = new AzimuthEncoderIOSim();
     } else {
       angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.bus);
       driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);

@@ -2,17 +2,13 @@ package frc.robot.swerve;
 
 public class AzimuthEncoderIOSim implements AzimuthEncoderIO {
 
-  public double absoluteAngleRotations;
-
-  public AzimuthEncoderIOSim(double absoluteAngleRotations) {
-    this.absoluteAngleRotations = absoluteAngleRotations;
-  }
+  public AzimuthEncoderIOSim() {}
 
   @Override
   public void configure() {}
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    values.angleRotations = absoluteAngleRotations;
+    values.angleRotations = 0;
   }
 }
