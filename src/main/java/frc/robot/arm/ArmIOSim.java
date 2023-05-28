@@ -17,10 +17,10 @@ import frc.robot.Constants.Physical;
 public class ArmIOSim implements ArmIO {
 
   private double telescopingLengthMeters;
-  private boolean telescopingBrakeIsActive;
+  private boolean telescopingBrakeIsActive = true;
 
   private double pivotAngleRotations;
-  private boolean pivotBrakeIsActive;
+  private boolean pivotBrakeIsActive = true;
 
   private final double kMetersPerVolt = 0.0025;
   private final double kMetersPerGravity = -0.005;
