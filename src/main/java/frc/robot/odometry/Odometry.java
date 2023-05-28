@@ -96,7 +96,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
     rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
     rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
-    // FIXME Gyro yaw and pose yaw are 180deg out of phase 
+    // FIXME Gyro yaw and pose yaw are 180deg out of phase
     rotation.addNumber("Gyro Yaw (deg)", () -> getGyroYaw().getDegrees());
     rotation.addNumber("Pose Yaw (deg)", () -> getPoseYaw().getDegrees());
 

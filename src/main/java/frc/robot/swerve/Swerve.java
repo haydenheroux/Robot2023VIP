@@ -96,45 +96,47 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     return positions;
   }
-  
+
   public Command orientModules(Rotation2d[] orientations) {
-    return this.runOnce(() -> {
-      setSetpoints(
-        new SwerveModuleState[]{
-          new SwerveModuleState(0.0, orientations[0]),
-          new SwerveModuleState(0.0, orientations[1]),
-          new SwerveModuleState(0.0, orientations[2]),
-          new SwerveModuleState(0.0, orientations[3])
-        }
-      );
-    });
+    return this.runOnce(
+        () -> {
+          setSetpoints(
+              new SwerveModuleState[] {
+                new SwerveModuleState(0.0, orientations[0]),
+                new SwerveModuleState(0.0, orientations[1]),
+                new SwerveModuleState(0.0, orientations[2]),
+                new SwerveModuleState(0.0, orientations[3])
+              });
+        });
   }
 
   public Command checkForwards() {
-    return orientModules(new Rotation2d[]{
-      Rotation2d.fromDegrees(0),
-      Rotation2d.fromDegrees(0),
-      Rotation2d.fromDegrees(0),
-      Rotation2d.fromDegrees(0),
-    });
+    return orientModules(
+        new Rotation2d[] {
+          Rotation2d.fromDegrees(0),
+          Rotation2d.fromDegrees(0),
+          Rotation2d.fromDegrees(0),
+          Rotation2d.fromDegrees(0),
+        });
   }
 
   public Command checkSideways() {
-    return orientModules(new Rotation2d[]{
-      Rotation2d.fromDegrees(90),
-      Rotation2d.fromDegrees(90),
-      Rotation2d.fromDegrees(90),
-      Rotation2d.fromDegrees(90),
-    });
+    return orientModules(
+        new Rotation2d[] {
+          Rotation2d.fromDegrees(90),
+          Rotation2d.fromDegrees(90),
+          Rotation2d.fromDegrees(90),
+          Rotation2d.fromDegrees(90),
+        });
   }
 
   public Command cross() {
-    return orientModules(new Rotation2d[]{
-      Rotation2d.fromDegrees(45),
-      Rotation2d.fromDegrees(-45),
-      Rotation2d.fromDegrees(45),
-      Rotation2d.fromDegrees(-45),
-    });
+    return orientModules(
+        new Rotation2d[] {
+          Rotation2d.fromDegrees(45),
+          Rotation2d.fromDegrees(-45),
+          Rotation2d.fromDegrees(45),
+          Rotation2d.fromDegrees(-45),
+        });
   }
-
 }
