@@ -194,6 +194,10 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param yaw the angle of the robot relative to the robot Z axis.
    */
   public void setYaw(Rotation2d yaw) {
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    // FIXME Test by exiting autonomous and using field-oriented driving
+    System.out.printf("Yaw set to: %f (deg)", yaw.getDegrees());
+
     gyro.setYawAngle(yaw.getRotations());
 
     setPose(new Pose2d(getPose().getTranslation(), yaw));

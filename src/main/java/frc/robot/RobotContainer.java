@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -70,6 +71,9 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    driver.y().onTrue(Commands.runOnce(() -> odometry.setYaw(Rotation2d.fromDegrees(0))));
+
     DoubleSupplier extensionAxis =
         () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.1);
     DoubleSupplier rotationAxis =
