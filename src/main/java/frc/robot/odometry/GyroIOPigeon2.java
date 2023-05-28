@@ -17,8 +17,6 @@ public class GyroIOPigeon2 implements GyroIO {
   public void configure() {
     ConfigurationApplier.apply(Swerve.GYRO_CONFIG, gyro);
 
-    gyro.setYaw(0);
-
     gyro.getRoll().setUpdateFrequency(100);
     gyro.getPitch().setUpdateFrequency(100);
     gyro.getYaw().setUpdateFrequency(100);
