@@ -115,7 +115,7 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setTelescopingDisabled() {
-    setTelescopingVoltage(0.0);
+    telescopingVoltage = 0;
   }
 
   @Override
@@ -146,7 +146,6 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void setPivotDisabled() {
-    // FIXME Applies feedforward
-    setPivotVoltage(0.0);
+    pivotVoltage = 0;
   }
 }

@@ -20,7 +20,8 @@ public class ArmPosition extends Translation2d {
 
   public static final ArmPosition SCORE_STANDBY = STOW.withAngle(Rotation2d.fromDegrees(30));
 
-  public static final ArmPosition SCORE_GROUND = new ArmPosition(Units.feetToMeters(2.5), Pivot.MIN_ANGLE);
+  public static final ArmPosition SCORE_GROUND =
+      new ArmPosition(Units.feetToMeters(2.5), Pivot.MIN_ANGLE);
   public static final ArmPosition SCORE_L2 = new ArmPosition(1.15, Rotation2d.fromDegrees(14));
   public static final ArmPosition SCORE_L3 = new ArmPosition(1.7, Rotation2d.fromDegrees(25));
 

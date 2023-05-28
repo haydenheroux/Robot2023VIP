@@ -74,7 +74,6 @@ public class RobotContainer {
     driver.a().whileTrue(swerve.checkForwards().repeatedly());
     driver.b().whileTrue(swerve.checkSideways().repeatedly());
     driver.x().whileTrue(swerve.cross().repeatedly());
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
     driver.y().onTrue(Commands.runOnce(() -> odometry.setYaw(Rotation2d.fromDegrees(0))));
 
     DoubleSupplier extensionAxis =
