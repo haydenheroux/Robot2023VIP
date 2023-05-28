@@ -100,6 +100,8 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
     rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
     rotation.addNumber("Yaw (deg)", () -> getYaw().getDegrees());
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    rotation.addNumber("Pose Yaw (deg)", () -> getPose().getRotation().getDegrees());
 
     ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
     position.addNumber("X (m)", () -> getPose().getX());
