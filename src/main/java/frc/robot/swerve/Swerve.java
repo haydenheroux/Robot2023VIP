@@ -1,10 +1,12 @@
 package frc.robot.swerve;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryData;
 import frc.lib.telemetry.TelemetryOutputter;
@@ -86,12 +88,53 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
    * @return the position relative to the initial position.
    */
   public SwerveModulePosition[] getArmPosition() {
-    SwerveModulePosition[] ArmPosition = new SwerveModulePosition[4];
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
     for (int i = 0; i < 4; i++) {
-      ArmPosition[i] = modules[i].getPosition();
+      positions[i] = modules[i].getPosition();
     }
 
-    return ArmPosition;
+    return positions;
   }
+  
+  public Command orientModules(Rotation2d[] orientations) {
+    return this.runOnce(() -> {
+      setSetpoints(
+        new SwerveModuleState[]{
+          new SwerveModuleState(0.0, orientations[0]),
+          new SwerveModuleState(0.0, orientations[1]),
+          new SwerveModuleState(0.0, orientations[2]),
+          new SwerveModuleState(0.0, orientations[3])
+        }
+      );
+    });
+  }
+
+  public Command checkForwards() {
+    return orientModules(new Rotation2d[]{
+      Rotation2d.fromDegrees(0),
+      Rotation2d.fromDegrees(0),
+      Rotation2d.fromDegrees(0),
+      Rotation2d.fromDegrees(0),
+    });
+  }
+
+  public Command checkSideways() {
+    return orientModules(new Rotation2d[]{
+      Rotation2d.fromDegrees(90),
+      Rotation2d.fromDegrees(90),
+      Rotation2d.fromDegrees(90),
+      Rotation2d.fromDegrees(90),
+    });
+  }
+
+  public Command cross() {
+    return orientModules(new Rotation2d[]{
+      Rotation2d.fromDegrees(45),
+      Rotation2d.fromDegrees(-45),
+      Rotation2d.fromDegrees(45),
+      Rotation2d.fromDegrees(-45),
+    });
+  }
+
 }
