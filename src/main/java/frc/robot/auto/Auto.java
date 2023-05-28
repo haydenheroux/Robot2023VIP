@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Positions;
+import frc.robot.Constants.Swerve.Theta;
 import frc.robot.arm.Arm;
 import frc.robot.intake.Claw;
 import frc.robot.odometry.Odometry;
@@ -35,8 +36,8 @@ public class Auto {
           odometry::getPose,
           odometry::setPose,
           Constants.Swerve.KINEMATICS,
-          new PIDConstants(5.0, 0, 0),
-          new PIDConstants(50, 0, 0),
+          new PIDConstants(1.0, 0, 0),
+          new PIDConstants(Theta.KP, 0, 0),
           swerve::setSetpoints,
           Auto.EVENT_MAP,
           true,
