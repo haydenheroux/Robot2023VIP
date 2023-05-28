@@ -12,6 +12,7 @@ public class SwerveMath {
 
   /**
    * Gets the target angle placed in the angle range of the reference angle.
+   *
    * @param target target angle, in rotations.
    * @param reference reference angle, in rotations.
    * @return the target angle placed in the angle range of the reference angle.
