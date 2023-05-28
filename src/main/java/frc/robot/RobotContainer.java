@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
-import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Ports;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
+import frc.robot.arm.ArmPosition;
 import frc.robot.auto.Auto;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
@@ -71,7 +71,7 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
     driver.y().onTrue(Commands.runOnce(() -> odometry.setYaw(Rotation2d.fromDegrees(0))));
 
     DoubleSupplier extensionAxis =
@@ -85,10 +85,10 @@ public class RobotContainer {
     shouldExtend.whileTrue(arm.manualExtend(extensionAxis));
     shouldRotate.whileTrue(arm.manualRotate(rotationAxis));
 
-    operator.a().whileTrue(arm.toGoal(Positions.FLOOR));
-    operator.b().whileTrue(arm.toGoal(Positions.MIDDLE_ROW));
-    operator.x().whileTrue(arm.toGoal(Positions.STOW));
-    operator.y().whileTrue(arm.toGoal(Positions.TOP_ROW));
+    operator.a().whileTrue(arm.toGoal(ArmPosition.SCORE_GROUND));
+    operator.b().whileTrue(arm.toGoal(ArmPosition.SCORE_L2));
+    operator.x().whileTrue(arm.toGoal(ArmPosition.STOW));
+    operator.y().whileTrue(arm.toGoal(ArmPosition.SCORE_L3));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
@@ -103,8 +103,8 @@ public class RobotContainer {
 
     pit.a().whileTrue(arm.characterize(Selector.kPivot));
     pit.b().whileTrue(arm.characterize(Selector.kTelescoping));
-    pit.x().whileTrue(arm.toGoal(Positions.STOW));
-    pit.y().whileTrue(arm.toGoal(Positions.SAFE));
+    pit.x().whileTrue(arm.toGoal(ArmPosition.STOW));
+    pit.y().whileTrue(arm.toGoal(ArmPosition.SCORE_STANDBY));
   }
 
   /** Configures default commands for each subsystem. */

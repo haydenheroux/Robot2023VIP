@@ -127,7 +127,7 @@ public class Constants {
       public static final double RATIO = 15.34;
 
       /** Minimum length of the arm. */
-      public static final double MIN_LENGTH = Positions.STOW.getLength();
+      public static final double MIN_LENGTH = ArmPosition.STOW.getLength();
       /**
        * Maximum length of the telescoping section. Note that this does NOT equal the maximum TOTAL
        * extension length.
@@ -181,30 +181,6 @@ public class Constants {
         /** Volts to be applied per rotation of angle error. */
         public static final double KP = 32.4;
       }
-    }
-
-    /** Arm positions. */
-    public static class Positions {
-      /**
-       * Position for safely stowing the arm. The arm is fully retracted and rotated as far up as
-       * possible.
-       */
-      public static final ArmPosition STOW =
-          ArmPosition.fromValues(0, Pivot.MAX_ANGLE.getRotations());
-      /**
-       * Position for safely extending the arm. The arm is rotated up enough such at any extension
-       * will not cause the arm to collide with the grid.
-       */
-      public static final ArmPosition SAFE =
-          ArmPosition.fromValues(0, Rotation2d.fromDegrees(30).getRotations());
-      /** Position for accepting floor game pieces and ejecting game pieces onto the floor. */
-      public static final ArmPosition FLOOR =
-          new ArmPosition(Units.feetToMeters(2.5), Pivot.MIN_ANGLE);
-      /** Position for ejecting game pieces onto the middle row. */
-      public static final ArmPosition MIDDLE_ROW =
-          new ArmPosition(1.15, Rotation2d.fromDegrees(14));
-      /** Position for ejecting game pieces onto the top row. */
-      public static final ArmPosition TOP_ROW = new ArmPosition(1.7, Rotation2d.fromDegrees(25));
     }
   }
 

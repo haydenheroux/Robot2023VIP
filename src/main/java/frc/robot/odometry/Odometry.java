@@ -43,7 +43,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   private final GyroIO gyro;
   private final GyroIOValues gyroValues = new GyroIOValues();
 
-  private final Supplier<SwerveModulePosition[]> positions;
+  private final Supplier<SwerveModulePosition[]> ArmPosition;
 
   private final Field2d field;
 
@@ -55,13 +55,13 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
 
-    positions = () -> Swerve.getInstance().getPositions();
+    ArmPosition = () -> Swerve.getInstance().getArmPosition();
 
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.Swerve.KINEMATICS,
             new Rotation2d(),
-            positions.get(),
+            ArmPosition.get(),
             new Pose2d(),
             stateStandardDeviations,
             visionStandardDeviations);
@@ -85,7 +85,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     gyro.updateValues(gyroValues);
 
-    poseEstimator.update(getYaw(), positions.get());
+    poseEstimator.update(getYaw(), ArmPosition.get());
 
     field.setRobotPose(getPose());
   }
@@ -100,7 +100,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
     rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
     rotation.addNumber("Yaw (deg)", () -> getYaw().getDegrees());
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
     rotation.addNumber("Pose Yaw (deg)", () -> getPose().getRotation().getDegrees());
 
     ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
@@ -140,7 +140,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param pose tne position of the robot on the field.
    */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), positions.get(), pose);
+    poseEstimator.resetPosition(getYaw(), ArmPosition.get(), pose);
   }
 
   /**
@@ -196,7 +196,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param yaw the angle of the robot relative to the robot Z axis.
    */
   public void setYaw(Rotation2d yaw) {
-    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving 
+    // FIXME There is a bug after leaving autonomous that messes up field-oriented driving
     // FIXME Test by exiting autonomous and using field-oriented driving
     System.out.printf("Yaw set to: %f (deg)", yaw.getDegrees());
 

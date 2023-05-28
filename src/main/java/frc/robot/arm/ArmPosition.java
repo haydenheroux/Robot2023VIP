@@ -2,6 +2,7 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Arm.Pivot;
 import frc.robot.Constants.Arm.Telescoping;
 import frc.robot.Constants.Physical;
@@ -11,6 +12,17 @@ import frc.robot.Constants.Physical;
  * end effector, relative to the shoulder of the arm.
  */
 public class ArmPosition extends Translation2d {
+
+  public static final ArmPosition STOW = ArmPosition.fromValues(0, Pivot.MAX_ANGLE.getRotations());
+
+  public static final ArmPosition SHELF_CONE = new ArmPosition(1.0, Rotation2d.fromDegrees(0));
+  public static final ArmPosition SHELF_CUBE = SHELF_CONE.withAngle(Rotation2d.fromDegrees(0));
+
+  public static final ArmPosition SCORE_STANDBY = STOW.withAngle(Rotation2d.fromDegrees(30));
+
+  public static final ArmPosition SCORE_GROUND = new ArmPosition(Units.feetToMeters(2.5), Pivot.MIN_ANGLE);
+  public static final ArmPosition SCORE_L2 = new ArmPosition(1.15, Rotation2d.fromDegrees(14));
+  public static final ArmPosition SCORE_L3 = new ArmPosition(1.7, Rotation2d.fromDegrees(25));
 
   /**
    * Constructs a new arm position.

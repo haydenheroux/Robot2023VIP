@@ -6,9 +6,9 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
-import frc.robot.Constants.Arm.Positions;
 import frc.robot.Constants.Swerve.Theta;
 import frc.robot.arm.Arm;
+import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.odometry.Odometry;
 import frc.robot.swerve.Swerve;
@@ -44,19 +44,19 @@ public class Auto {
           swerve);
 
   public static Command toFloor() {
-    return arm.toGoal(Positions.FLOOR);
+    return arm.toGoal(ArmPosition.SCORE_GROUND);
   }
 
   public static Command toStow() {
-    return arm.toGoal(Positions.STOW);
+    return arm.toGoal(ArmPosition.STOW);
   }
 
   public static Command toIntermediate() {
-    return arm.toGoal(Positions.STOW.withAngle(Positions.TOP_ROW));
+    return arm.toGoal(ArmPosition.STOW.withAngle(ArmPosition.SCORE_L3));
   }
 
   public static Command toTop() {
-    return arm.toGoal(Positions.TOP_ROW);
+    return arm.toGoal(ArmPosition.SCORE_L3);
   }
 
   public static Command accept() {

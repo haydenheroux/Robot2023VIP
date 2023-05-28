@@ -85,13 +85,13 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the position relative to the initial position.
    */
-  public SwerveModulePosition[] getPositions() {
-    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+  public SwerveModulePosition[] getArmPosition() {
+    SwerveModulePosition[] ArmPosition = new SwerveModulePosition[4];
 
     for (int i = 0; i < 4; i++) {
-      positions[i] = modules[i].getPosition();
+      ArmPosition[i] = modules[i].getPosition();
     }
 
-    return positions;
+    return ArmPosition;
   }
 }

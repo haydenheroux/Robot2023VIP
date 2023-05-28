@@ -29,7 +29,7 @@ public class ArmIOSim implements ArmIO {
       new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
 
   // FIXME Simulation assumes constant length
-  private final double fakeSimLength = Constants.Arm.Positions.STOW.getLength();
+  private final double fakeSimLength = ArmPosition.STOW.getLength();
   private final SingleJointedArmSim pivotSim =
       new SingleJointedArmSim(
           simMotor,

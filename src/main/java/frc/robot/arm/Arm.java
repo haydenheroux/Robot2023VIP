@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants.Arm.Positions;
 import frc.robot.Robot;
 import java.util.function.DoubleSupplier;
 
@@ -29,7 +28,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   private final ArmIO io;
   private final ArmIO.ArmIOValues values = new ArmIO.ArmIOValues();
 
-  private ArmPosition position = Positions.STOW;
+  private ArmPosition position = ArmPosition.STOW;
   private ArmPosition goal = position;
   private ArmPosition setpoint = goal;
 
@@ -43,7 +42,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
 
     io.configure();
 
-    setPosition(Positions.STOW);
+    setPosition(ArmPosition.STOW);
   }
 
   public static Arm getInstance() {

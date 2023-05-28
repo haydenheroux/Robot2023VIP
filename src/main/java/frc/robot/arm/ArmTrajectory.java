@@ -1,12 +1,12 @@
 package frc.robot.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.Arm.Positions;
 import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * A collection of arm positions that form a safe path between a start position and an end position.
+ * A collection of arm ArmPosition that form a safe path between a start position and an end
+ * position.
  */
 public class ArmTrajectory {
 
@@ -58,7 +58,7 @@ public class ArmTrajectory {
     if (start.isAboveHorizon()) return start;
     if (start.isBelowHorizon() && end.isBelowHorizon()) return start;
 
-    ArmPosition setpoint = start.withLength(Positions.SAFE);
+    ArmPosition setpoint = start.withLength(ArmPosition.SCORE_STANDBY);
 
     setpoints.add(setpoint);
     return setpoint;
@@ -74,9 +74,9 @@ public class ArmTrajectory {
    */
   private ArmPosition addSafeExtensionAngle(ArmPosition start, ArmPosition end) {
     boolean isExtending = start.getLength() < end.getLength();
-    if (start.isBelow(Positions.SAFE) && !isExtending) return start;
+    if (start.isBelow(ArmPosition.SCORE_STANDBY) && !isExtending) return start;
 
-    ArmPosition setpoint = start.withAngle(Positions.SAFE);
+    ArmPosition setpoint = start.withAngle(ArmPosition.SCORE_STANDBY);
 
     setpoints.add(setpoint);
     return setpoint;
@@ -92,20 +92,20 @@ public class ArmTrajectory {
   private ArmPosition addSafeIntermediateTrajectory(ArmPosition start, ArmPosition end) {
     if (directTrajectoryIsSafe(start, end)) return start;
 
-    setpoints.add(start.withAngle(Positions.SAFE));
+    setpoints.add(start.withAngle(ArmPosition.SCORE_STANDBY));
 
-    ArmPosition setpoint = start.withAngle(Positions.SAFE).withLength(end);
+    ArmPosition setpoint = start.withAngle(ArmPosition.SCORE_STANDBY).withLength(end);
     setpoints.add(setpoint);
 
     return setpoint;
   }
 
   /**
-   * Returns true if the direct trajectory between two positions will be safe.
+   * Returns true if the direct trajectory between two ArmPosition will be safe.
    *
    * @param start the start posiiton of the trajectory.
    * @param end the end position of the trajectory.
-   * @return true if the direct trajectory between two positions will be safe.
+   * @return true if the direct trajectory between two ArmPosition will be safe.
    */
   private boolean directTrajectoryIsSafe(ArmPosition start, ArmPosition end) {
     Rotation2d startAngle, endAngle;
