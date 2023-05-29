@@ -18,14 +18,10 @@ public class DriveMotorIOSim implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
-    double previousPositionMeters = positionMeters;
     positionMeters += velocityMetersPerSecond * Constants.LOOP_TIME;
-    double deltaPositionMeters = positionMeters - previousPositionMeters;
-
-    double calculatedVelocityMetersPerSecond = deltaPositionMeters / Constants.LOOP_TIME;
 
     values.positionMeters = positionMeters;
-    values.velocityMetersPerSecond = calculatedVelocityMetersPerSecond;
+    values.velocityMetersPerSecond = velocityMetersPerSecond;
   }
 
   @Override
