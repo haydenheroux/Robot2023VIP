@@ -209,13 +209,6 @@ public class Constants {
 
     /** Side intake subsystem constants. */
     public static class SideIntake {
-      /** Assumed angle of the side intake. Used for calculating speed variation based on angle. */
-      public static final Rotation2d MECHANISM_ANGLE = Rotation2d.fromDegrees(45);
-      /** Assumed angle for accepting game pieces using the side intake. */
-      public static final Rotation2d ACCEPT_ANGLE = Rotation2d.fromDegrees(60);
-      /** Assumed angle for ejecting game pieces using the side intake. */
-      public static final Rotation2d EJECT_ANGLE = Rotation2d.fromDegrees(30);
-
       /** Current draw thresholds for detecting game pieces. */
       public static class Thresholds {
         public static final double PERIOD = 0.25;
@@ -227,15 +220,10 @@ public class Constants {
 
       /** Voltages for each state. */
       public static class Voltages {
-        /**
-         * Scalar for controlling the voltage difference between bottom and top motors, depending on
-         * angle.
-         */
-        public static final double RELATIVE_BIAS = 1.0;
-        /** Base voltage for accepting game pieces. */
-        public static final double BASE_ACCEPTING = -6.0;
-        /** Base voltage for ejecting game pieces. */
-        public static final double BASE_EJECTING = 6.0;
+        /** Voltage for accepting game pieces. */
+        public static final double ACCEPTING = -6.0;
+        /** Voltage for ejecting game pieces. */
+        public static final double EJECTING = 6.0;
         /** Voltage for holding on to a game piece. */
         public static final double HOLDING = -1.0;
       }

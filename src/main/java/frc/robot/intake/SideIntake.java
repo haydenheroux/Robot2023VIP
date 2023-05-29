@@ -84,22 +84,6 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
         });
   }
 
-  private void doAccept() {
-    double bias = SideIntakeMath.getBias();
-    double bottomMotorVoltage = bias + Voltages.BASE_ACCEPTING;
-    double topMotorVoltage = -bias + Voltages.BASE_ACCEPTING;
-    io.setBottomMotorVoltage(bottomMotorVoltage);
-    io.setTopMotorVoltage(topMotorVoltage);
-  }
-
-  private void doEject() {
-    double bias = SideIntakeMath.getBias();
-    double bottomMotorVoltage = -bias + Voltages.BASE_EJECTING;
-    double topMotorVoltage = bias + Voltages.BASE_EJECTING;
-    io.setBottomMotorVoltage(bottomMotorVoltage);
-    io.setTopMotorVoltage(topMotorVoltage);
-  }
-
   @Override
   public void periodic() {
     io.updateValues(values);
@@ -116,14 +100,16 @@ public class SideIntake extends SubsystemBase implements TelemetryOutputter {
 
     switch (state) {
       case kAccepting:
-        doAccept();
+        io.setBottomMotorVoltage(Voltages.ACCEPTING);
+        io.setTopMotorVoltage(Voltages.ACCEPTING);
         break;
       case kDisabled:
         io.setBottomMotorDisabled();
         io.setTopMotorDisabled();
         break;
       case kEjecting:
-        doEject();
+        io.setBottomMotorVoltage(Voltages.EJECTING);
+        io.setTopMotorVoltage(Voltages.EJECTING);
         break;
       case kHolding:
         io.setBottomMotorVoltage(Voltages.HOLDING);
