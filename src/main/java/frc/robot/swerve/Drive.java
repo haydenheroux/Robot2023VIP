@@ -5,6 +5,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.Theta;
@@ -88,7 +90,12 @@ public class Drive extends CommandBase {
 
     if (heading.getNorm() > 0.7) {
       double yawRadians = Odometry.getInstance().getPoseYaw().getRadians();
+
       double headingRadians = heading.getAngle().getRadians();
+      SmartDashboard.putNumber("Requested Heading Target (deg)", Units.radiansToDegrees(headingRadians));
+
+      headingRadians = snapToNearest(headingRadians, Units.degreesToRadians(45));
+      SmartDashboard.putNumber("Nearest Heading Target (deg)", Units.radiansToDegrees(headingRadians));
 
       double omega = thetaController.calculate(yawRadians, headingRadians);
 
@@ -96,6 +103,11 @@ public class Drive extends CommandBase {
     }
 
     return 0.0;
+  }
+
+  private double snapToNearest(double n, double x) {
+    // https://stackoverflow.com/a/39876671
+    return Math.round(n / x) * x;
   }
 
   /**

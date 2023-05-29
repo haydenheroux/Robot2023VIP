@@ -3,13 +3,13 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
@@ -74,7 +74,7 @@ public class RobotContainer {
     driver.a().whileTrue(swerve.checkForwards().repeatedly());
     driver.b().whileTrue(swerve.checkSideways().repeatedly());
     driver.x().whileTrue(swerve.cross().repeatedly());
-    driver.y().onTrue(Commands.runOnce(() -> odometry.setYaw(Rotation2d.fromDegrees(0))));
+    driver.y().whileTrue(new PrintCommand("TODO"));
 
     DoubleSupplier extensionAxis =
         () -> MathUtil.applyDeadband(-operator.getRawAxis(XboxController.Axis.kRightY.value), 0.1);
