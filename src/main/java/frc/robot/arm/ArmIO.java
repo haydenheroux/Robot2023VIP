@@ -4,10 +4,12 @@ public interface ArmIO {
   public static class ArmIOValues {
     public boolean telescopingBrakeIsActive = true;
     public double telescopingLengthMeters = 0.0;
+    public double telescopingVelocityMetersPerSecond = 0.0;
     public double telescopingVoltage = 0.0;
 
     public boolean pivotBrakeIsActive = true;
     public double pivotAngleRotations = 0.0;
+    public double pivotOmegaRotationsPerSecond = 0.0;
     public double pivotVoltage = 0.0;
   }
 

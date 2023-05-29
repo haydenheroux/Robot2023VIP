@@ -202,11 +202,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param setpoint
    */
-  public void setSetpoint(ArmPosition setpoint) {
-    this.setpoint = setpoint;
+  public void setSetpoint(double sensorLengthMeters, double sensorAngleRotations) {
+    this.setpoint = ArmPosition.fromValues(sensorLengthMeters, sensorAngleRotations);
 
-    io.setTelescopingSetpoint(setpoint.getSensorLength());
-    io.setPivotSetpoint(setpoint.getSensorAngle());
+    io.setTelescopingSetpoint(sensorLengthMeters);
+    io.setPivotSetpoint(sensorAngleRotations);
   }
 
   @Override
@@ -244,8 +244,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         tab.getLayout("Values", BuiltInLayouts.kList).withPosition(1, 0).withSize(2, 4);
 
     valuesLayout.addNumber("Telescoping Length (m)", () -> values.telescopingLengthMeters);
+    valuesLayout.addNumber("Telescoping Velocity (mps)", () -> values.telescopingVelocityMetersPerSecond);
     valuesLayout.addNumber(
         "Pivot Angle (deg)", () -> Units.rotationsToDegrees(values.pivotAngleRotations));
+    valuesLayout.addNumber(
+        "Pivot Velocity (dps)", () -> Units.rotationsToDegrees(values.pivotOmegaRotationsPerSecond));
     valuesLayout.addBoolean("Telescoping Brake Is Active?", () -> values.telescopingBrakeIsActive);
     valuesLayout.addBoolean("Pivot Brake Is Active?", () -> values.pivotBrakeIsActive);
     valuesLayout.addNumber("Telescoping Voltage (V)", () -> values.telescopingVoltage);

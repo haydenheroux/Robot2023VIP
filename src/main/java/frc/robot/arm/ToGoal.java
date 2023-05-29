@@ -33,7 +33,7 @@ public class ToGoal extends CommandBase {
       setpoint = trajectory.next();
     }
 
-    arm.setSetpoint(setpoint);
+    arm.setSetpoint(setpoint.getSensorLength(), setpoint.getSensorAngle());
   }
 
   @Override

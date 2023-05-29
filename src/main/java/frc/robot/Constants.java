@@ -325,7 +325,7 @@ public class Constants {
 
       ANGLE_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
 
-      ANGLE_CONFIG.Feedback.SensorToMechanismRatio = (double) (150 / 7);
+      ANGLE_CONFIG.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
     }
 
     public static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();

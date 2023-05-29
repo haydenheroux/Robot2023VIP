@@ -54,6 +54,8 @@ public class ArmIOSim implements ArmIO {
 
   @Override
   public void updateValues(ArmIOValues values) {
+    double lengthMeters = telescopingLengthMeters;
+
     if (!telescopingBrakeIsActive) {
       telescopingLengthMeters += telescopingVoltage * kMetersPerVolt;
 
@@ -70,7 +72,10 @@ public class ArmIOSim implements ArmIO {
 
     values.telescopingBrakeIsActive = telescopingBrakeIsActive;
     values.telescopingLengthMeters = telescopingLengthMeters;
+    values.telescopingVelocityMetersPerSecond = (telescopingLengthMeters - lengthMeters) / Constants.LOOP_TIME;
     values.telescopingVoltage = telescopingVoltage;
+
+    double angleRotations = pivotAngleRotations;
 
     if (!pivotBrakeIsActive) {
       pivotSim.setInput(
@@ -84,6 +89,7 @@ public class ArmIOSim implements ArmIO {
     }
 
     values.pivotAngleRotations = pivotAngleRotations;
+    values.pivotOmegaRotationsPerSecond = (pivotAngleRotations - angleRotations) / Constants.LOOP_TIME;
     values.pivotBrakeIsActive = pivotBrakeIsActive;
     values.pivotVoltage = pivotVoltage;
   }
