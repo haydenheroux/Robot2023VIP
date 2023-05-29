@@ -70,10 +70,11 @@ public class Module implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
     ShuffleboardLayout layout = tab.getLayout(this.config.name, BuiltInLayouts.kList);
-    layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
     layout.addNumber(
         "Absolute Angle (deg)",
         () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
+    layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
+    layout.addNumber("Omega (dps)", () -> Units.rotationsToDegrees(angleMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
   }
 

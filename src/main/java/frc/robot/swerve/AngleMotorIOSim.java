@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 /**
@@ -11,23 +12,29 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
+  // TODO
+  private final double kOmegaRotationsPerSecondPerVolt = 24.0;
+
+  private final PIDController angleController;
+
   /** Constructs a new simulated angle motor. */
-  public AngleMotorIOSim() {}
+  public AngleMotorIOSim() {
+    angleController = new PIDController(Constants.Swerve.ANGLE_CONFIG.Slot0.kP, 0.0, 0.0);
+    
+    // From Phoenix 6 docs:
+    // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous position closed-loops like swerve azimuth.  
+    angleController.enableContinuousInput(-0.5, 0.5);
+  }
 
   @Override
   public void configure() {}
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    double previousAngleRotations = angleRotations;
     angleRotations += omegaRotationsPerSecond * Constants.LOOP_TIME;
 
-    double deltaAngleRotations = angleRotations - previousAngleRotations;
-
-    double calculatedOmegaRadiansPerSecond = deltaAngleRotations / Constants.LOOP_TIME;
-
     values.angleRotations = angleRotations;
-    values.omegaRotationsPerSecond = calculatedOmegaRadiansPerSecond;
+    values.omegaRotationsPerSecond = omegaRotationsPerSecond;
   }
 
   @Override
@@ -37,6 +44,7 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   @Override
   public void setSetpoint(double angleRotations) {
-    this.angleRotations = angleRotations;
+    double volts = angleController.calculate(this.angleRotations, angleRotations);
+    omegaRotationsPerSecond = volts * kOmegaRotationsPerSecondPerVolt;
   }
 }
