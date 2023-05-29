@@ -2,10 +2,16 @@ package frc.robot.swerve;
 
 import frc.robot.Constants;
 
+/**
+ * Implements angle motor behaviors for a simulated angle motor.
+ *
+ * <p>Approximates the behavior of a physical angle motor.
+ */
 public class AngleMotorIOSim implements AngleMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
+  /** Constructs a new simulated angle motor. */
   public AngleMotorIOSim() {}
 
   @Override

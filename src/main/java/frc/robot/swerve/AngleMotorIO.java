@@ -1,11 +1,9 @@
 package frc.robot.swerve;
 
+/** Defines an interface for reading sensor data from and making requests an angle motor. */
 public interface AngleMotorIO {
   public static class AngleMotorIOValues {
-    /**
-     * Position of the angle motor's encoder, in rotations. Wrapped within the range [0, 1)
-     * rotations.
-     */
+    /** Position of the angle motor's encoder, in rotations. */
     public double angleRotations = 0.0;
     /** Velocity of the angle motor's encoder, in rotations per second. */
     public double omegaRotationsPerSecond = 0.0;

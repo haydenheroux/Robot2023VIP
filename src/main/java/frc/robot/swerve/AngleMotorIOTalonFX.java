@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 
+/** Implements angle motor behaviors for a TalonFX. */
 public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   private final TalonFX motor;
@@ -14,6 +15,12 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   private final PositionVoltage positionController;
 
+  /**
+   * Constructs a new TalonFX angle motor.
+   *
+   * @param id the CAN ID of the TalonFX.
+   * @param canbus the name of the CAN bus for the TalonFX.
+   */
   public AngleMotorIOTalonFX(int id, String canbus) {
     motor = new TalonFX(id, canbus);
 

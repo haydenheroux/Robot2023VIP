@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.Swerve;
 
+/** Implements drive motor behaviors for a TalonFX. */
 public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   private final TalonFX motor;
@@ -21,8 +22,15 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   private final VelocityVoltage velocityController;
 
+  /**
+   * Constructs a new TalonFX drive motor.
+   *
+   * @param id the CAN ID of the TalonFX.
+   * @param canbus the name of the CAN bus for the TalonFX.
+   */
   public DriveMotorIOTalonFX(int id, String canbus) {
     motor = new TalonFX(id, canbus);
+
     position = motor.getPosition();
     velocity = motor.getVelocity();
 

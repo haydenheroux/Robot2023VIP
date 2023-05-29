@@ -35,6 +35,11 @@ public class Module implements TelemetryOutputter {
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
 
+  /**
+   * Constructs a new module using the provided configuration.
+   *
+   * @param config the configuration to use to construct the module.
+   */
   public Module(ModuleConfiguration config) {
     this.config = config;
 
@@ -46,7 +51,7 @@ public class Module implements TelemetryOutputter {
       angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.bus);
       driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
       azimuthEncoder =
-          new AzimuthEncoderIOCANCoder(
+          new AzimuthEncoderIOCANcoder(
               config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
     }
 

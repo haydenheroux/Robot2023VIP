@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+/** Defines an interface for reading sensor data from and making requests to a drive motor. */
 public interface DriveMotorIO {
   public static class DriveMotorIOValues {
     /** Position of the drive motor's encoder, in meters. */

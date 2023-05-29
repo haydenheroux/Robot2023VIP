@@ -2,6 +2,11 @@ package frc.robot.swerve;
 
 import frc.robot.Constants;
 
+/**
+ * Implements drive motor behaviors for a simulated drive motor.
+ *
+ * <p>Approximates the behavior of a physical drive motor.
+ */
 public class DriveMotorIOSim implements DriveMotorIO {
 
   private double positionMeters, velocityMetersPerSecond;
