@@ -173,7 +173,7 @@ public class Constants {
       // TODO When this happens, the estimate is able to hold the arm at that pivot angle (theta)
       // TODO To find the value for KG, divide the estimate by the *cosine* of theta
       public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.pivotGravityCompensation(0.9709744, 0.9709744, 0.635);
+          TelescopingArmFeedforward.pivotGravityCompensation(0.485379718516, 0.485379718516, 0.635);
 
       static {
         FEEDFORWARD.kO = 0.0; // Offset voltage
@@ -243,7 +243,7 @@ public class Constants {
         new ModuleConfiguration(true, true).withName("North West");
 
     static {
-      NORTH_WEST.azimuthOffsetRotations = Rotation2d.fromDegrees(293.2).unaryMinus().getRotations();
+      NORTH_WEST.azimuthOffsetRotations = -0.179688;
     }
 
     /** Configuration for the north east swerve module. */
@@ -251,8 +251,7 @@ public class Constants {
         new ModuleConfiguration(true, false).withName("North East");
 
     static {
-      NORTH_EAST.azimuthOffsetRotations =
-          Rotation2d.fromDegrees(287.84).unaryMinus().getRotations();
+      NORTH_EAST.azimuthOffsetRotations = -0.951904;
     }
 
     /** Configuration for the south east swerve module. */
@@ -260,8 +259,7 @@ public class Constants {
         new ModuleConfiguration(false, false).withName("South East");
 
     static {
-      SOUTH_EAST.azimuthOffsetRotations =
-          Rotation2d.fromDegrees(345.05).unaryMinus().getRotations();
+      SOUTH_EAST.azimuthOffsetRotations = -0.774568;
     }
 
     /** Configuration for the south west swerve module. */
@@ -269,8 +267,7 @@ public class Constants {
         new ModuleConfiguration(false, true).withName("South West");
 
     static {
-      SOUTH_WEST.azimuthOffsetRotations =
-          Rotation2d.fromDegrees(192.91).unaryMinus().getRotations();
+      SOUTH_WEST.azimuthOffsetRotations = -0.954346;
     }
 
     public static final SwerveDriveKinematics KINEMATICS =
@@ -306,10 +303,10 @@ public class Constants {
     static {
       ANGLE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-      ANGLE_CONFIG.Slot0.kP = 1.2240673782991203;
-      ANGLE_CONFIG.Slot0.kD = .0021621114369501466;
+      ANGLE_CONFIG.Slot0.kP = 40;
+      ANGLE_CONFIG.Slot0.kD = 0.0;
 
-      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimit = 10.0;
+      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimit = 40.0;
       ANGLE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
       ANGLE_CONFIG.ClosedLoopGeneral.ContinuousWrap = true;

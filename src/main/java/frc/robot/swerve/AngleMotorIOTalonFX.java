@@ -41,8 +41,8 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   @Override
   public void updateValues(AngleMotorIOValues values) {
     // https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L136
-    values.angleRotations = normalize(position.getValue());
-    values.omegaRotationsPerSecond = velocity.getValue();
+    values.angleRotations = position.refresh().getValue();
+    values.omegaRotationsPerSecond = velocity.refresh().getValue();
   }
 
   @Override
@@ -54,19 +54,5 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   @Override
   public void setSetpoint(double angleRotations) {
     motor.setControl(positionController.withPosition(angleRotations));
-  }
-
-  /**
-   * Wraps a number of rotations to an absolute value in the range [0, 1) rotations.
-   *
-   * @param rotations
-   * @return rotations, [0, 1).
-   */
-  private double normalize(double rotations) {
-    if (rotations < 0) {
-      rotations = 1 - (-rotations % 1);
-    }
-
-    return rotations % 1;
   }
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
 import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
@@ -107,12 +108,9 @@ public class Module implements TelemetryOutputter {
       SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
     }
 
-    // TODO Check for wheel rotating greater than one rotation
-    double angleSetpoint = setpoint.angle.getRotations();
-    double closestAngleSetpoint =
-        SwerveMath.placeInClosest0To1Scope(angleSetpoint, angleMotorValues.angleRotations);
+    angleMotor.setSetpoint(setpoint.angle.getRotations());
 
-    angleMotor.setSetpoint(closestAngleSetpoint);
+    SmartDashboard.putNumber(config.name + "/angle", setpoint.angle.getDegrees());
   }
 
   /**

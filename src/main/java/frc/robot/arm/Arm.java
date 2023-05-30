@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       io = new ArmIOSim();
     } else {
-      io = new ArmIOTalonFXPID();
+      io = new ArmIOSim();
     }
 
     io.configure();

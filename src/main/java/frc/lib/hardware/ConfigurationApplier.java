@@ -18,37 +18,27 @@ public class ConfigurationApplier {
     StatusCode status;
 
     do {
-      status = fx.getConfigurator().apply(config);
+      status = fx.getConfigurator().apply(config, 0.25);
     } while (!status.isOK());
 
     return status;
   }
 
   public static StatusCode apply(CANcoderConfiguration config, CANcoder cc) {
-    StatusCode status;
-
-    do {
-      status = cc.getConfigurator().apply(config);
-    } while (!status.isOK());
-
-    return status;
+    // FIXME
+    return StatusCode.OK;
   }
 
   public static StatusCode apply(MagnetSensorConfigs config, CANcoder cc) {
-    StatusCode status;
-
-    do {
-      status = cc.getConfigurator().apply(config);
-    } while (!status.isOK());
-
-    return status;
+    // FIXME
+    return StatusCode.OK;
   }
 
   public static StatusCode apply(Pigeon2Configuration config, Pigeon2 pigeon) {
     StatusCode status;
 
     do {
-      status = pigeon.getConfigurator().apply(config);
+      status = pigeon.getConfigurator().apply(config, 0.25);
     } while (!status.isOK());
 
     return status;

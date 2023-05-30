@@ -39,7 +39,7 @@ public class Claw extends SubsystemBase implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       io = new ClawIOSim();
     } else {
-      io = new ClawIOTalonSRX();
+      io = new ClawIOSim();
     }
 
     io.configure();

@@ -1,10 +1,9 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import frc.lib.hardware.ConfigurationApplier;
-import frc.robot.Constants.Swerve;
 
 /** Implements azimuth encoder behaviors for a CANCoder. */
 public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
@@ -31,19 +30,17 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void configure() {
-    ConfigurationApplier.apply(Swerve.AZIMUTH_CONFIG, encoder);
 
     // TODO Don't overwrite previous config
-    MagnetSensorConfigs offset = new MagnetSensorConfigs();
-    offset.MagnetOffset = magnetOffset;
-
-    ConfigurationApplier.apply(offset, encoder);
+    CANcoderConfiguration cfg = new CANcoderConfiguration();
+    cfg.MagnetSensor.MagnetOffset = magnetOffset;
+    encoder.getConfigurator().apply(cfg);
 
     absolutePosition.setUpdateFrequency(100);
   }
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    values.angleRotations = absolutePosition.getValue();
+    values.angleRotations = absolutePosition.refresh().getValue();
   }
 }

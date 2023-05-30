@@ -28,7 +28,7 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private final Arm arm;
-  private final Compressor compressor;
+  //private final Compressor compressor;
   private final Claw claw;
   private final SideIntake sideIntake;
   private final Swerve swerve;
@@ -42,7 +42,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     arm = Arm.getInstance();
-    compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
+    //compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
@@ -97,10 +97,10 @@ public class RobotContainer {
     operator.leftBumper().onTrue(sideIntake.accept()).onFalse(sideIntake.holdOrDisable());
     operator.rightBumper().onTrue(sideIntake.eject()).onFalse(sideIntake.disable());
 
-    operator
+/*     operator
         .start()
         .onTrue(Commands.runOnce(compressor::enableDigital))
-        .onFalse(Commands.runOnce(compressor::disable));
+        .onFalse(Commands.runOnce(compressor::disable)); */
   }
 
   /** Configures default commands for each subsystem. */

@@ -53,9 +53,9 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   @Override
   public void updateValues(DriveMotorIOValues values) {
     values.positionMeters =
-        Conversions.General.toMeters(position.getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(position.refresh().getValue(), Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
-        Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(velocity.refresh().getValue(), Physical.WHEEL_CIRCUMFERENCE);
   }
 
   @Override

@@ -37,7 +37,6 @@ public class ArmIOSim implements ArmIO {
           fakeSimLength,
           Pivot.MIN_ANGLE.getRadians(),
           Pivot.MAX_ANGLE.getRadians(),
-          Constants.Physical.ARM_MASS,
           true);
 
   private final PIDController telescopingPID = new PIDController(Telescoping.PID.KP, 0, 0);
