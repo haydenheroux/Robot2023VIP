@@ -61,7 +61,7 @@ public class ArmIOSim implements ArmIO {
       double metersPulledByGravity =
           Math.sin(Units.rotationsToRadians(pivotAngleRotations)) * kMetersPerGravity;
 
-      boolean atMin = telescopingLengthMeters < Telescoping.MIN_LENGTH;
+      boolean atMin = telescopingLengthMeters + Physical.LENGTH_OFFSET < Telescoping.MIN_LENGTH;
       boolean belowMin = atMin && metersPulledByGravity < 0;
 
       if (!belowMin) {
@@ -71,7 +71,8 @@ public class ArmIOSim implements ArmIO {
 
     values.telescopingBrakeIsActive = telescopingBrakeIsActive;
     values.telescopingLengthMeters = telescopingLengthMeters;
-    values.telescopingVelocityMetersPerSecond = (telescopingLengthMeters - lengthMeters) / Constants.LOOP_TIME;
+    values.telescopingVelocityMetersPerSecond =
+        (telescopingLengthMeters - lengthMeters) / Constants.LOOP_TIME;
     values.telescopingVoltage = telescopingVoltage;
 
     double angleRotations = pivotAngleRotations;
@@ -88,7 +89,8 @@ public class ArmIOSim implements ArmIO {
     }
 
     values.pivotAngleRotations = pivotAngleRotations;
-    values.pivotOmegaRotationsPerSecond = (pivotAngleRotations - angleRotations) / Constants.LOOP_TIME;
+    values.pivotOmegaRotationsPerSecond =
+        (pivotAngleRotations - angleRotations) / Constants.LOOP_TIME;
     values.pivotBrakeIsActive = pivotBrakeIsActive;
     values.pivotVoltage = pivotVoltage;
   }
@@ -107,7 +109,8 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setTelescopingVoltage(double volts) {
     volts +=
-        Telescoping.FEEDFORWARD.calculateTelescoping(ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
+        Telescoping.FEEDFORWARD.calculateTelescoping(
+            ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     telescopingVoltage = volts;
@@ -137,7 +140,8 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setPivotVoltage(double volts) {
     volts +=
-        Pivot.FEEDFORWARD.calculatePivot(ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
+        Pivot.FEEDFORWARD.calculatePivot(
+            ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     pivotVoltage = volts;

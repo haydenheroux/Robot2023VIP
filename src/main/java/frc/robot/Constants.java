@@ -139,7 +139,7 @@ public class Constants {
 
       public static final TelescopingArmFeedforward FEEDFORWARD =
           TelescopingArmFeedforward.telescopingGravityCompensation(
-              0, 0, Rotation2d.fromDegrees(-45));
+              -Math.sqrt(2), -Math.sqrt(2), Rotation2d.fromDegrees(-45));
 
       /** Constants for telescoping using a PID control algorithm. */
       public static class PID {
@@ -168,8 +168,12 @@ public class Constants {
       /** Maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
+      // TODO To find values for KG, find a reasonable estimate using the characterize command
+      // TODO Then, allow the arm to sag until it does not pivot (e.g. omega = 0)
+      // TODO When this happens, the estimate is able to hold the arm at that pivot angle (theta)
+      // TODO To find the value for KG, divide the estimate by the *cosine* of theta
       public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.pivotGravityCompensation(0, 0, 0.635);
+          TelescopingArmFeedforward.pivotGravityCompensation(0.9709744, 0.9709744, 0.635);
 
       static {
         FEEDFORWARD.kO = 0.0; // Offset voltage

@@ -66,8 +66,7 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts +=
-        Telescoping.FEEDFORWARD.calculateTelescoping(ArmPosition.fromValues(values));
+    volts += Telescoping.FEEDFORWARD.calculateTelescoping(ArmPosition.fromValues(values));
 
     telescopingMotor.setVoltage(volts);
   }
@@ -97,8 +96,7 @@ public class ArmIOTalonFXBase implements ArmIO {
       return;
     }
 
-    volts +=
-        Pivot.FEEDFORWARD.calculatePivot(ArmPosition.fromValues(values));
+    volts += Pivot.FEEDFORWARD.calculatePivot(ArmPosition.fromValues(values));
 
     pivotMotor.setVoltage(volts);
   }

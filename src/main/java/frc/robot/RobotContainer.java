@@ -101,7 +101,6 @@ public class RobotContainer {
         .start()
         .onTrue(Commands.runOnce(compressor::enableDigital))
         .onFalse(Commands.runOnce(compressor::disable));
-
   }
 
   /** Configures default commands for each subsystem. */

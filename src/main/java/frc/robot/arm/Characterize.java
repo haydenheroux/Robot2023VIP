@@ -1,14 +1,13 @@
 package frc.robot.arm;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.arm.Arm.Selector;
+import java.util.function.DoubleSupplier;
 
 public class Characterize extends CommandBase {
-    
+
   private final Arm arm;
   private final Selector selector;
 
@@ -40,11 +39,10 @@ public class Characterize extends CommandBase {
   public void end(boolean interrupted) {
     arm.disable(selector);
     arm.lock(selector);
-    }
+  }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

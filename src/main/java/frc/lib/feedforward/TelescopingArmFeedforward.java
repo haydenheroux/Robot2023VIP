@@ -47,7 +47,11 @@ public class TelescopingArmFeedforward {
   }
 
   public double calculatePivot(ArmPosition position) {
-    return calculatePivot(position.getAngle(), position.getLength(), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0));
+    return calculatePivot(
+        position.getAngle(),
+        position.getLength(),
+        Rotation2d.fromRadians(0),
+        Rotation2d.fromRadians(0));
   }
 
   public double calculateTelescoping(Rotation2d theta, double velocity, double acceleration) {
