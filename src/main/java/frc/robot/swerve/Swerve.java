@@ -12,17 +12,13 @@ import frc.lib.telemetry.TelemetryData;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 
-/**
- * Controls the four swerve modules used to drive the chassis.
- */
+/** Controls the four swerve modules used to drive the chassis. */
 public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private static Swerve instance = null;
 
   private final Module[] modules = new Module[4];
 
-  /**
-   * Constructs a new swerve.
-   */
+  /** Constructs a new swerve. */
   private Swerve() {
     modules[0] = new Module(Constants.Swerve.NORTH_WEST);
     modules[1] = new Module(Constants.Swerve.NORTH_EAST);
@@ -121,6 +117,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   /**
    * Commands all swerve modules to orient themselves to an arbitrary orientation.
+   *
    * @param orientations the orientation for each swerve module.
    * @return a command that orients all swerve modules to an arbitrary orientation.
    */
@@ -139,7 +136,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Commands all swerve modules to orient themselves to zero degrees, or forwards. This is to check if the swerve modules were calibrated so that zero degrees is facing forwards. If a swerve module does not face forwards during this command, then that swerve module needs to have the azimuth encoder recalibrated.
+   * Commands all swerve modules to orient themselves to zero degrees, or forwards. This is to check
+   * if the swerve modules were calibrated so that zero degrees is facing forwards. If a swerve
+   * module does not face forwards during this command, then that swerve module needs to have the
+   * azimuth encoder recalibrated.
+   *
    * @return a command that orients all swerve modules to zero degrees.
    */
   public Command checkForwards() {
@@ -153,7 +154,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Commands all swerve modules to orient themselves to ninety degrees, or one quarter rotation to the left. This is to check if the swerve modules were calibrated so that ninety degrees is facing to the left. If a swerve module does not face to the left during this command, then the inversion configuration of that swerve module needs to be recalibrated.
+   * Commands all swerve modules to orient themselves to ninety degrees, or one quarter rotation to
+   * the left. This is to check if the swerve modules were calibrated so that ninety degrees is
+   * facing to the left. If a swerve module does not face to the left during this command, then the
+   * inversion configuration of that swerve module needs to be recalibrated.
+   *
    * @return a command that orients all swerve modules to ninety degrees.
    */
   public Command checkSideways() {
@@ -167,7 +172,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Commands all swerve modules to orient themselves towards the center, forming a cross shape. This is to make the chassis more difficult to push, locking the chassis to one position unless commanded to move. 
+   * Commands all swerve modules to orient themselves towards the center, forming a cross shape.
+   * This is to make the chassis more difficult to push, locking the chassis to one position unless
+   * commanded to move.
+   *
    * @return a command that orients all swerve modules towards the center.
    */
   public Command cross() {

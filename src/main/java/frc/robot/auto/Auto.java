@@ -102,7 +102,8 @@ public class Auto {
   private static final double ON_PLATFORM_SPEED = -1.15;
 
   public static Command driveOnPlatform() {
-    DelayedBoolean onPlatformLatch = new DelayedBoolean(Timer.getFPGATimestamp(), ON_PLATFORM_DELAY);
+    DelayedBoolean onPlatformLatch =
+        new DelayedBoolean(Timer.getFPGATimestamp(), ON_PLATFORM_DELAY);
 
     // TODO Integrate pitch velocity
     BooleanSupplier maybeOnPlatform =
@@ -118,7 +119,8 @@ public class Auto {
 
   public static Command balanceOnPlatform() {
     // TODO Integrate pitch velocity
-    BooleanSupplier platformBalanced = () -> Math.abs(odometry.getPitch().getDegrees()) < BALANCED_PLATFORM_THRESHOLD;
+    BooleanSupplier platformBalanced =
+        () -> Math.abs(odometry.getPitch().getDegrees()) < BALANCED_PLATFORM_THRESHOLD;
 
     return drive(BALANCED_PLATFORM_SPEED, 0).until(platformBalanced).withTimeout(1.0);
   }

@@ -20,9 +20,10 @@ public class AngleMotorIOSim implements AngleMotorIO {
   /** Constructs a new simulated angle motor. */
   public AngleMotorIOSim() {
     angleController = new PIDController(Constants.Swerve.ANGLE_CONFIG.Slot0.kP, 0.0, 0.0);
-    
+
     // From Phoenix 6 docs:
-    // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous position closed-loops like swerve azimuth.  
+    // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous
+    // position closed-loops like swerve azimuth.
     angleController.enableContinuousInput(-0.5, 0.5);
   }
 

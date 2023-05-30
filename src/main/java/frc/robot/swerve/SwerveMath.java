@@ -8,9 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 
-/**
- * Defines helper methods for math functions commonly used with swerve drives.
- */
+/** Defines helper methods for math functions commonly used with swerve drives. */
 public class SwerveMath {
 
   /**
@@ -74,6 +72,7 @@ public class SwerveMath {
 
   /**
    * Returns a Twist2d that maps to a pose representing the difference between two poses.
+   *
    * @param velocity the pose representing the difference between two poses.
    * @return a Twist2d that maps to a pose representing the difference between two poses.
    */
@@ -102,9 +101,12 @@ public class SwerveMath {
 
   /**
    * Returns a chassis velocity after compensation for latency.
-   * @param chassisVelocity 
+   *
+   * @param chassisVelocity
    * @return a chassis velocity after compensation for latency.
-   * @see <a href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/5">254 Magic</a>
+   * @see <a
+   *     href="https://www.chiefdelphi.com/t/whitepaper-swerve-drive-skew-and-second-order-kinematics/416964/5">254
+   *     Magic</a>
    */
   public static ChassisSpeeds getCorrectedChassisVelocity(ChassisSpeeds chassisVelocity) {
     Pose2d chassisVelocityPose =

@@ -74,7 +74,8 @@ public class Module implements TelemetryOutputter {
         "Absolute Angle (deg)",
         () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
     layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
-    layout.addNumber("Omega (dps)", () -> Units.rotationsToDegrees(angleMotorValues.omegaRotationsPerSecond));
+    layout.addNumber(
+        "Omega (dps)", () -> Units.rotationsToDegrees(angleMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
   }
 
