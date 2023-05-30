@@ -137,11 +137,6 @@ public class ArmPosition extends Translation2d {
     return this.getLength() - Physical.LENGTH_OFFSET;
   }
 
-  public double getLeverLength() {
-    // TODO
-    return this.getLength();
-  }
-
   /**
    * Tests if the extension of the arm is at the maximum.
    *

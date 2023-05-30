@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryOutputter;
@@ -290,16 +289,7 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
     return new ManualRotate(this, percentSupplier);
   }
 
-  public Command characterize(Selector selector) {
-    return new FunctionalCommand(
-            () -> unlock(selector),
-            () -> setVoltage(selector, 0),
-            interrupted -> {
-              disable(selector);
-              lock(selector);
-            },
-            () -> false,
-            this)
-        .withName("Characterize");
+  public Command characterize(Selector selector, String key) {
+    return new Characterize(this, selector, key);
   }
 }

@@ -139,7 +139,7 @@ public class Constants {
 
       public static final TelescopingArmFeedforward FEEDFORWARD =
           TelescopingArmFeedforward.telescopingGravityCompensation(
-              2, 2, Rotation2d.fromDegrees(90));
+              0, 0, Rotation2d.fromDegrees(-45));
 
       /** Constants for telescoping using a PID control algorithm. */
       public static class PID {
@@ -168,9 +168,8 @@ public class Constants {
       /** Maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
-      // TODO Calculate lever length
       public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.pivotGravityCompensation(0.9709744, 0.9709744, 0.635);
+          TelescopingArmFeedforward.pivotGravityCompensation(0, 0, 0.635);
 
       static {
         FEEDFORWARD.kO = 0.0; // Offset voltage

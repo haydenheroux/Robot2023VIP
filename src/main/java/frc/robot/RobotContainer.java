@@ -36,7 +36,6 @@ public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
-  private final CommandXboxController pit = new CommandXboxController(5);
 
   private final SendableChooser<PathPlannerTrajectory> pathChooser =
       new SendableChooser<PathPlannerTrajectory>();
@@ -87,10 +86,10 @@ public class RobotContainer {
     shouldExtend.whileTrue(arm.manualExtend(extensionAxis));
     shouldRotate.whileTrue(arm.manualRotate(rotationAxis));
 
-    operator.a().whileTrue(arm.toGoal(ArmPosition.SCORE_GROUND));
-    operator.b().whileTrue(arm.toGoal(ArmPosition.SCORE_L2));
+    operator.a().whileTrue(arm.characterize(Selector.kPivot, "characterizePivot"));
+    operator.b().whileTrue(arm.characterize(Selector.kTelescoping, "characterizeTelescoping"));
     operator.x().whileTrue(arm.toGoal(ArmPosition.STOW));
-    operator.y().whileTrue(arm.toGoal(ArmPosition.SCORE_L3));
+    operator.y().whileTrue(arm.toGoal(ArmPosition.SCORE_GROUND));
 
     operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
     operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
@@ -103,10 +102,6 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(compressor::enableDigital))
         .onFalse(Commands.runOnce(compressor::disable));
 
-    pit.a().whileTrue(arm.characterize(Selector.kPivot));
-    pit.b().whileTrue(arm.characterize(Selector.kTelescoping));
-    pit.x().whileTrue(arm.toGoal(ArmPosition.STOW));
-    pit.y().whileTrue(arm.toGoal(ArmPosition.SCORE_STANDBY));
   }
 
   /** Configures default commands for each subsystem. */

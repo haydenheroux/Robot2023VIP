@@ -1,6 +1,7 @@
 package frc.lib.feedforward;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.arm.ArmPosition;
 
 public class TelescopingArmFeedforward {
 
@@ -45,8 +46,8 @@ public class TelescopingArmFeedforward {
         + kO;
   }
 
-  public double calculatePivot(Rotation2d theta, double length) {
-    return calculatePivot(theta, length, Rotation2d.fromRadians(0), Rotation2d.fromRadians(0));
+  public double calculatePivot(ArmPosition position) {
+    return calculatePivot(position.getAngle(), position.getLength(), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0));
   }
 
   public double calculateTelescoping(Rotation2d theta, double velocity, double acceleration) {
@@ -57,7 +58,7 @@ public class TelescopingArmFeedforward {
         + kO;
   }
 
-  public double calculateTelescoping(Rotation2d theta) {
-    return calculateTelescoping(theta, 0, 0);
+  public double calculateTelescoping(ArmPosition position) {
+    return calculateTelescoping(position.getAngle(), 0, 0);
   }
 }

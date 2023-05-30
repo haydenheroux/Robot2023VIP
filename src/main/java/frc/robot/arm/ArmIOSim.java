@@ -2,7 +2,6 @@ package frc.robot.arm;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -108,7 +107,7 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setTelescopingVoltage(double volts) {
     volts +=
-        Telescoping.FEEDFORWARD.calculateTelescoping(Rotation2d.fromRotations(pivotAngleRotations));
+        Telescoping.FEEDFORWARD.calculateTelescoping(ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     telescopingVoltage = volts;
@@ -138,8 +137,7 @@ public class ArmIOSim implements ArmIO {
   @Override
   public void setPivotVoltage(double volts) {
     volts +=
-        Pivot.FEEDFORWARD.calculatePivot(
-            Rotation2d.fromRotations(pivotAngleRotations), fakeSimLength);
+        Pivot.FEEDFORWARD.calculatePivot(ArmPosition.fromValues(fakeSimLength - Physical.LENGTH_OFFSET, pivotAngleRotations));
 
     volts = MathUtil.clamp(volts, -Constants.NOMINAL_VOLTAGE, Constants.NOMINAL_VOLTAGE);
     pivotVoltage = volts;

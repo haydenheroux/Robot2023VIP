@@ -1,7 +1,6 @@
 package frc.robot.arm;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.hardware.Hardware;
@@ -68,8 +67,7 @@ public class ArmIOTalonFXBase implements ArmIO {
     }
 
     volts +=
-        Telescoping.FEEDFORWARD.calculateTelescoping(
-            Rotation2d.fromRotations(values.pivotAngleRotations));
+        Telescoping.FEEDFORWARD.calculateTelescoping(ArmPosition.fromValues(values));
 
     telescopingMotor.setVoltage(volts);
   }
@@ -100,9 +98,7 @@ public class ArmIOTalonFXBase implements ArmIO {
     }
 
     volts +=
-        Pivot.FEEDFORWARD.calculatePivot(
-            Rotation2d.fromRotations(values.pivotAngleRotations),
-            ArmPosition.fromValues(values.telescopingLengthMeters, 0).getLeverLength());
+        Pivot.FEEDFORWARD.calculatePivot(ArmPosition.fromValues(values));
 
     pivotMotor.setVoltage(volts);
   }
