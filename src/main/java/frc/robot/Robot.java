@@ -1,8 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.odometry.Odometry;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -12,6 +15,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   @Override
@@ -30,6 +35,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    DriverStation.reportWarning(
+        "Alliance at the start of autonomous was: " + getAllianceName(), false);
+
+    if (true) {
+      Odometry.getInstance().setRotation(Rotation2d.fromDegrees(180));
+      DriverStation.reportWarning("Autonomous set rotation to 180 degrees.", false);
+    }
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -66,4 +79,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
+
+  private String getAllianceName() {
+    switch (DriverStation.getAlliance()) {
+      case Blue:
+        return "Blue";
+      case Red:
+        return "Red";
+      default:
+      case Invalid:
+        DriverStation.reportError("Invalid alliance!", false);
+        return "";
+    }
+  }
 }
