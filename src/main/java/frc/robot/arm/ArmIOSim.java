@@ -25,7 +25,13 @@ public class ArmIOSim implements ArmIO {
   private final double kMetersPerGravity = -0.005;
 
   private final DCMotor simMotor =
-      new DCMotor(Constants.NOMINAL_VOLTAGE, 4.69, 2.57, 1.5, 668.1120369, 1);
+      new DCMotor(
+          Constants.NOMINAL_VOLTAGE,
+          4.69,
+          2.57,
+          1.5,
+          Units.rotationsPerMinuteToRadiansPerSecond(6380),
+          1);
 
   // FIXME Simulation assumes constant length
   private final double fakeSimLength = ArmPosition.STOW.getLength();

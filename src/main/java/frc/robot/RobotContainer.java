@@ -3,18 +3,15 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
-import frc.robot.Constants.Ports;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Arm.Selector;
 import frc.robot.arm.ArmPosition;
@@ -28,7 +25,7 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private final Arm arm;
-  //private final Compressor compressor;
+  // private final Compressor compressor;
   private final Claw claw;
   private final SideIntake sideIntake;
   private final Swerve swerve;
@@ -42,7 +39,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     arm = Arm.getInstance();
-    //compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
+    // compressor = new Compressor(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE);
     claw = Claw.getInstance();
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
@@ -97,10 +94,10 @@ public class RobotContainer {
     operator.leftBumper().onTrue(sideIntake.accept()).onFalse(sideIntake.holdOrDisable());
     operator.rightBumper().onTrue(sideIntake.eject()).onFalse(sideIntake.disable());
 
-/*     operator
-        .start()
-        .onTrue(Commands.runOnce(compressor::enableDigital))
-        .onFalse(Commands.runOnce(compressor::disable)); */
+    /*     operator
+    .start()
+    .onTrue(Commands.runOnce(compressor::enableDigital))
+    .onFalse(Commands.runOnce(compressor::disable)); */
   }
 
   /** Configures default commands for each subsystem. */
