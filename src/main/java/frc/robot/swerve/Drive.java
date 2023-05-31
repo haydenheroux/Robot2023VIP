@@ -137,7 +137,7 @@ public class Drive extends CommandBase {
 
     final double kSnapMultiple = Units.degreesToRadians(45);
 
-    double yawRadians = Odometry.getInstance().getYaw().getRadians();
+    double yawRadians = Odometry.getInstance().getRotation().getRadians();
 
     double headingRadians = heading.getAngle().getRadians();
     headingRadians = snapToNearest(headingRadians, kSnapMultiple);
@@ -174,6 +174,6 @@ public class Drive extends CommandBase {
     }
 
     return ChassisSpeeds.fromFieldRelativeSpeeds(
-        velocity.getX(), velocity.getY(), omega, Odometry.getInstance().getYaw());
+        velocity.getX(), velocity.getY(), omega, Odometry.getInstance().getRotation());
   }
 }

@@ -80,7 +80,7 @@ public class Auto {
     return Commands.run(
         () -> {
           ChassisSpeeds fieldRelative =
-              ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0.0, odometry.getYaw());
+              ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0.0, odometry.getRotation());
 
           SwerveModuleState[] setpoints =
               Constants.Swerve.KINEMATICS.toSwerveModuleStates(fieldRelative);
