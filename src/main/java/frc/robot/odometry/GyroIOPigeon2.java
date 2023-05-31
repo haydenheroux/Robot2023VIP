@@ -28,9 +28,9 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void updateValues(GyroIOValues values) {
-    values.rollAngleRotations = Units.degreesToRotations(gyro.getRoll().getValue());
-    values.pitchAngleRotations = Units.degreesToRotations(gyro.getPitch().getValue());
-    values.yawAngleRotations = Units.degreesToRotations(gyro.getYaw().getValue());
+    values.rollAngleRotations = Units.degreesToRotations(gyro.getRoll().refresh().getValue());
+    values.pitchAngleRotations = Units.degreesToRotations(gyro.getPitch().refresh().getValue());
+    values.yawAngleRotations = Units.degreesToRotations(gyro.getYaw().refresh().getValue());
 
     values.rollAccelerationG = gyro.getAccelerationX().getValue();
     values.pitchAccelerationG = gyro.getAccelerationY().getValue();
