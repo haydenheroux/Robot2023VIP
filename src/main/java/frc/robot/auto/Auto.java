@@ -77,55 +77,55 @@ public class Auto {
   }
 
   public static Command drive(double vX, double vY) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
-          ChassisSpeeds speed = new ChassisSpeeds(vX, vY, 0);
+          ChassisSpeeds fieldRelative =
+              ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0.0, odometry.getYaw());
 
-          SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speed);
+          SwerveModuleState[] setpoints =
+              Constants.Swerve.KINEMATICS.toSwerveModuleStates(fieldRelative);
 
           swerve.setSetpoints(setpoints, false);
         },
         swerve);
   }
 
-  private static final double ON_FLAP = -5;
-  private static final double TIP_FLAP_SPEED = -2.1;
+  private static final double TIP_FLAP_SPEED = 2.1;
 
-  public static Command tipFlap() {
-    BooleanSupplier onFlap = () -> odometry.getPitch().getDegrees() < ON_FLAP;
-    return drive(TIP_FLAP_SPEED, 0).until(onFlap).withTimeout(1.0);
+  public static Command tipFlap(boolean fromCommunity) {
+    double vX = fromCommunity ? TIP_FLAP_SPEED : -TIP_FLAP_SPEED;
+    return drive(vX, 0).until(odometry::onFlap).withTimeout(1.0);
   }
 
-  private static final double ON_PLATFORM_DELAY = 0.4;
-  private static final double ON_PLATFORM = -12;
-  private static final double ON_PLATFORM_THRESHOLD = 3.0;
-  private static final double ON_PLATFORM_SPEED = -1.15;
+  private static final double ON_PLATFORM_DURATION = 0.4;
+  private static final double ON_PLATFORM_SPEED = 1.15;
 
-  public static Command driveOnPlatform() {
+  public static Command driveOnPlatform(boolean fromCommunity) {
     DelayedBoolean onPlatformLatch =
-        new DelayedBoolean(Timer.getFPGATimestamp(), ON_PLATFORM_DELAY);
+        new DelayedBoolean(Timer.getFPGATimestamp(), ON_PLATFORM_DURATION);
 
-    // TODO Integrate pitch velocity
-    BooleanSupplier maybeOnPlatform =
-        () -> Math.abs(ON_PLATFORM - odometry.getPitch().getDegrees()) < ON_PLATFORM_THRESHOLD;
     BooleanSupplier onPlatform =
-        () -> onPlatformLatch.update(Timer.getFPGATimestamp(), maybeOnPlatform.getAsBoolean());
+        () -> onPlatformLatch.update(Timer.getFPGATimestamp(), odometry.onPlatform());
 
-    return drive(ON_PLATFORM_SPEED, 0).until(onPlatform).withTimeout(1.0);
+    double vX = fromCommunity ? ON_PLATFORM_SPEED : -ON_PLATFORM_SPEED;
+    return drive(vX, 0).until(onPlatform).withTimeout(1.0);
   }
 
-  private static final double BALANCED_PLATFORM_THRESHOLD = 3.0;
-  private static final double BALANCED_PLATFORM_SPEED = -0.85;
+  private static final double BALANCE_PLATFORM_SPEED = 0.85;
 
-  public static Command balanceOnPlatform() {
-    // TODO Integrate pitch velocity
-    BooleanSupplier platformBalanced =
-        () -> Math.abs(odometry.getPitch().getDegrees()) < BALANCED_PLATFORM_THRESHOLD;
-
-    return drive(BALANCED_PLATFORM_SPEED, 0).until(platformBalanced).withTimeout(1.0);
+  public static Command balanceOnPlatform(boolean fromCommunity) {
+    double vX = fromCommunity ? BALANCE_PLATFORM_SPEED : -BALANCE_PLATFORM_SPEED;
+    return drive(vX, 0).until(odometry::isLevel).withTimeout(3.0);
   }
 
-  public static Command balance() {
-    return Commands.sequence(tipFlap(), driveOnPlatform(), balanceOnPlatform(), swerve.cross());
+  public static Command balance(boolean fromCommunity) {
+    return Commands.sequence(
+        tipFlap(fromCommunity),
+        Commands.print("Tipped flap!"),
+        driveOnPlatform(fromCommunity),
+        Commands.print("On platform!"),
+        balanceOnPlatform(fromCommunity),
+        Commands.print("Balanced!"),
+        swerve.cross());
   }
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -96,9 +97,14 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
     rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
     rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
-    // FIXME Gyro yaw and pose yaw are 180deg out of phase
+    rotation.addNumber("Tilt (deg)", () -> getTilt().getDegrees());
     rotation.addNumber("Gyro Yaw (deg)", () -> getGyroYaw().getDegrees());
-    rotation.addNumber("Pose Yaw (deg)", () -> getPoseYaw().getDegrees());
+    rotation.addNumber("Pose Yaw (deg)", () -> getYaw().getDegrees());
+
+    ShuffleboardLayout platform = tab.getLayout("Platform", BuiltInLayouts.kList);
+    platform.addBoolean("Is Level?", this::isLevel);
+    platform.addBoolean("On Flap?", this::onFlap);
+    platform.addBoolean("On Platform?", this::onPlatform);
 
     ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
     position.addNumber("X (m)", () -> getPose().getX());
@@ -157,8 +163,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
-  // TODO Are these robot axis relative or field axis relative?
-
   /**
    * Gets the angle of the robot relative to the robot X axis.
    *
@@ -182,7 +186,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the angle of the robot relative to the robot Z axis.
    */
-  public Rotation2d getGyroYaw() {
+  private Rotation2d getGyroYaw() {
     return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
   }
 
@@ -191,8 +195,15 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the angle of the robot relative to the robot Z axis.
    */
-  public Rotation2d getPoseYaw() {
+  public Rotation2d getYaw() {
     return getPose().getRotation();
+  }
+
+  public Rotation2d getTilt() {
+    // https://github.com/Mechanical-Advantage/RobotCode2023/blob/81a63b84a29d67d62154e4af02631a525014eafa/src/main/java/org/littletonrobotics/frc2023/commands/AutoBalance.java#L49 
+    double pitch = getYaw().getCos() * getPitch().getRadians();
+    double roll = getYaw().getSin() * getRoll().getRadians();
+    return new Rotation2d(pitch + roll);
   }
 
   /**
@@ -204,6 +215,41 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    */
   public void setYaw(Rotation2d yaw) {
     setPose(new Pose2d(getPose().getTranslation(), yaw));
+  }
+
+  public boolean tiltedBelow(Rotation2d tilt) {
+    // https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf
+    // Pitching nose down is positive
+    return getTilt().getDegrees() > tilt.getDegrees();
+  }
+
+  public boolean tiltedAbove(Rotation2d tilt) {
+    // https://store.ctr-electronics.com/content/user-manual/Pigeon2%20User's%20Guide.pdf
+    // Pitching nose down is positive
+    return getTilt().getDegrees() < tilt.getDegrees();
+  }
+
+  public boolean tiltedAt(Rotation2d tilt, Rotation2d threshold) {
+    return Util.approximatelyEqual(
+        getTilt().getDegrees(), tilt.getDegrees(), threshold.getDegrees());
+  }
+
+  private final Rotation2d PLATFORM_THRESHOLD = Rotation2d.fromDegrees(3.0);
+
+  public boolean onFlap() {
+    final double kFlapDegrees = 5;
+    return tiltedAt(Rotation2d.fromDegrees(-kFlapDegrees), PLATFORM_THRESHOLD)
+        || tiltedAt(Rotation2d.fromDegrees(kFlapDegrees), PLATFORM_THRESHOLD);
+  }
+
+  public boolean onPlatform() {
+    final double kPlatformDegrees = 12;
+    return tiltedAt(Rotation2d.fromDegrees(-kPlatformDegrees), PLATFORM_THRESHOLD)
+        || tiltedAt(Rotation2d.fromDegrees(kPlatformDegrees), PLATFORM_THRESHOLD);
+  }
+
+  public boolean isLevel() {
+    return tiltedAt(Rotation2d.fromDegrees(0), PLATFORM_THRESHOLD);
   }
 
   /**
@@ -227,7 +273,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @return the velocity of the robot in the field reference frame.
    */
   private Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
-    final Rotation2d yaw = getGyroYaw();
+    final Rotation2d yaw = getYaw();
 
     // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
     double vxMetersPerSecond =
