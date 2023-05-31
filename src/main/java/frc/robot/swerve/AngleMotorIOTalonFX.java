@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -40,9 +41,13 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void updateValues(AngleMotorIOValues values) {
-    // https://github.com/TitaniumTitans/2023ChargedUp/blob/0306f0274d170ba5cd87808f60e1d64475917b67/src/main/java/frc/robot/subsystems/swerve/module/FalconProModule.java#L136
-    values.angleRotations = position.refresh().getValue();
-    values.omegaRotationsPerSecond = velocity.refresh().getValue();
+    if (true) {
+      position.refresh();
+      velocity.refresh();
+    }
+
+    values.angleRotations = BaseStatusSignal.getLatencyCompensatedValue(position, velocity);
+    values.omegaRotationsPerSecond = velocity.getValue();
   }
 
   @Override

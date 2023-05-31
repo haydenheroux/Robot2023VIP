@@ -1,5 +1,6 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StaticBrake;
@@ -52,10 +53,15 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
+    if (true) {
+      position.refresh();
+      velocity.refresh();
+    }
+
     values.positionMeters =
-        Conversions.General.toMeters(position.refresh().getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(BaseStatusSignal.getLatencyCompensatedValue(position, velocity), Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
-        Conversions.General.toMeters(velocity.refresh().getValue(), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
   }
 
   @Override
