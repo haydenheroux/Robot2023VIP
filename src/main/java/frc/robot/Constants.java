@@ -321,12 +321,14 @@ public class Constants {
     static {
       DRIVE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+      // TODO
       DRIVE_CONFIG.Slot0.kP = .00495964340175953;
+
+      DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 400;
+      DRIVE_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = -1 * DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent;
 
       DRIVE_CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
       DRIVE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-
-      DRIVE_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
 
       DRIVE_CONFIG.Feedback.SensorToMechanismRatio = 6.75;
     }
