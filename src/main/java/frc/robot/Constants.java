@@ -324,8 +324,10 @@ public class Constants {
       // TODO
       DRIVE_CONFIG.Slot0.kP = .00495964340175953;
 
+      // TODO
       DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 400;
-      DRIVE_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent = -1 * DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent;
+      DRIVE_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent =
+          -1 * DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent;
 
       DRIVE_CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
       DRIVE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;

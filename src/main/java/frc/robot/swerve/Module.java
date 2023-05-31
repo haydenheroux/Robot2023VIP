@@ -110,7 +110,10 @@ public class Module implements TelemetryOutputter {
 
     angleMotor.setSetpoint(setpoint.angle.getRotations());
 
-    SmartDashboard.putNumber(config.name + "/angle", setpoint.angle.getDegrees());
+    if (true) {
+      SmartDashboard.putNumber(config.name + "/angle", setpoint.angle.getDegrees());
+      SmartDashboard.putNumber(config.name + "/speed", setpoint.speedMetersPerSecond);
+    }
   }
 
   /**

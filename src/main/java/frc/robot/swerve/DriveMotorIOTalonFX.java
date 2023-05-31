@@ -51,7 +51,9 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     }
 
     values.positionMeters =
-        Conversions.General.toMeters(BaseStatusSignal.getLatencyCompensatedValue(position, velocity), Physical.WHEEL_CIRCUMFERENCE);
+        Conversions.General.toMeters(
+            BaseStatusSignal.getLatencyCompensatedValue(position, velocity),
+            Physical.WHEEL_CIRCUMFERENCE);
     values.velocityMetersPerSecond =
         Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
   }
@@ -69,9 +71,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     double rotationsPerSecond =
         Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
 
-    motor.setControl(
-        velocityController
-            .withVelocity(rotationsPerSecond));
+    motor.setControl(velocityController.withVelocity(rotationsPerSecond));
   }
 
   @Override

@@ -35,6 +35,8 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   public void configure() {
     ConfigurationApplier.apply(Swerve.ANGLE_CONFIG, motor);
 
+    // TODO Use Fused CANcoder?
+
     position.setUpdateFrequency(100);
     velocity.setUpdateFrequency(100);
   }
