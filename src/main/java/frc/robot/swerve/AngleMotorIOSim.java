@@ -12,8 +12,7 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
-  // TODO
-  private final double kOmegaRotationsPerSecondPerVolt = 24.0;
+  private final double kOmegaRotationsPerSecondPerVolt = 1.0;
 
   private final PIDController angleController;
 
