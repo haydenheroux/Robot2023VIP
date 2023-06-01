@@ -4,6 +4,9 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 
+import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants;
+
 /** Implements azimuth encoder behaviors for a CANCoder. */
 public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
@@ -29,11 +32,12 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void configure() {
+    CANcoderConfiguration cfg = Constants.Swerve.AZIMUTH_CONFIG;
 
-    // TODO Don't overwrite previous config
-    CANcoderConfiguration cfg = new CANcoderConfiguration();
     cfg.MagnetSensor.MagnetOffset = magnetOffset;
-    encoder.getConfigurator().apply(cfg);
+
+    ConfigurationApplier.apply(cfg, encoder);
+    // encoder.getConfigurator().apply(cfg);
 
     absolutePosition.setUpdateFrequency(100);
   }

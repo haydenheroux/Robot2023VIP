@@ -2,7 +2,6 @@ package frc.lib.hardware;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -25,13 +24,13 @@ public class ConfigurationApplier {
   }
 
   public static StatusCode apply(CANcoderConfiguration config, CANcoder cc) {
-    // FIXME
-    return StatusCode.OK;
-  }
+    StatusCode status;
 
-  public static StatusCode apply(MagnetSensorConfigs config, CANcoder cc) {
-    // FIXME
-    return StatusCode.OK;
+    do {
+      status = cc.getConfigurator().apply(config, 0.25);
+    } while (!status.isOK());
+
+    return status;
   }
 
   public static StatusCode apply(Pigeon2Configuration config, Pigeon2 pigeon) {
