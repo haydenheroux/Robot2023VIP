@@ -44,9 +44,7 @@ public class RobotContainer {
     swerve = Swerve.getInstance();
     odometry = Odometry.getInstance();
 
-    TelemetryManager.getInstance().register(arm, claw, sideIntake, swerve, odometry);
-
-    TelemetryManager.getInstance().initializeDashboard();
+    TelemetryManager.getInstance().register(arm, claw, sideIntake, swerve, odometry).initializeDashboards();
 
     SmartDashboard.putData("Arm Mechanism", Mechanisms.getInstance().getArmMechanism());
 

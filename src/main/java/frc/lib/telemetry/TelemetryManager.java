@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** Manages automatic initialization and outputting of {@link TelemetryOutputter} objects. */
-public class TelemetryManager implements TelemetryOutputter {
+public class TelemetryManager {
   // Singleton instance
   private static TelemetryManager instance = null;
 
@@ -24,17 +24,20 @@ public class TelemetryManager implements TelemetryOutputter {
    * Registers multiple {@link TelemetryOutputter} objects to the manager.
    *
    * @param telemetryOutputters objects to register.
+   * @return the telemetry manager.
    */
-  public void register(TelemetryOutputter... telemetryOutputters) {
+  public TelemetryManager register(TelemetryOutputter... telemetryOutputters) {
     this.telemetryOutputters = Arrays.asList(telemetryOutputters);
+
+    return this;
   }
 
-  @Override
-  public void initializeDashboard() {
+  public TelemetryManager initializeDashboards() {
     telemetryOutputters.forEach(TelemetryOutputter::initializeDashboard);
+
+    return this;
   }
 
-  @Override
   public void outputTelemetry() {
     telemetryOutputters.forEach(TelemetryOutputter::outputTelemetry);
   }
