@@ -56,14 +56,14 @@ public class Constants {
     public static final Translation2d ARM_SHOULDER =
         new Translation2d(0, Units.inchesToMeters(28.72));
     /** Distance from the arm pivot point to the end of the static section. */
-    public static final double ARM_STATIC_SECTION_LENGTH = Units.inchesToMeters(13);
+    public static final double ARM_BASE_LENGTH = Units.inchesToMeters(13);
     /** Distance from the base of the claw to the end of the claw. */
     public static final double CLAW_LENGTH = Units.inchesToMeters(12);
     /**
      * Difference between the total length of the arm (distance from the shoulder to end of claw)
      * and the length of the extending section.
      */
-    public static final double LENGTH_OFFSET = ARM_STATIC_SECTION_LENGTH + CLAW_LENGTH;
+    public static final double LENGTH_OFFSET = ARM_BASE_LENGTH + CLAW_LENGTH;
     /**
      * Distance between the center axis of the robot (in line with the arm shoulder) to the edge of
      * the bumpers.
@@ -137,9 +137,10 @@ public class Constants {
       /** Maximum telescoping section length error. */
       public static final double TOLERANCE = 0.01;
 
-      public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.telescopingGravityCompensation(
-              -Math.sqrt(2), -Math.sqrt(2), Rotation2d.fromDegrees(-45));
+      public static final TelescopingArmFeedforward FEEDFORWARD = new TelescopingArmFeedforward();
+      static {
+        FEEDFORWARD.kG = TelescopingArmFeedforward.telescopingKG(-1 * Math.sqrt(2), new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-45)));
+      }
 
       /** Constants for telescoping using a PID control algorithm. */
       public static class PID {
@@ -168,15 +169,9 @@ public class Constants {
       /** Maximum angle error of the arm. */
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
-      // TODO To find values for KG, find a reasonable estimate using the characterize command
-      // TODO Then, allow the arm to sag until it does not pivot (e.g. omega = 0)
-      // TODO When this happens, the estimate is able to hold the arm at that pivot angle (theta)
-      // TODO To find the value for KG, divide the estimate by the *cosine* of theta
-      public static final TelescopingArmFeedforward FEEDFORWARD =
-          TelescopingArmFeedforward.pivotGravityCompensation(0.485379718516, 0.485379718516, 0.635);
-
+      public static final TelescopingArmFeedforward FEEDFORWARD = new TelescopingArmFeedforward();
       static {
-        FEEDFORWARD.kO = 0.0; // Offset voltage
+        FEEDFORWARD.kG = TelescopingArmFeedforward.pivotKG(0.4, new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-34.504434)));
       }
 
       /** Constants for pivoting using a PID control algorithm. */

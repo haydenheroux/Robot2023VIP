@@ -81,7 +81,7 @@ public class Mechanisms {
         armRoot.append(
             new MechanismLigament2d(
                 "armRotation",
-                metersToMechanism(Constants.Physical.ARM_STATIC_SECTION_LENGTH),
+                metersToMechanism(Constants.Physical.ARM_BASE_LENGTH),
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(2)),
                 kLockedColor));
@@ -139,10 +139,10 @@ public class Mechanisms {
   /**
    * Sets the angle of the arm superstructure component.
    *
-   * @param angleRotations angle of the arm.
+   * @param angle angle of the arm.
    */
-  private void setAngle(double angleRotations) {
-    armRotation.setAngle(Rotation2d.fromRotations(angleRotations));
+  private void setAngle(Rotation2d angle) {
+    armRotation.setAngle(angle);
   }
 
   /**
@@ -198,8 +198,8 @@ public class Mechanisms {
    * @param isLocked brake states of the arm.
    */
   public void updateArm(ArmPosition position, Arm.Selector isLocked) {
-    setAngle(position.getSensorAngle());
-    setLength(position.getSensorLength());
+    setAngle(position.getAngle());
+    setLength(position.getExtension());
     setBrake(isLocked);
     setConstraint(position);
   }

@@ -59,8 +59,8 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
   public void setPosition(ArmPosition position) {
     this.position = position;
 
-    io.setTelescopingPosition(position.getSensorLength());
-    io.setPivotPosition(position.getSensorAngle());
+    io.setTelescopingPosition(position.getExtension());
+    io.setPivotPosition(position.getAngle().getRotations());
   }
 
   /**
@@ -201,11 +201,11 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
    *
    * @param setpoint
    */
-  public void setSetpoint(double sensorLengthMeters, double sensorAngleRotations) {
-    this.setpoint = ArmPosition.fromValues(sensorLengthMeters, sensorAngleRotations);
+  public void setSetpoint(ArmPosition setpoint) {
+    this.setpoint = setpoint;
 
-    io.setTelescopingSetpoint(sensorLengthMeters);
-    io.setPivotSetpoint(sensorAngleRotations);
+    io.setTelescopingSetpoint(setpoint.getExtension());
+    io.setPivotSetpoint(setpoint.getAngle().getRotations());
   }
 
   @Override
@@ -259,20 +259,20 @@ public class Arm extends SubsystemBase implements TelemetryOutputter {
         tab.getLayout("Position", BuiltInLayouts.kList).withPosition(3, 0).withSize(2, 4);
 
     positionLayout.addNumber("Arm Length (m)", () -> position.getLength());
-    positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngleDegrees());
+    positionLayout.addNumber("Arm Angle (deg)", () -> position.getAngle().getDegrees());
 
     ShuffleboardLayout setpointLayout =
         tab.getLayout("Setpoint", BuiltInLayouts.kList).withPosition(5, 0).withSize(2, 4);
 
     setpointLayout.addNumber("Arm Length Setpoint (m)", () -> setpoint.getLength());
-    setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngleDegrees());
+    setpointLayout.addNumber("Arm Angle Setpoint (deg)", () -> setpoint.getAngle().getDegrees());
     setpointLayout.addBoolean("At Setpoint?", () -> position.at(setpoint));
 
     ShuffleboardLayout goalLayout =
         tab.getLayout("Goal", BuiltInLayouts.kList).withPosition(7, 0).withSize(2, 4);
 
     goalLayout.addNumber("Arm Length Goal (m)", () -> goal.getLength());
-    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngleDegrees());
+    goalLayout.addNumber("Arm Angle Goal (deg)", () -> goal.getAngle().getDegrees());
     goalLayout.addBoolean("At Goal?", () -> position.at(goal));
   }
 
