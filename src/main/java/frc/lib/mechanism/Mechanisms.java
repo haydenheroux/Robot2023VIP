@@ -42,7 +42,6 @@ public class Mechanisms {
 
   // Colors for static superstructure components
   private final Color8Bit kDefaultColor = new Color8Bit(Color.kGray);
-  private final Color8Bit kBumpersColor = new Color8Bit(Color.kFirstRed);
 
   // Colors for arm superstructure components
   private final Color8Bit kLockedColor = kDefaultColor;
@@ -55,11 +54,6 @@ public class Mechanisms {
   private final Color8Bit kIntakeHoldingCubeColor = new Color8Bit(Color.kPurple);
   private final Color8Bit kIntakeAcceptingColor = new Color8Bit(Color.kLawnGreen);
   private final Color8Bit kIntakeEjectingColor = new Color8Bit(Color.kOrangeRed);
-
-  // Static superstructure components
-  private final Mechanism2d bumpersMechanism;
-  private final MechanismRoot2d bumpersRoot;
-  private final MechanismLigament2d bumpers;
 
   // Arm superstructure components
   // Mechanism rending handle; "canvas"
@@ -74,7 +68,6 @@ public class Mechanisms {
 
   /** Initializes superstructure components. */
   private Mechanisms() {
-    bumpersMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
     armMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
     sideIntakeMechanism = new Mechanism2d(kMechanismWidth, kMechanismHeight);
 
@@ -125,21 +118,6 @@ public class Mechanisms {
                 Math.toDegrees(0),
                 metersToMechanismThickness(Units.inchesToMeters(4)),
                 kIntakeDisabledColor));
-
-    bumpersRoot =
-        bumpersMechanism.getRoot(
-            "bumpersRoot",
-            (kMechanismWidth / 2) - metersToMechanism(Constants.Physical.BUMPER_DISTANCE),
-            metersToMechanism(Units.inchesToMeters(7.5)) / 2);
-
-    bumpers =
-        bumpersRoot.append(
-            new MechanismLigament2d(
-                "bumpers",
-                metersToMechanism(2 * Constants.Physical.BUMPER_DISTANCE),
-                0,
-                metersToMechanismThickness(Units.inchesToMeters(7.5)),
-                kBumpersColor));
   }
 
   public static Mechanisms getInstance() {
@@ -156,10 +134,6 @@ public class Mechanisms {
 
   public Mechanism2d getSideIntakeMechanism() {
     return sideIntakeMechanism;
-  }
-
-  public Mechanism2d getBumpersMechanism() {
-    return bumpersMechanism;
   }
 
   /**
