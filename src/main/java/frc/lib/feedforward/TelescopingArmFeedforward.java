@@ -27,8 +27,7 @@ public class TelescopingArmFeedforward {
 
   public TelescopingArmFeedforward() {}
 
-  public double calculatePivot(
-      Rotation2d theta, double length) {
+  public double calculatePivot(Rotation2d theta, double length) {
     return kG * theta.getCos() + kL * theta.getCos() * length + kO;
   }
 

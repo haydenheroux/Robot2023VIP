@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
-import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
+import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
 
 /**
  * Controls a swerve module.

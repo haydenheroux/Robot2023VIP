@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 

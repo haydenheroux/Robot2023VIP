@@ -138,8 +138,12 @@ public class Constants {
       public static final double TOLERANCE = 0.01;
 
       public static final TelescopingArmFeedforward FEEDFORWARD = new TelescopingArmFeedforward();
+
       static {
-        FEEDFORWARD.kG = TelescopingArmFeedforward.telescopingKG(-1 * Math.sqrt(2), new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-45)));
+        FEEDFORWARD.kG =
+            TelescopingArmFeedforward.telescopingKG(
+                -1.41421,
+                new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-45)));
       }
 
       /** Constants for telescoping using a PID control algorithm. */
@@ -170,8 +174,11 @@ public class Constants {
       public static final Rotation2d TOLERANCE = Rotation2d.fromDegrees(1);
 
       public static final TelescopingArmFeedforward FEEDFORWARD = new TelescopingArmFeedforward();
+
       static {
-        FEEDFORWARD.kG = TelescopingArmFeedforward.pivotKG(0.4, new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-34.504434)));
+        FEEDFORWARD.kG =
+            TelescopingArmFeedforward.pivotKG(
+                0.4, new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-34.504434)));
       }
 
       /** Constants for pivoting using a PID control algorithm. */

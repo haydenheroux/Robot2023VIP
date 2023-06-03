@@ -3,7 +3,6 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
 
