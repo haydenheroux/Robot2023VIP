@@ -44,7 +44,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   private final GyroIO gyro;
   private final GyroIOValues gyroValues = new GyroIOValues();
 
-  private final Supplier<SwerveModulePosition[]> ArmPosition;
+  private final Supplier<SwerveModulePosition[]> positions;
 
   private final Field2d field;
 
@@ -56,13 +56,13 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
 
-    ArmPosition = () -> Swerve.getInstance().getArmPosition();
+    positions = () -> Swerve.getInstance().getPositions();
 
     poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.Swerve.KINEMATICS,
             new Rotation2d(),
-            ArmPosition.get(),
+            positions.get(),
             new Pose2d(),
             stateStandardDeviations,
             visionStandardDeviations);
@@ -83,7 +83,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public void periodic() {
     gyro.updateValues(gyroValues);
 
-    poseEstimator.update(getYaw(), ArmPosition.get());
+    poseEstimator.update(getYaw(), positions.get());
 
     field.setRobotPose(getPose());
   }
@@ -143,7 +143,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param pose tne position of the robot on the field.
    */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), ArmPosition.get(), pose);
+    poseEstimator.resetPosition(getYaw(), positions.get(), pose);
   }
 
   /**
