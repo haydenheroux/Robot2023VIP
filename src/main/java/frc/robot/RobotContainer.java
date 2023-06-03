@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
-import frc.robot.arm.Arm.Selector;
 import frc.robot.arm.ArmPosition;
 import frc.robot.auto.Auto;
 import frc.robot.intake.Claw;
@@ -83,13 +82,13 @@ public class RobotContainer {
     shouldExtend.whileTrue(arm.manualExtend(extensionAxis));
     shouldRotate.whileTrue(arm.manualRotate(rotationAxis));
 
-    operator.a().whileTrue(arm.characterize(Selector.kPivot, "characterizePivot"));
-    operator.b().whileTrue(arm.characterize(Selector.kTelescoping, "characterizeTelescoping"));
+    operator.a().whileTrue(arm.toGoal(ArmPosition.SCORE_L2));
+    operator.b().whileTrue(arm.toGoal(ArmPosition.SCORE_L3));
     operator.x().whileTrue(arm.toGoal(ArmPosition.STOW));
     operator.y().whileTrue(arm.toGoal(ArmPosition.SCORE_GROUND));
 
-    operator.leftTrigger(0.5).onTrue(claw.accept()).onFalse(claw.holdOrDisable());
-    operator.rightTrigger(0.5).onTrue(claw.eject()).onFalse(claw.disable());
+    operator.leftTrigger().onTrue(claw.accept()).onFalse(claw.holdOrDisable());
+    operator.rightTrigger().onTrue(claw.eject()).onFalse(claw.disable());
 
     operator.leftBumper().onTrue(sideIntake.accept()).onFalse(sideIntake.holdOrDisable());
     operator.rightBumper().onTrue(sideIntake.eject()).onFalse(sideIntake.disable());
