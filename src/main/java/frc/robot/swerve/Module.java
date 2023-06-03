@@ -49,7 +49,7 @@ public class Module implements TelemetryOutputter {
       driveMotor = new DriveMotorIOSim();
       azimuthEncoder = new AzimuthEncoderIOSim();
     } else {
-      angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.bus);
+      angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.azimuth, config.can.bus);
       driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
       azimuthEncoder =
           new AzimuthEncoderIOCANcoder(

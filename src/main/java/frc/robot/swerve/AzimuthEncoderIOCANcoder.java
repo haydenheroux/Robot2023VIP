@@ -32,21 +32,18 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void configure() {
-    CANcoderConfiguration cfg = Constants.Swerve.AZIMUTH_CONFIG;
+    CANcoderConfiguration encoderConfig = Constants.Swerve.AZIMUTH_CONFIG;
 
-    cfg.MagnetSensor.MagnetOffset = magnetOffset;
+    encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
 
-    ConfigurationApplier.apply(cfg, encoder);
-    // encoder.getConfigurator().apply(cfg);
+    ConfigurationApplier.apply(encoderConfig, encoder);
 
     absolutePosition.setUpdateFrequency(100);
   }
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    if (true) {
-      absolutePosition.refresh();
-    }
+    absolutePosition.refresh();
 
     values.angleRotations = absolutePosition.getValue();
   }

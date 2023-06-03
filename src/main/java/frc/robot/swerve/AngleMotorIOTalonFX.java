@@ -2,8 +2,11 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 
@@ -16,14 +19,18 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   private final PositionVoltage positionController;
 
+  private final int encoderID;
+
   /**
    * Constructs a new TalonFX angle motor.
    *
-   * @param id the CAN ID of the TalonFX.
+   * @param motorID the CAN ID of the TalonFX.
+   * @param encoderID the CAN ID of the CANcoder.
    * @param canbus the name of the CAN bus for the TalonFX.
    */
-  public AngleMotorIOTalonFX(int id, String canbus) {
-    motor = new TalonFX(id, canbus);
+  public AngleMotorIOTalonFX(int motorID, int encoderID, String canbus) {
+    motor = new TalonFX(motorID, canbus);
+    this.encoderID = encoderID;
 
     position = motor.getPosition();
     velocity = motor.getVelocity();
@@ -33,9 +40,12 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void configure() {
-    ConfigurationApplier.apply(Swerve.ANGLE_CONFIG, motor);
+    TalonFXConfiguration motorConfig = Swerve.ANGLE_CONFIG;
 
-    // TODO Use Fused CANcoder?
+    motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
+    motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
+    ConfigurationApplier.apply(motorConfig, motor);
 
     position.setUpdateFrequency(100);
     velocity.setUpdateFrequency(100);
