@@ -10,8 +10,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 
-/** Implements angle motor behaviors for a TalonFX. */
-public class AngleMotorIOTalonFX implements AngleMotorIO {
+/** Implements asteer motor behaviors for a TalonFX. */
+public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   private final TalonFX motor;
 
@@ -22,13 +22,13 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   private final int encoderID;
 
   /**
-   * Constructs a new TalonFX angle motor.
+   * Constructs a new TalonFX steer motor.
    *
    * @param motorID the CAN ID of the TalonFX.
    * @param encoderID the CAN ID of the CANcoder.
    * @param canbus the name of the CAN bus for the TalonFX.
    */
-  public AngleMotorIOTalonFX(int motorID, int encoderID, String canbus) {
+  public SteerMotorIOTalonFX(int motorID, int encoderID, String canbus) {
     motor = new TalonFX(motorID, canbus);
     this.encoderID = encoderID;
 
@@ -40,7 +40,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration motorConfig = Swerve.ANGLE_CONFIG;
+    TalonFXConfiguration motorConfig = Swerve.STEER_CONFIG;
 
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
@@ -52,7 +52,7 @@ public class AngleMotorIOTalonFX implements AngleMotorIO {
   }
 
   @Override
-  public void updateValues(AngleMotorIOValues values) {
+  public void updateValues(SteerMotorValues values) {
     if (true) {
       position.refresh();
       velocity.refresh();

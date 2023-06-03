@@ -4,11 +4,11 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 
 /**
- * Implements angle motor behaviors for a simulated angle motor.
+ * Implements steer motor behaviors for a simulated steer motor.
  *
- * <p>Approximates the behavior of a physical angle motor.
+ * <p>Approximates the behavior of a physical steer motor.
  */
-public class AngleMotorIOSim implements AngleMotorIO {
+public class SteerMotorIOSim implements SteerMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
@@ -16,9 +16,9 @@ public class AngleMotorIOSim implements AngleMotorIO {
 
   private final PIDController angleController;
 
-  /** Constructs a new simulated angle motor. */
-  public AngleMotorIOSim() {
-    angleController = new PIDController(Constants.Swerve.ANGLE_CONFIG.Slot0.kP, 0.0, 0.0);
+  /** Constructs a new simulated steer motor. */
+  public SteerMotorIOSim() {
+    angleController = new PIDController(Constants.Swerve.STEER_CONFIG.Slot0.kP, 0.0, 0.0);
 
     // From Phoenix 6 docs:
     // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous
@@ -30,7 +30,7 @@ public class AngleMotorIOSim implements AngleMotorIO {
   public void configure() {}
 
   @Override
-  public void updateValues(AngleMotorIOValues values) {
+  public void updateValues(SteerMotorValues values) {
     angleRotations += omegaRotationsPerSecond * Constants.LOOP_TIME;
 
     values.angleRotations = angleRotations;

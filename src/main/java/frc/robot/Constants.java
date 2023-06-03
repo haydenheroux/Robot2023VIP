@@ -298,22 +298,22 @@ public class Constants {
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = new CANcoderConfiguration();
 
-    public static final TalonFXConfiguration ANGLE_CONFIG = new TalonFXConfiguration();
+    public static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
 
     static {
-      ANGLE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      STEER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-      ANGLE_CONFIG.Slot0.kP = 40;
-      ANGLE_CONFIG.Slot0.kD = 0.0;
+      STEER_CONFIG.Slot0.kP = 40;
+      STEER_CONFIG.Slot0.kD = 0.0;
 
-      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimit = 40.0;
-      ANGLE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
+      STEER_CONFIG.CurrentLimits.StatorCurrentLimit = 40.0;
+      STEER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
 
-      ANGLE_CONFIG.ClosedLoopGeneral.ContinuousWrap = true;
+      STEER_CONFIG.ClosedLoopGeneral.ContinuousWrap = true;
 
-      ANGLE_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
+      STEER_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
 
-      ANGLE_CONFIG.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
+      STEER_CONFIG.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
     }
 
     public static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();

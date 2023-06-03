@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
-import frc.robot.swerve.AngleMotorIO.AngleMotorIOValues;
+import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 
@@ -27,8 +27,8 @@ public class Module implements TelemetryOutputter {
 
   public final ModuleConfiguration config;
 
-  private final AngleMotorIO angleMotor;
-  private final AngleMotorIOValues angleMotorValues = new AngleMotorIOValues();
+  private final SteerMotorIO steerMotor;
+  private final SteerMotorValues steerMotorValues = new SteerMotorValues();
 
   private final DriveMotorIO driveMotor;
   private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
@@ -45,25 +45,25 @@ public class Module implements TelemetryOutputter {
     this.config = config;
 
     if (Robot.isSimulation()) {
-      angleMotor = new AngleMotorIOSim();
+      steerMotor = new SteerMotorIOSim();
       driveMotor = new DriveMotorIOSim();
       azimuthEncoder = new AzimuthEncoderIOSim();
     } else {
-      angleMotor = new AngleMotorIOTalonFX(config.can.angle, config.can.azimuth, config.can.bus);
+      steerMotor = new SteerMotorIOTalonFX(config.can.angle, config.can.azimuth, config.can.bus);
       driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
       azimuthEncoder =
           new AzimuthEncoderIOCANcoder(
               config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
     }
 
-    angleMotor.configure();
+    steerMotor.configure();
     driveMotor.configure();
 
     azimuthEncoder.configure();
 
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
-    angleMotor.setPosition(azimuthEncoderValues.angleRotations);
+    steerMotor.setPosition(azimuthEncoderValues.angleRotations);
   }
 
   @Override
@@ -76,7 +76,7 @@ public class Module implements TelemetryOutputter {
         () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
     layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
     layout.addNumber(
-        "Omega (dps)", () -> Units.rotationsToDegrees(angleMotorValues.omegaRotationsPerSecond));
+        "Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
   }
 
@@ -87,7 +87,7 @@ public class Module implements TelemetryOutputter {
   public void update() {
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
-    angleMotor.updateValues(angleMotorValues);
+    steerMotor.updateValues(steerMotorValues);
     driveMotor.updateValues(driveMotorValues);
   }
 
@@ -100,15 +100,15 @@ public class Module implements TelemetryOutputter {
   public void setSetpoint(SwerveModuleState setpoint, boolean force) {
     setpoint =
         SwerveModuleState.optimize(
-            setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
+            setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
     driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
 
     if (force == false) {
-      SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(angleMotorValues.angleRotations));
+      SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
     }
 
-    angleMotor.setSetpoint(setpoint.angle.getRotations());
+    steerMotor.setSetpoint(setpoint.angle.getRotations());
 
     if (true) {
       SmartDashboard.putNumber(config.name + "/angle", setpoint.angle.getDegrees());
@@ -124,7 +124,7 @@ public class Module implements TelemetryOutputter {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         driveMotorValues.velocityMetersPerSecond,
-        Rotation2d.fromRotations(angleMotorValues.angleRotations));
+        Rotation2d.fromRotations(steerMotorValues.angleRotations));
   }
 
   /**
@@ -134,6 +134,6 @@ public class Module implements TelemetryOutputter {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveMotorValues.positionMeters, Rotation2d.fromRotations(angleMotorValues.angleRotations));
+        driveMotorValues.positionMeters, Rotation2d.fromRotations(steerMotorValues.angleRotations));
   }
 }
