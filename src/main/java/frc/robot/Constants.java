@@ -142,8 +142,7 @@ public class Constants {
       static {
         FEEDFORWARD.kG =
             TelescopingArmFeedforward.telescopingKG(
-                -1.41421,
-                new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-45)));
+                -1.41421, new ArmPosition(Physical.ARM_BASE_LENGTH, Rotation2d.fromDegrees(-45)));
       }
 
       /** Constants for telescoping using a PID control algorithm. */
