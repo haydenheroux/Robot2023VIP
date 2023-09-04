@@ -11,6 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -23,6 +26,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.odometry.GyroIO.GyroIOValues;
 import frc.robot.swerve.Swerve;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -50,8 +55,28 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private Odometry() {
     if (Robot.isSimulation()) {
+      NetworkTable odometrySim = NetworkTableInstance.getDefault().getTable("odometrySim");
+
+      DoubleSupplier odometryOmegaRotationsPerSecond = () -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond);
+
+      DoubleTopic _rotationsPerSecondPerMetersPerSecond = odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond");
+      _rotationsPerSecondPerMetersPerSecond.publish().setDefault(0.0);
+      DoubleSupplier rotationsPerSecondPerMetersPerSecond = _rotationsPerSecondPerMetersPerSecond.subscribe(0.0);
+
+      DoubleSupplier direction = () -> {
+        ChassisSpeeds robotVelocity = getRobotVelocity();
+        double signX = Math.signum(robotVelocity.vxMetersPerSecond);
+        double signY = Math.signum(robotVelocity.vyMetersPerSecond);
+
+        return (signX < 0 || signY < 0) ? -1.0 : 1.0;
+      };
+
+      DoubleSupplier driftOmegaRotationsPerSecond = () -> direction.getAsDouble() * rotationsPerSecondPerMetersPerSecond.getAsDouble() * getFieldVelocity().getNorm();
+
+      DoubleSupplier omegaRotationsPerSecond = () -> odometryOmegaRotationsPerSecond.getAsDouble() + driftOmegaRotationsPerSecond.getAsDouble();
+
       gyro =
-          new GyroIOSim(() -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond));
+          new GyroIOSim(omegaRotationsPerSecond);
     } else {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
@@ -287,5 +312,19 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
             + robotVelocity.vyMetersPerSecond * rotation.getCos();
 
     return new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
+  }
+
+  /**
+   * Gets the velocity of the robot in the field reference frame.
+   *
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
+   *     Reference Frame</a>
+   * @return the velocity of the robot in the field reference frame.
+   */
+  private Translation2d getFieldVelocity() {
+    final ChassisSpeeds robotVelocity = getRobotVelocity();
+
+    return getFieldVelocity(robotVelocity);
   }
 }
