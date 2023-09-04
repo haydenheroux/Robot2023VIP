@@ -48,8 +48,10 @@ public class Drive extends CommandBase {
 
   private final DoubleSupplier forwardsVelocity, sidewaysVelocity, forwardsHeading, sidewaysHeading;
   private final BooleanSupplier align, sniper;
+  private boolean isDrifting, wasDrifting;
+  private double lastSetHeadingRadians;
 
-  public final PIDController thetaController;
+  public final PIDController driftThetaController, thetaController;
 
   /**
    * Constructs a new drive command.
@@ -81,6 +83,13 @@ public class Drive extends CommandBase {
     this.align = align;
     this.sniper = sniper;
 
+    isDrifting = false;
+    wasDrifting = false;
+    lastSetHeadingRadians = Math.toRadians(0.0);
+
+    driftThetaController = new PIDController(Theta.KP * 4.0, 0, 0);
+    driftThetaController.enableContinuousInput(-Math.PI, Math.PI);
+
     thetaController = new PIDController(Theta.KP, 0, 0);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -90,6 +99,13 @@ public class Drive extends CommandBase {
 
   @Override
   public void execute() {
+    if (isDrifting && !wasDrifting)
+      lastSetHeadingRadians = Odometry.getInstance().getRotation().getRadians();
+
+    System.out.println(lastSetHeadingRadians);
+
+    wasDrifting = isDrifting;
+
     Translation2d heading =
         new Translation2d(forwardsHeading.getAsDouble(), sidewaysHeading.getAsDouble());
 
@@ -124,23 +140,36 @@ public class Drive extends CommandBase {
   private double getRequestedOmega(Translation2d heading, boolean aligning) {
     double maxSpeed = Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
 
-    if (!aligning) {
+    final double kMinRequestedOmegaThreshold = 0.1;
+
+    boolean omegaRequested = Math.abs(heading.getY()) > kMinRequestedOmegaThreshold;
+
+    if (!aligning && omegaRequested) {
+      isDrifting = false;
+
       double percent = MathUtil.clamp(heading.getY(), -1, 1);
       return maxSpeed * percent;
     }
 
+    final double yawRadians = Odometry.getInstance().getRotation().getRadians();
+
     final double kMinHeadingDisplacement = 0.7;
 
     if (heading.getNorm() < kMinHeadingDisplacement) {
-      return 0.0;
+      isDrifting = true;
+
+      double omega = driftThetaController.calculate(yawRadians, lastSetHeadingRadians);
+
+      return MathUtil.clamp(omega, -maxSpeed, maxSpeed);
     }
+
+    isDrifting = false;
 
     final double kSnapMultiple = Units.degreesToRadians(45);
 
-    double yawRadians = Odometry.getInstance().getRotation().getRadians();
-
     double headingRadians = heading.getAngle().getRadians();
     headingRadians = snapToNearest(headingRadians, kSnapMultiple);
+    lastSetHeadingRadians = headingRadians;
 
     double omega = thetaController.calculate(yawRadians, headingRadians);
 

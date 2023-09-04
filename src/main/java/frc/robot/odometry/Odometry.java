@@ -26,7 +26,6 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.odometry.GyroIO.GyroIOValues;
 import frc.robot.swerve.Swerve;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -57,26 +56,36 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       NetworkTable odometrySim = NetworkTableInstance.getDefault().getTable("odometrySim");
 
-      DoubleSupplier odometryOmegaRotationsPerSecond = () -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond);
+      DoubleSupplier odometryOmegaRotationsPerSecond =
+          () -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond);
 
-      DoubleTopic _rotationsPerSecondPerMetersPerSecond = odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond");
+      DoubleTopic _rotationsPerSecondPerMetersPerSecond =
+          odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond");
       _rotationsPerSecondPerMetersPerSecond.publish().setDefault(0.0);
-      DoubleSupplier rotationsPerSecondPerMetersPerSecond = _rotationsPerSecondPerMetersPerSecond.subscribe(0.0);
+      DoubleSupplier rotationsPerSecondPerMetersPerSecond =
+          _rotationsPerSecondPerMetersPerSecond.subscribe(0.0);
 
-      DoubleSupplier direction = () -> {
-        ChassisSpeeds robotVelocity = getRobotVelocity();
-        double signX = Math.signum(robotVelocity.vxMetersPerSecond);
-        double signY = Math.signum(robotVelocity.vyMetersPerSecond);
+      DoubleSupplier direction =
+          () -> {
+            ChassisSpeeds robotVelocity = getRobotVelocity();
+            double signX = Math.signum(robotVelocity.vxMetersPerSecond);
+            double signY = Math.signum(robotVelocity.vyMetersPerSecond);
 
-        return (signX < 0 || signY < 0) ? -1.0 : 1.0;
-      };
+            return (signX < 0 || signY < 0) ? -1.0 : 1.0;
+          };
 
-      DoubleSupplier driftOmegaRotationsPerSecond = () -> direction.getAsDouble() * rotationsPerSecondPerMetersPerSecond.getAsDouble() * getFieldVelocity().getNorm();
+      DoubleSupplier driftOmegaRotationsPerSecond =
+          () ->
+              direction.getAsDouble()
+                  * rotationsPerSecondPerMetersPerSecond.getAsDouble()
+                  * getFieldVelocity().getNorm();
 
-      DoubleSupplier omegaRotationsPerSecond = () -> odometryOmegaRotationsPerSecond.getAsDouble() + driftOmegaRotationsPerSecond.getAsDouble();
+      DoubleSupplier omegaRotationsPerSecond =
+          () ->
+              odometryOmegaRotationsPerSecond.getAsDouble()
+                  + driftOmegaRotationsPerSecond.getAsDouble();
 
-      gyro =
-          new GyroIOSim(omegaRotationsPerSecond);
+      gyro = new GyroIOSim(omegaRotationsPerSecond);
     } else {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
     }
