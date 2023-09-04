@@ -18,7 +18,7 @@ public class TelemetryData {
 
     for (int i = 0; i < 4; i++) {
       SwerveModuleState state = states[i];
-      doubles[2 * i] = state.angle.getRadians();
+      doubles[2 * i] = state.angle.getDegrees();
       doubles[2 * i + 1] = state.speedMetersPerSecond;
     }
 
