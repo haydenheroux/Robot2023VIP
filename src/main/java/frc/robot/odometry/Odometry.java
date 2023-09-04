@@ -52,7 +52,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final Field2d field;
 
-  private Pose2d tripStartPose; 
+  private Pose2d tripStartPose;
 
   private Odometry() {
     if (Robot.isSimulation()) {
@@ -183,19 +183,19 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(getYaw(), positions.get(), pose);
   }
-  
+
   /**
-   * Gets the relative distance between the estimated position of the robot on the field and a previously set position.
-   * 
-   * @return the relative distance between the restimated position of the robot on the field and a previously set position. 
+   * Gets the relative distance between the estimated position of the robot on the field and a
+   * previously set position.
+   *
+   * @return the relative distance between the restimated position of the robot on the field and a
+   *     previously set position.
    */
   public Translation2d getTripMeter() {
     return getPose().minus(tripStartPose).getTranslation();
   }
 
-  /**
-   * Sets the position for {@link #getTripMeter()}.
-   */
+  /** Sets the position for {@link #getTripMeter()}. */
   public void resetTripMeter() {
     tripStartPose = getPose();
   }

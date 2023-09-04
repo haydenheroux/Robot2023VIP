@@ -3,7 +3,6 @@ package frc.robot.auto;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -92,15 +91,19 @@ public class Auto {
   }
 
   public static Command driveDistanceX(double dX, double vX) {
-    final BooleanSupplier tripXExceeded = () -> Math.abs(odometry.getTripMeter().getX()) >= Math.abs(dX);
+    final BooleanSupplier tripXExceeded =
+        () -> Math.abs(odometry.getTripMeter().getX()) >= Math.abs(dX);
 
-    return Commands.runOnce(() -> odometry.resetTripMeter()).andThen(drive(vX, 0).until(tripXExceeded));
+    return Commands.runOnce(() -> odometry.resetTripMeter())
+        .andThen(drive(vX, 0).until(tripXExceeded));
   }
 
   public static Command driveDistanceY(double dY, double vY) {
-    final BooleanSupplier tripYExceeded = () -> Math.abs(odometry.getTripMeter().getY()) >= Math.abs(dY);
+    final BooleanSupplier tripYExceeded =
+        () -> Math.abs(odometry.getTripMeter().getY()) >= Math.abs(dY);
 
-    return Commands.runOnce(() -> odometry.resetTripMeter()).andThen(drive(0, vY).until(tripYExceeded));
+    return Commands.runOnce(() -> odometry.resetTripMeter())
+        .andThen(drive(0, vY).until(tripYExceeded));
   }
 
   public static Command driveOdometryTestX(double dX, double vX) {
