@@ -5,6 +5,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
@@ -52,7 +54,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final Field2d field;
 
-  private Pose2d tripStartPose;
+  private Pose2d tripStart;
 
   private Odometry() {
     if (Robot.isSimulation()) {
@@ -107,7 +109,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
     field = new Field2d();
 
-    tripStartPose = getPose();
+    tripStart = getPose();
   }
 
   public static Odometry getInstance() {
@@ -147,6 +149,14 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
     position.addNumber("X (m)", () -> getPose().getX());
     position.addNumber("Y (m)", () -> getPose().getY());
+
+    ShuffleboardLayout trip = tab.getLayout("Trip Meter", BuiltInLayouts.kList);
+    trip.addNumber("Trip Start X (m)", () -> tripStart.getX());
+    trip.addNumber("Trip Start Y (m)", () -> tripStart.getY());
+    trip.addNumber("Trip Distance X (m)", () -> getTripDistance().getX());
+    trip.addNumber("Trip Distance Y (m)", () -> getTripDistance().getY());
+    trip.addNumber("Trip Distance (m)", () -> getTripDistance().getTranslation().getNorm());
+    trip.add(Commands.runOnce(this::resetTripStart).withName("Reset Trip Meter"));
 
     ShuffleboardLayout robotVelocity = tab.getLayout("Robot Velocity", BuiltInLayouts.kList);
     robotVelocity.addNumber("X Velocity (mps)", () -> getRobotVelocity().vxMetersPerSecond);
@@ -191,13 +201,13 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @return the relative distance between the restimated position of the robot on the field and a
    *     previously set position.
    */
-  public Translation2d getTripMeter() {
-    return getPose().minus(tripStartPose).getTranslation();
+  public Transform2d getTripDistance() {
+    return new Transform2d(tripStart, getPose());
   }
 
-  /** Sets the position for {@link #getTripMeter()}. */
-  public void resetTripMeter() {
-    tripStartPose = getPose();
+  /** Sets the position for {@link #getTripDistance()}. */
+  public void resetTripStart() {
+    tripStart = getPose();
   }
 
   /**
