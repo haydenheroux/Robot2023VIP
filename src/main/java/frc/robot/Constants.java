@@ -339,5 +339,9 @@ public class Constants {
     public static class Theta {
       public static final double KP = 4.0;
     }
+
+    public static class Drift {
+      public static final double KP = 24.0;
+    }
   }
 }

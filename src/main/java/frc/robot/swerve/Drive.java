@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve.Drift;
 import frc.robot.Constants.Swerve.Theta;
 import frc.robot.odometry.Odometry;
 import java.util.function.BooleanSupplier;
@@ -49,7 +50,7 @@ public class Drive extends CommandBase {
   private final DoubleSupplier forwardsVelocity, sidewaysVelocity, forwardsHeading, sidewaysHeading;
   private final BooleanSupplier align, sniper;
   private boolean isDrifting, wasDrifting;
-  private double lastSetHeadingRadians;
+  private double setHeadingRadians;
 
   public final PIDController driftThetaController, thetaController;
 
@@ -85,9 +86,9 @@ public class Drive extends CommandBase {
 
     isDrifting = false;
     wasDrifting = false;
-    lastSetHeadingRadians = Math.toRadians(0.0);
+    setHeadingRadians = Math.toRadians(0.0);
 
-    driftThetaController = new PIDController(Theta.KP * 4.0, 0, 0);
+    driftThetaController = new PIDController(Drift.KP, 0, 0);
     driftThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     thetaController = new PIDController(Theta.KP, 0, 0);
@@ -99,21 +100,20 @@ public class Drive extends CommandBase {
 
   @Override
   public void execute() {
-    if (isDrifting && !wasDrifting)
-      lastSetHeadingRadians = Odometry.getInstance().getRotation().getRadians();
-
-    System.out.println(lastSetHeadingRadians);
-
-    wasDrifting = isDrifting;
-
     Translation2d heading =
         new Translation2d(forwardsHeading.getAsDouble(), sidewaysHeading.getAsDouble());
-
-    double omega = getRequestedOmega(heading, align.getAsBoolean());
 
     Translation2d velocity =
         new Translation2d(forwardsVelocity.getAsDouble(), sidewaysVelocity.getAsDouble())
             .times(Constants.Swerve.MAX_SPEED);
+
+    wasDrifting = isDrifting;
+    isDrifting = determineIfDrifting(heading, align.getAsBoolean());
+
+    if (isDrifting && !wasDrifting)
+      setHeadingRadians = Odometry.getInstance().getRotation().getRadians();
+
+    double omega = getRequestedOmega(heading, align.getAsBoolean());
 
     ChassisSpeeds chassisSpeeds = getChassisVelocity(velocity, omega, sniper.getAsBoolean());
 
@@ -131,6 +131,25 @@ public class Drive extends CommandBase {
   }
 
   /**
+   * Determines if the robot has its heading under control by the driver, or is drifting.
+   *
+   * @param heading the translation of the heading axis.
+   * @param aligning true if aligning to a specific heading.
+   * @return true if the robot is drifting.
+   */
+  private boolean determineIfDrifting(Translation2d heading, boolean aligning) {
+    if (aligning) {
+      final double kMinHeadingDisplacement = 0.7;
+
+      return heading.getNorm() < kMinHeadingDisplacement;
+    }
+
+    final double kOmegaDeadband = 0.1;
+
+    return Math.abs(heading.getY()) < kOmegaDeadband;
+  }
+
+  /**
    * Gets the angular speed for a heading and mode, in radians per second.
    *
    * @param heading the translation of the heading axis.
@@ -138,42 +157,32 @@ public class Drive extends CommandBase {
    * @return the angular speed for a heading and mode, in radians per second.
    */
   private double getRequestedOmega(Translation2d heading, boolean aligning) {
-    double maxSpeed = Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
-
-    final double kMinRequestedOmegaThreshold = 0.1;
-
-    boolean omegaRequested = Math.abs(heading.getY()) > kMinRequestedOmegaThreshold;
-
-    if (!aligning && omegaRequested) {
-      isDrifting = false;
-
-      double percent = MathUtil.clamp(heading.getY(), -1, 1);
-      return maxSpeed * percent;
-    }
+    final double maxAngularSpeedOmegaRadiansPerSecond =
+        Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
 
     final double yawRadians = Odometry.getInstance().getRotation().getRadians();
 
-    final double kMinHeadingDisplacement = 0.7;
+    double omegaRadiansPerSecond = 0.0;
 
-    if (heading.getNorm() < kMinHeadingDisplacement) {
-      isDrifting = true;
+    if (aligning) {
+      final double kSnapMultiple = Units.degreesToRadians(45);
 
-      double omega = driftThetaController.calculate(yawRadians, lastSetHeadingRadians);
+      setHeadingRadians = heading.getAngle().getRadians();
+      setHeadingRadians = snapToNearest(setHeadingRadians, kSnapMultiple);
 
-      return MathUtil.clamp(omega, -maxSpeed, maxSpeed);
+      omegaRadiansPerSecond = thetaController.calculate(yawRadians, setHeadingRadians);
+    } else {
+      omegaRadiansPerSecond = heading.getY() * maxAngularSpeedOmegaRadiansPerSecond;
     }
 
-    isDrifting = false;
+    if (isDrifting) {
+      omegaRadiansPerSecond += driftThetaController.calculate(yawRadians, setHeadingRadians);
+    }
 
-    final double kSnapMultiple = Units.degreesToRadians(45);
-
-    double headingRadians = heading.getAngle().getRadians();
-    headingRadians = snapToNearest(headingRadians, kSnapMultiple);
-    lastSetHeadingRadians = headingRadians;
-
-    double omega = thetaController.calculate(yawRadians, headingRadians);
-
-    return MathUtil.clamp(omega, -maxSpeed, maxSpeed);
+    return MathUtil.clamp(
+        omegaRadiansPerSecond,
+        -maxAngularSpeedOmegaRadiansPerSecond,
+        maxAngularSpeedOmegaRadiansPerSecond);
   }
 
   /**
