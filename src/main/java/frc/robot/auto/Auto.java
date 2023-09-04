@@ -3,6 +3,8 @@ package frc.robot.auto;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -88,6 +90,22 @@ public class Auto {
           swerve.setSetpoints(setpoints, false);
         },
         swerve);
+  }
+
+  public static Command driveDistanceX(double dX, double vX) {
+    return Commands.runOnce(() -> odometry.setPose(new Pose2d())).andThen(drive(vX, 0).until(() -> Math.abs(odometry.getPose().getX()) >= Math.abs(dX)));
+  }
+
+  public static Command driveDistanceY(double dY, double vY) {
+    return Commands.runOnce(() -> odometry.setPose(new Pose2d())).andThen(drive(0, vY).until(() -> Math.abs(odometry.getPose().getY()) >= Math.abs(dY)));
+  }
+
+  public static Command driveOdometryTestX(double dX, double vX) {
+    return Commands.sequence(driveDistanceX(dX, vX), driveDistanceX(-dX, -vX));
+  }
+
+  public static Command driveOdometryTestY(double dY, double vY) {
+    return Commands.sequence(driveDistanceY(dY, vY), driveDistanceY(-dY, -vY));
   }
 
   private static final double TIP_FLAP_SPEED = 2.1;

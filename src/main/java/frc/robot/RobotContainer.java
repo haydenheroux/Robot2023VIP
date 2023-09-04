@@ -121,6 +121,7 @@ public class RobotContainer {
    * @return the command to run during autonomous.
    */
   public Command getAutonomousCommand() {
-    return Auto.BUILDER.fullAuto(pathChooser.getSelected());
+    //return Auto.BUILDER.fullAuto(pathChooser.getSelected());
+    return Auto.driveOdometryTestY(4.0, 1.0);
   }
 }
