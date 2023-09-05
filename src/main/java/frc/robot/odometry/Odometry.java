@@ -12,7 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -63,11 +63,9 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       DoubleSupplier odometryOmegaRotationsPerSecond =
           () -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond);
 
-      DoubleTopic _rotationsPerSecondPerMetersPerSecond =
-          odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond");
-      _rotationsPerSecondPerMetersPerSecond.publish().setDefault(0.0);
-      DoubleSupplier rotationsPerSecondPerMetersPerSecond =
-          _rotationsPerSecondPerMetersPerSecond.subscribe(0.0);
+      DoubleEntry rotationsPerSecondPerMetersPerSecond =
+          odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond").getEntry(0.0);
+      rotationsPerSecondPerMetersPerSecond.set(0.0);
 
       DoubleSupplier direction =
           () -> {
@@ -81,7 +79,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       DoubleSupplier driftOmegaRotationsPerSecond =
           () ->
               direction.getAsDouble()
-                  * rotationsPerSecondPerMetersPerSecond.getAsDouble()
+                  * rotationsPerSecondPerMetersPerSecond.get()
                   * getFieldVelocity().getNorm();
 
       DoubleSupplier omegaRotationsPerSecond =
