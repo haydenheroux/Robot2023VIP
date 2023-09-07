@@ -160,12 +160,24 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     robotVelocity.addNumber("X Velocity (mps)", () -> getRobotVelocity().vxMetersPerSecond);
     robotVelocity.addNumber("Y Velocity (mps)", () -> getRobotVelocity().vyMetersPerSecond);
     robotVelocity.addNumber(
+        "Velocity (mps)",
+        () -> {
+          ChassisSpeeds robotVelocityChassisSpeeds = getRobotVelocity();
+          Translation2d robotVelocityTranslation =
+              new Translation2d(
+                  robotVelocityChassisSpeeds.vxMetersPerSecond,
+                  robotVelocityChassisSpeeds.vyMetersPerSecond);
+
+          return robotVelocityTranslation.getNorm();
+        });
+    robotVelocity.addNumber(
         "Angular Velocity (dps)",
         () -> Units.radiansToDegrees(getRobotVelocity().omegaRadiansPerSecond));
 
     ShuffleboardLayout fieldVelocity = tab.getLayout("Field Velocity", BuiltInLayouts.kList);
     fieldVelocity.addNumber("X Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getX());
     fieldVelocity.addNumber("Y Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getY());
+    fieldVelocity.addNumber("Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getNorm());
   }
 
   @Override

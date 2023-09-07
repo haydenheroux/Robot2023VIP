@@ -71,7 +71,9 @@ public class Drive extends CommandBase {
   private Rotation2d setHeading = new Rotation2d();
 
   private final NetworkTable table;
-  private final DoublePublisher requestedOmegaDegreesPerSecondPublisher, setHeadingDegreesPublisher;
+  private final DoublePublisher requestedOmegaDegreesPerSecondPublisher,
+      setHeadingDegreesPublisher,
+      headingDeltaDegreesPublisher;
   private final StringPublisher translationModePublisher, rotationModePublisher;
 
   /**
@@ -115,6 +117,7 @@ public class Drive extends CommandBase {
     requestedOmegaDegreesPerSecondPublisher =
         table.getDoubleTopic("requestedOmegaDegreesPerSecond").publish();
     setHeadingDegreesPublisher = table.getDoubleTopic("setHeadingDegrees").publish();
+    headingDeltaDegreesPublisher = table.getDoubleTopic("headingDeltaDegrees").publish();
     translationModePublisher = table.getStringTopic("translationMode").publish();
     rotationModePublisher = table.getStringTopic("rotationMode").publish();
   }
@@ -140,9 +143,12 @@ public class Drive extends CommandBase {
 
     if (isDrifting && wasSpinning) setHeading = Odometry.getInstance().getRotation();
 
+    setHeadingDegreesPublisher.set(setHeading.getDegrees());
+    headingDeltaDegreesPublisher.set(
+        Odometry.getInstance().getRotation().getDegrees() - setHeading.getDegrees());
+
     double requestedOmegaRadiansPerSecond = getRequestedOmega(heading, rotationMode);
 
-    setHeadingDegreesPublisher.set(setHeading.getDegrees());
     requestedOmegaDegreesPerSecondPublisher.set(
         Units.radiansToDegrees(requestedOmegaRadiansPerSecond));
 
