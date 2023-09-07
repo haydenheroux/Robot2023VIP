@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.math.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.Drift;
 import frc.robot.Constants.Swerve.Theta;
@@ -237,7 +238,10 @@ public class Drive extends CommandBase {
         omegaRadiansPerSecond = heading.getY() * maxAngularSpeedOmegaRadiansPerSecond;
         break;
       case SNAPPING:
-        setHeading = snapToNearest(heading.getAngle(), Rotation2d.fromDegrees(45));
+        final double kSnapMultipleDegrees = 90;
+
+        setHeading =
+            Util.snapToNearest(heading.getAngle(), Rotation2d.fromDegrees(kSnapMultipleDegrees));
 
         omegaRadiansPerSecond = thetaController.calculate(yawRadians, setHeading.getRadians());
         break;
@@ -247,24 +251,6 @@ public class Drive extends CommandBase {
         omegaRadiansPerSecond,
         -maxAngularSpeedOmegaRadiansPerSecond,
         maxAngularSpeedOmegaRadiansPerSecond);
-  }
-
-  private Rotation2d snapToNearest(Rotation2d angle, Rotation2d multiple) {
-    double snappedRadians = snapToNearest(angle.getRadians(), multiple.getRadians());
-
-    return Rotation2d.fromRadians(snappedRadians);
-  }
-
-  /**
-   * Gets the number snapped to the nearest multiple.
-   *
-   * @param n the number to snap.
-   * @param multiple the multiple to snap to.
-   * @return the number snapped to the nearest multiple.
-   * @see <a href="https://stackoverflow.com/a/39876671">StackOverflow</a>
-   */
-  private double snapToNearest(double n, double multiple) {
-    return Math.round(n / multiple) * multiple;
   }
 
   /**
