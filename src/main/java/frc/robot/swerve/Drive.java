@@ -2,10 +2,15 @@ package frc.robot.swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.Drift;
@@ -49,10 +54,25 @@ public class Drive extends CommandBase {
 
   private final DoubleSupplier forwardsVelocity, sidewaysVelocity, forwardsHeading, sidewaysHeading;
   private final BooleanSupplier align, sniper;
-  private boolean isDrifting, wasDrifting;
-  private double setHeadingRadians;
-
   public final PIDController driftThetaController, thetaController;
+
+  private enum TranslationMode {
+    FIELD_CENTRIC,
+    ROBOT_CENTRIC
+  }
+
+  private enum RotationMode {
+    DRIFTING,
+    SPINNING,
+    SNAPPING
+  }
+
+  private RotationMode previousRotationMode;
+  private Rotation2d setHeading = new Rotation2d();
+
+  private final NetworkTable table;
+  private final DoublePublisher requestedOmegaDegreesPerSecondPublisher, setHeadingDegreesPublisher;
+  private final StringPublisher translationModePublisher, rotationModePublisher;
 
   /**
    * Constructs a new drive command.
@@ -84,15 +104,19 @@ public class Drive extends CommandBase {
     this.align = align;
     this.sniper = sniper;
 
-    isDrifting = false;
-    wasDrifting = false;
-    setHeadingRadians = Math.toRadians(0.0);
-
     driftThetaController = new PIDController(Drift.KP, 0, 0);
     driftThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     thetaController = new PIDController(Theta.KP, 0, 0);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    table = NetworkTableInstance.getDefault().getTable("driveCommand");
+
+    requestedOmegaDegreesPerSecondPublisher =
+        table.getDoubleTopic("requestedOmegaDegreesPerSecond").publish();
+    setHeadingDegreesPublisher = table.getDoubleTopic("setHeadingDegrees").publish();
+    translationModePublisher = table.getStringTopic("translationMode").publish();
+    rotationModePublisher = table.getStringTopic("rotationMode").publish();
   }
 
   @Override
@@ -100,26 +124,39 @@ public class Drive extends CommandBase {
 
   @Override
   public void execute() {
-    Translation2d heading =
+    final Translation2d velocity =
+        new Translation2d(forwardsVelocity.getAsDouble(), sidewaysVelocity.getAsDouble())
+            .times(getVelocityScalar());
+
+    final Translation2d heading =
         new Translation2d(forwardsHeading.getAsDouble(), sidewaysHeading.getAsDouble());
 
-    Translation2d velocity =
-        new Translation2d(forwardsVelocity.getAsDouble(), sidewaysVelocity.getAsDouble())
-            .times(Constants.Swerve.MAX_SPEED);
+    final TranslationMode translationMode = determineTranslationMode(sniper.getAsBoolean());
 
-    wasDrifting = isDrifting;
-    isDrifting = determineIfDrifting(heading, align.getAsBoolean());
+    final RotationMode rotationMode = determineRotationMode(heading, align.getAsBoolean());
 
-    if (isDrifting && !wasDrifting)
-      setHeadingRadians = Odometry.getInstance().getRotation().getRadians();
+    final boolean isDrifting = rotationMode == RotationMode.DRIFTING;
+    final boolean wasSpinning = previousRotationMode == RotationMode.SPINNING;
 
-    double omega = getRequestedOmega(heading, align.getAsBoolean());
+    if (isDrifting && wasSpinning) setHeading = Odometry.getInstance().getRotation();
 
-    ChassisSpeeds chassisSpeeds = getChassisVelocity(velocity, omega, sniper.getAsBoolean());
+    double requestedOmegaRadiansPerSecond = getRequestedOmega(heading, rotationMode);
+
+    setHeadingDegreesPublisher.set(setHeading.getDegrees());
+    requestedOmegaDegreesPerSecondPublisher.set(
+        Units.radiansToDegrees(requestedOmegaRadiansPerSecond));
+
+    ChassisSpeeds chassisSpeeds =
+        getChassisVelocity(velocity, requestedOmegaRadiansPerSecond, translationMode);
 
     SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
     swerve.setSetpoints(setpoints, false);
+
+    translationModePublisher.set(translationMode.toString());
+    rotationModePublisher.set(rotationMode.toString());
+
+    previousRotationMode = rotationMode;
   }
 
   @Override
@@ -128,6 +165,18 @@ public class Drive extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  private double getVelocityScalar() {
+    if (sniper.getAsBoolean()) return Constants.Swerve.MAX_SPEED * Constants.Swerve.SNIPER_SCALAR;
+
+    return Constants.Swerve.MAX_SPEED;
+  }
+
+  private TranslationMode determineTranslationMode(boolean isSniping) {
+    if (isSniping) return TranslationMode.ROBOT_CENTRIC;
+
+    return TranslationMode.FIELD_CENTRIC;
   }
 
   /**
@@ -149,6 +198,16 @@ public class Drive extends CommandBase {
     return Math.abs(heading.getY()) < kOmegaDeadband;
   }
 
+  private RotationMode determineRotationMode(Translation2d heading, boolean isAligning) {
+    final boolean isDrifting = determineIfDrifting(heading, isAligning);
+
+    if (isDrifting) return RotationMode.DRIFTING;
+
+    if (isAligning) return RotationMode.SNAPPING;
+
+    return RotationMode.SPINNING;
+  }
+
   /**
    * Gets the angular speed for a heading and mode, in radians per second.
    *
@@ -156,7 +215,7 @@ public class Drive extends CommandBase {
    * @param aligning true if aligning to a specific heading.
    * @return the angular speed for a heading and mode, in radians per second.
    */
-  private double getRequestedOmega(Translation2d heading, boolean aligning) {
+  private double getRequestedOmega(Translation2d heading, RotationMode rotationMode) {
     final double maxAngularSpeedOmegaRadiansPerSecond =
         Constants.Swerve.MAX_ANGULAR_SPEED.getRadians();
 
@@ -164,25 +223,30 @@ public class Drive extends CommandBase {
 
     double omegaRadiansPerSecond = 0.0;
 
-    if (aligning) {
-      final double kSnapMultiple = Units.degreesToRadians(45);
+    switch (rotationMode) {
+      case DRIFTING:
+        omegaRadiansPerSecond = driftThetaController.calculate(yawRadians, setHeading.getRadians());
+        break;
+      case SPINNING:
+        omegaRadiansPerSecond = heading.getY() * maxAngularSpeedOmegaRadiansPerSecond;
+        break;
+      case SNAPPING:
+        setHeading = snapToNearest(heading.getAngle(), Rotation2d.fromDegrees(45));
 
-      setHeadingRadians = heading.getAngle().getRadians();
-      setHeadingRadians = snapToNearest(setHeadingRadians, kSnapMultiple);
-
-      omegaRadiansPerSecond = thetaController.calculate(yawRadians, setHeadingRadians);
-    } else {
-      omegaRadiansPerSecond = heading.getY() * maxAngularSpeedOmegaRadiansPerSecond;
-    }
-
-    if (isDrifting) {
-      omegaRadiansPerSecond += driftThetaController.calculate(yawRadians, setHeadingRadians);
+        omegaRadiansPerSecond = thetaController.calculate(yawRadians, setHeading.getRadians());
+        break;
     }
 
     return MathUtil.clamp(
         omegaRadiansPerSecond,
         -maxAngularSpeedOmegaRadiansPerSecond,
         maxAngularSpeedOmegaRadiansPerSecond);
+  }
+
+  private Rotation2d snapToNearest(Rotation2d angle, Rotation2d multiple) {
+    double snappedRadians = snapToNearest(angle.getRadians(), multiple.getRadians());
+
+    return Rotation2d.fromRadians(snappedRadians);
   }
 
   /**
@@ -202,14 +266,12 @@ public class Drive extends CommandBase {
    *
    * @param velocity the requested linear velocity, in meters per second.
    * @param omega the requested angular velocity, in radians per second.
-   * @param sniping true if driving in robot-centric mode and with reduced speed.
    * @return the chassis velocity.
    */
-  private ChassisSpeeds getChassisVelocity(Translation2d velocity, double omega, boolean sniping) {
-    if (sniping) {
-      velocity = velocity.times(Constants.Swerve.SNIPER_SCALAR);
+  private ChassisSpeeds getChassisVelocity(
+      Translation2d velocity, double omega, TranslationMode translationMode) {
+    if (translationMode == TranslationMode.ROBOT_CENTRIC)
       return new ChassisSpeeds(velocity.getX(), velocity.getY(), 0);
-    }
 
     return ChassisSpeeds.fromFieldRelativeSpeeds(
         velocity.getX(), velocity.getY(), omega, Odometry.getInstance().getRotation());
