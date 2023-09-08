@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.lib.feedforward.TelescopingArmFeedforward;
+import frc.lib.controllers.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import frc.robot.swerve.ModuleConfiguration.ModuleCAN;

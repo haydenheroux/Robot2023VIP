@@ -1,4 +1,4 @@
-package frc.lib.feedforward;
+package frc.lib.controllers.feedforward;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.arm.ArmPosition;
