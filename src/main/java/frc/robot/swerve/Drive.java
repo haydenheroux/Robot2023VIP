@@ -1,7 +1,6 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.controllers.pid.SaturatedPIDController;
 import frc.lib.math.Util;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.Drift;
@@ -55,7 +55,7 @@ public class Drive extends CommandBase {
 
   private final DoubleSupplier forwardsVelocity, sidewaysVelocity, forwardsHeading, sidewaysHeading;
   private final BooleanSupplier align, sniper;
-  public final PIDController driftThetaController, thetaController;
+  public final SaturatedPIDController driftThetaController, thetaController;
 
   private enum TranslationMode {
     FIELD_CENTRIC,
@@ -107,11 +107,13 @@ public class Drive extends CommandBase {
     this.align = align;
     this.sniper = sniper;
 
-    driftThetaController = new PIDController(Drift.KP, 0, 0);
+    driftThetaController = new SaturatedPIDController(Drift.KP, 0, 0);
     driftThetaController.enableContinuousInput(-Math.PI, Math.PI);
+    driftThetaController.setSaturation(Drift.SATURATION.getRadians());
 
-    thetaController = new PIDController(Theta.KP, 0, 0);
+    thetaController = new SaturatedPIDController(Theta.KP, 0, 0);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.setSaturation(Theta.SATURATION.getRadians());
 
     table = NetworkTableInstance.getDefault().getTable("driveCommand");
 
@@ -119,6 +121,7 @@ public class Drive extends CommandBase {
         table.getDoubleTopic("requestedOmegaDegreesPerSecond").publish();
     setHeadingDegreesPublisher = table.getDoubleTopic("setHeadingDegrees").publish();
     headingDeltaDegreesPublisher = table.getDoubleTopic("headingDeltaDegrees").publish();
+
     translationModePublisher = table.getStringTopic("translationMode").publish();
     rotationModePublisher = table.getStringTopic("rotationMode").publish();
   }
