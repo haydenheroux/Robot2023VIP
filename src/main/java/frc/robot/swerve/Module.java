@@ -9,11 +9,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Controls a swerve module.
@@ -78,6 +82,7 @@ public class Module implements TelemetryOutputter {
     layout.addNumber(
         "Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
+    layout.add(spinSteerMotor().withName("Spin Steer Motor"));
   }
 
   @Override
@@ -135,5 +140,21 @@ public class Module implements TelemetryOutputter {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         driveMotorValues.positionMeters, Rotation2d.fromRotations(steerMotorValues.angleRotations));
+  }
+
+  public Command spinSteerMotor() {
+    final Rotation2d STRIDE = Rotation2d.fromDegrees(1);
+    final double DELAY_SECONDS = 0.1;
+
+    Supplier<Rotation2d> nextSetpoint = () -> getState().angle.plus(STRIDE);
+
+    Consumer<Rotation2d> setSteerSetpoint =
+        rotation -> steerMotor.setSetpoint(rotation.getRotations());
+
+    Command toNextSetpoint =
+        Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()))
+            .andThen(Commands.waitSeconds(DELAY_SECONDS));
+
+    return toNextSetpoint.repeatedly();
   }
 }
