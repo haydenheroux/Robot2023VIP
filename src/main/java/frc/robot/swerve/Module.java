@@ -85,6 +85,9 @@ public class Module implements TelemetryOutputter {
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
     layout.add(spinSteerMotor(Rotation2d.fromDegrees(1), 0.5).withName("Fine Steer"));
     layout.add(spinSteerMotor(Rotation2d.fromDegrees(20), 0.25).withName("Coarse Steer"));
+
+    layout.add(zeroSteerMotor().withName("Zero Steer"));
+
     layout.add(spinDriveMotor(true).withName("Drive Forwards"));
     layout.add(spinDriveMotor(false).withName("Drive Backwards"));
   }
@@ -152,11 +155,13 @@ public class Module implements TelemetryOutputter {
     Consumer<Rotation2d> setSteerSetpoint =
         rotation -> steerMotor.setSetpoint(rotation.getRotations());
 
-    Command toNextSetpoint =
-        Commands.run(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance())
-            .raceWith(Commands.waitSeconds(timeout));
+    Command toNextSetpoint = Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance()).alongWith(Commands.waitSeconds(timeout));
 
     return toNextSetpoint.repeatedly().finallyDo(interrupted -> setSteerSetpoint.accept(getState().angle));
+  }
+
+  public Command zeroSteerMotor() {
+    return Commands.runOnce(() -> steerMotor.setPosition(0.0));
   }
 
   public Command spinDriveMotor(boolean forwards) {
