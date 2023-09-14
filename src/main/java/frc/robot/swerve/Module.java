@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.telemetry.TelemetryOutputter;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
@@ -84,6 +85,8 @@ public class Module implements TelemetryOutputter {
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
     layout.add(spinSteerMotor(Rotation2d.fromDegrees(1), 0.5).withName("Fine Steer"));
     layout.add(spinSteerMotor(Rotation2d.fromDegrees(20), 0.25).withName("Coarse Steer"));
+    layout.add(spinDriveMotor(true).withName("Drive Forwards"));
+    layout.add(spinDriveMotor(false).withName("Drive Backwards"));
   }
 
   @Override
@@ -150,9 +153,17 @@ public class Module implements TelemetryOutputter {
         rotation -> steerMotor.setSetpoint(rotation.getRotations());
 
     Command toNextSetpoint =
-        Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()))
-            .alongWith(Commands.waitSeconds(timeout));
+        Commands.run(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance())
+            .raceWith(Commands.waitSeconds(timeout));
 
-    return toNextSetpoint.repeatedly();
+    return toNextSetpoint.repeatedly().finallyDo(interrupted -> setSteerSetpoint.accept(getState().angle));
+  }
+
+  public Command spinDriveMotor(boolean forwards) {
+    final double velocityMetersPerSecond = forwards ? Constants.Swerve.MAX_SPEED : -Constants.Swerve.MAX_SPEED;
+
+    Command toFullSpeed = Commands.run(() -> driveMotor.setVelocitySetpoint(velocityMetersPerSecond), Swerve.getInstance());
+
+    return toFullSpeed.finallyDo(interrupted -> driveMotor.setVelocitySetpoint(0.0));
   }
 }
