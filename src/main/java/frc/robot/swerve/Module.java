@@ -82,7 +82,8 @@ public class Module implements TelemetryOutputter {
     layout.addNumber(
         "Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
-    layout.add(spinSteerMotor().withName("Spin Steer Motor"));
+    layout.add(spinSteerMotor(Rotation2d.fromDegrees(1), 0.5).withName("Fine Steer"));
+    layout.add(spinSteerMotor(Rotation2d.fromDegrees(20), 0.25).withName("Coarse Steer"));
   }
 
   @Override
@@ -142,18 +143,15 @@ public class Module implements TelemetryOutputter {
         driveMotorValues.positionMeters, Rotation2d.fromRotations(steerMotorValues.angleRotations));
   }
 
-  public Command spinSteerMotor() {
-    final Rotation2d STRIDE = Rotation2d.fromDegrees(1);
-    final double DELAY_SECONDS = 0.1;
-
-    Supplier<Rotation2d> nextSetpoint = () -> getState().angle.plus(STRIDE);
+  public Command spinSteerMotor(Rotation2d stride, double timeout) {
+    Supplier<Rotation2d> nextSetpoint = () -> getState().angle.plus(stride);
 
     Consumer<Rotation2d> setSteerSetpoint =
         rotation -> steerMotor.setSetpoint(rotation.getRotations());
 
     Command toNextSetpoint =
         Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()))
-            .andThen(Commands.waitSeconds(DELAY_SECONDS));
+            .alongWith(Commands.waitSeconds(timeout));
 
     return toNextSetpoint.repeatedly();
   }

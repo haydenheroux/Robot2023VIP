@@ -20,10 +20,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   /** Constructs a new swerve. */
   private Swerve() {
-    modules[0] = new Module(Constants.Swerve.NORTH_WEST);
-    modules[1] = new Module(Constants.Swerve.NORTH_EAST);
-    modules[2] = new Module(Constants.Swerve.SOUTH_EAST);
-    modules[3] = new Module(Constants.Swerve.SOUTH_WEST);
+    modules[0] = new Module(Constants.Swerve.NORTH_WEST); // FL
+    modules[1] = new Module(Constants.Swerve.NORTH_EAST); // FR
+    modules[2] = new Module(Constants.Swerve.SOUTH_EAST); // BR
+    modules[3] = new Module(Constants.Swerve.SOUTH_WEST); // BL
   }
 
   public static Swerve getInstance() {
