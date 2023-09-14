@@ -155,9 +155,13 @@ public class Module implements TelemetryOutputter {
     Consumer<Rotation2d> setSteerSetpoint =
         rotation -> steerMotor.setSetpoint(rotation.getRotations());
 
-    Command toNextSetpoint = Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance()).alongWith(Commands.waitSeconds(timeout));
+    Command toNextSetpoint =
+        Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance())
+            .alongWith(Commands.waitSeconds(timeout));
 
-    return toNextSetpoint.repeatedly().finallyDo(interrupted -> setSteerSetpoint.accept(getState().angle));
+    return toNextSetpoint
+        .repeatedly()
+        .finallyDo(interrupted -> setSteerSetpoint.accept(getState().angle));
   }
 
   public Command zeroSteerMotor() {
@@ -165,9 +169,12 @@ public class Module implements TelemetryOutputter {
   }
 
   public Command spinDriveMotor(boolean forwards) {
-    final double velocityMetersPerSecond = forwards ? Constants.Swerve.MAX_SPEED : -Constants.Swerve.MAX_SPEED;
+    final double velocityMetersPerSecond =
+        forwards ? Constants.Swerve.MAX_SPEED : -Constants.Swerve.MAX_SPEED;
 
-    Command toFullSpeed = Commands.run(() -> driveMotor.setVelocitySetpoint(velocityMetersPerSecond), Swerve.getInstance());
+    Command toFullSpeed =
+        Commands.run(
+            () -> driveMotor.setVelocitySetpoint(velocityMetersPerSecond), Swerve.getInstance());
 
     return toFullSpeed.finallyDo(interrupted -> driveMotor.setVelocitySetpoint(0.0));
   }
