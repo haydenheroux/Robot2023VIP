@@ -133,10 +133,10 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     tab.add(field);
 
     ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
-    rotation.addNumber("Roll (deg)", () -> getRoll().getDegrees());
-    rotation.addNumber("Pitch (deg)", () -> getPitch().getDegrees());
-    rotation.addNumber("Yaw (deg)", () -> getYaw().getDegrees());
-    rotation.addNumber("Tilt (deg)", () -> getTilt().getDegrees());
+    rotation.addNumber("Gyro Roll (deg)", () -> getRoll().getDegrees());
+    rotation.addNumber("Gyro Pitch (deg)", () -> getPitch().getDegrees());
+    rotation.addNumber("Gyro Yaw (deg)", () -> getYaw().getDegrees());
+    rotation.addNumber("Gyro Tilt (deg)", () -> getTilt().getDegrees());
     rotation.addNumber("Rotation (deg)", () -> getRotation().getDegrees());
 
     ShuffleboardLayout platform = tab.getLayout("Platform", BuiltInLayouts.kList);
