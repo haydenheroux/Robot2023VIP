@@ -8,16 +8,11 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Controls a swerve module.
@@ -82,13 +77,6 @@ public class Module implements TelemetryOutputter {
     layout.addNumber(
         "Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
     layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
-    layout.add(spinSteerMotor(Rotation2d.fromDegrees(1), 0.5).withName("Fine Steer"));
-    layout.add(spinSteerMotor(Rotation2d.fromDegrees(20), 0.25).withName("Coarse Steer"));
-
-    layout.add(zeroSteerMotor().withName("Zero Steer"));
-
-    layout.add(spinDriveMotor(true).withName("Drive Forwards"));
-    layout.add(spinDriveMotor(false).withName("Drive Backwards"));
   }
 
   @Override
@@ -141,35 +129,5 @@ public class Module implements TelemetryOutputter {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         driveMotorValues.positionMeters, Rotation2d.fromRotations(steerMotorValues.angleRotations));
-  }
-
-  public Command spinSteerMotor(Rotation2d stride, double timeout) {
-    Supplier<Rotation2d> nextSetpoint = () -> getState().angle.plus(stride);
-
-    Consumer<Rotation2d> setSteerSetpoint =
-        rotation -> steerMotor.setSetpoint(rotation.getRotations());
-
-    Command toNextSetpoint =
-        Commands.runOnce(() -> setSteerSetpoint.accept(nextSetpoint.get()), Swerve.getInstance())
-            .alongWith(Commands.waitSeconds(timeout));
-
-    return toNextSetpoint
-        .repeatedly()
-        .finallyDo(interrupted -> setSteerSetpoint.accept(getState().angle));
-  }
-
-  public Command zeroSteerMotor() {
-    return Commands.runOnce(() -> steerMotor.setPosition(0.0));
-  }
-
-  public Command spinDriveMotor(boolean forwards) {
-    final double velocityMetersPerSecond =
-        forwards ? Constants.Swerve.MAX_SPEED : -Constants.Swerve.MAX_SPEED;
-
-    Command toFullSpeed =
-        Commands.run(
-            () -> driveMotor.setVelocitySetpoint(velocityMetersPerSecond), Swerve.getInstance());
-
-    return toFullSpeed.finallyDo(interrupted -> driveMotor.setVelocitySetpoint(0.0));
   }
 }
