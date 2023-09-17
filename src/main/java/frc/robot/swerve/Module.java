@@ -117,10 +117,6 @@ public class Module implements TelemetryOutputter {
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
-    if (force == false) {
-      SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
-    }
-
     setSteerMotorSetpoint(setpoint.angle);
     setDriveMotorSetpoint(setpoint.speedMetersPerSecond);
   }
