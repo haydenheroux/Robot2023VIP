@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
+import frc.robot.Constants.Swerve;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
@@ -28,9 +30,11 @@ public class Module implements TelemetryOutputter {
 
   private final SteerMotorIO steerMotor;
   private final SteerMotorValues steerMotorValues = new SteerMotorValues();
+  private double steerMotorSetpointAngleRotations = 0.0; 
 
   private final DriveMotorIO driveMotor;
   private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
+  private double driveMotorSetpointVelocityMetersPerSecond = 0.0;
 
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
@@ -69,14 +73,26 @@ public class Module implements TelemetryOutputter {
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
-    ShuffleboardLayout layout = tab.getLayout(this.config.name, BuiltInLayouts.kList);
-    layout.addNumber(
-        "Absolute Angle (deg)",
+    ShuffleboardLayout valuesLayout = tab.getLayout(this.config.name + " Values", BuiltInLayouts.kList);
+
+    valuesLayout.addNumber(
+        "Azimuth Encoder Absolute Angle (deg)",
         () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
-    layout.addNumber("Angle (deg)", () -> getState().angle.getDegrees());
-    layout.addNumber(
-        "Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
-    layout.addNumber("Velocity (mps)", () -> getState().speedMetersPerSecond);
+    valuesLayout.addNumber("Steer Motor Angle (deg)", () -> getState().angle.getDegrees());
+
+    valuesLayout.addNumber(
+        "Steer Motor Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
+    valuesLayout.addNumber("Drive Motor Velocity (mps)", () -> getState().speedMetersPerSecond);
+
+    ShuffleboardLayout setpointLayout = tab.getLayout(this.config.name + " Setpoints", BuiltInLayouts.kList);
+
+    setpointLayout.addBoolean("At Setpoint?", this::atSetpoint);
+
+    setpointLayout.addDouble("Steer Motor Setpoint (deg)", () -> Units.rotationsToDegrees(steerMotorSetpointAngleRotations));
+    setpointLayout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
+
+    setpointLayout.addDouble("Drive Motor Setpoint (mps)", () -> driveMotorSetpointVelocityMetersPerSecond);
+    setpointLayout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
   }
 
   @Override
@@ -101,13 +117,38 @@ public class Module implements TelemetryOutputter {
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
-    driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
-
     if (force == false) {
       SwerveMath.dejitter(setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
     }
 
-    steerMotor.setSetpoint(setpoint.angle.getRotations());
+    setSteerMotorSetpoint(setpoint.angle);
+    setDriveMotorSetpoint(setpoint.speedMetersPerSecond);
+  }
+
+  private void setSteerMotorSetpoint(Rotation2d angle) {
+    final double angleRotations = angle.getRotations();
+
+    steerMotorSetpointAngleRotations = angleRotations;
+
+    steerMotor.setSetpoint(steerMotorSetpointAngleRotations);
+  }
+
+  private void setDriveMotorSetpoint(double velocityMetersPerSecond) {
+    driveMotorSetpointVelocityMetersPerSecond = velocityMetersPerSecond;
+
+    driveMotor.setVelocitySetpoint(driveMotorSetpointVelocityMetersPerSecond);
+  }
+
+  public boolean atSetpoint() {
+    return atSteerMotorSetpoint() && atDriveMotorSetpoint();
+  }
+
+  private boolean atSteerMotorSetpoint() {
+    return Util.approximatelyEqual(steerMotorValues.angleRotations, steerMotorSetpointAngleRotations, Swerve.STEER_TOLERANCE);
+  }
+
+  private boolean atDriveMotorSetpoint() {
+    return Util.approximatelyEqual(driveMotorValues.velocityMetersPerSecond, driveMotorSetpointVelocityMetersPerSecond, Swerve.DRIVE_TOLERANCE);
   }
 
   /**
