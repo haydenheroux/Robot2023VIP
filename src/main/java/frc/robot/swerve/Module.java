@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Robot;
 import frc.robot.Constants.Swerve;
@@ -117,6 +116,10 @@ public class Module implements TelemetryOutputter {
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
+    // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117 
+    double steerMotorErrorRadians = Units.rotationsToRadians(getSteerMotorErrorRotations());
+    setpoint.speedMetersPerSecond *= Math.cos(steerMotorErrorRadians);
+
     setSteerMotorSetpoint(setpoint.angle);
     setDriveMotorSetpoint(setpoint.speedMetersPerSecond);
   }
@@ -135,16 +138,24 @@ public class Module implements TelemetryOutputter {
     driveMotor.setVelocitySetpoint(driveMotorSetpointVelocityMetersPerSecond);
   }
 
+  private double getSteerMotorErrorRotations() {
+    return steerMotorSetpointAngleRotations - steerMotorValues.angleRotations;
+  }
+
+  private double getDriveMotorErrorMetersPerSecond() {
+    return driveMotorSetpointVelocityMetersPerSecond - driveMotorValues.velocityMetersPerSecond;
+  }
+
   public boolean atSetpoint() {
     return atSteerMotorSetpoint() && atDriveMotorSetpoint();
   }
 
   private boolean atSteerMotorSetpoint() {
-    return Util.approximatelyEqual(steerMotorValues.angleRotations, steerMotorSetpointAngleRotations, Swerve.STEER_TOLERANCE);
+    return Math.abs(getSteerMotorErrorRotations()) <= Swerve.STEER_TOLERANCE;
   }
 
   private boolean atDriveMotorSetpoint() {
-    return Util.approximatelyEqual(driveMotorValues.velocityMetersPerSecond, driveMotorSetpointVelocityMetersPerSecond, Swerve.DRIVE_TOLERANCE);
+    return Math.abs(getDriveMotorErrorMetersPerSecond()) <= Swerve.DRIVE_TOLERANCE;
   }
 
   /**
