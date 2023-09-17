@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Robot;
 import frc.robot.Constants.Swerve;
+import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
@@ -29,7 +29,7 @@ public class Module implements TelemetryOutputter {
 
   private final SteerMotorIO steerMotor;
   private final SteerMotorValues steerMotorValues = new SteerMotorValues();
-  private double steerMotorSetpointAngleRotations = 0.0; 
+  private double steerMotorSetpointAngleRotations = 0.0;
 
   private final DriveMotorIO driveMotor;
   private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
@@ -72,7 +72,8 @@ public class Module implements TelemetryOutputter {
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
-    ShuffleboardLayout valuesLayout = tab.getLayout(this.config.name + " Values", BuiltInLayouts.kList);
+    ShuffleboardLayout valuesLayout =
+        tab.getLayout(this.config.name + " Values", BuiltInLayouts.kList);
 
     valuesLayout.addNumber(
         "Azimuth Encoder Absolute Angle (deg)",
@@ -80,17 +81,22 @@ public class Module implements TelemetryOutputter {
     valuesLayout.addNumber("Steer Motor Angle (deg)", () -> getState().angle.getDegrees());
 
     valuesLayout.addNumber(
-        "Steer Motor Omega (dps)", () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
+        "Steer Motor Omega (dps)",
+        () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
     valuesLayout.addNumber("Drive Motor Velocity (mps)", () -> getState().speedMetersPerSecond);
 
-    ShuffleboardLayout setpointLayout = tab.getLayout(this.config.name + " Setpoints", BuiltInLayouts.kList);
+    ShuffleboardLayout setpointLayout =
+        tab.getLayout(this.config.name + " Setpoints", BuiltInLayouts.kList);
 
     setpointLayout.addBoolean("At Setpoint?", this::atSetpoint);
 
-    setpointLayout.addDouble("Steer Motor Setpoint (deg)", () -> Units.rotationsToDegrees(steerMotorSetpointAngleRotations));
+    setpointLayout.addDouble(
+        "Steer Motor Setpoint (deg)",
+        () -> Units.rotationsToDegrees(steerMotorSetpointAngleRotations));
     setpointLayout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
 
-    setpointLayout.addDouble("Drive Motor Setpoint (mps)", () -> driveMotorSetpointVelocityMetersPerSecond);
+    setpointLayout.addDouble(
+        "Drive Motor Setpoint (mps)", () -> driveMotorSetpointVelocityMetersPerSecond);
     setpointLayout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
   }
 
@@ -116,7 +122,7 @@ public class Module implements TelemetryOutputter {
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
-    // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117 
+    // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117
     double steerMotorErrorRadians = Units.rotationsToRadians(getSteerMotorErrorRotations());
     setpoint.speedMetersPerSecond *= Math.cos(steerMotorErrorRadians);
 
