@@ -88,13 +88,10 @@ public class Module implements TelemetryOutputter {
 
     layout.addBoolean("At Setpoint?", this::atSetpoint);
 
-    layout.addDouble(
-        "Steer Motor Setpoint (deg)",
-        () -> setpoint.angle.getDegrees());
+    layout.addDouble("Steer Motor Setpoint (deg)", () -> setpoint.angle.getDegrees());
     layout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
 
-    layout.addDouble(
-        "Drive Motor Setpoint (mps)", () -> setpoint.speedMetersPerSecond);
+    layout.addDouble("Drive Motor Setpoint (mps)", () -> setpoint.speedMetersPerSecond);
     layout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
   }
 

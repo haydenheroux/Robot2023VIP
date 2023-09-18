@@ -130,8 +130,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
                 new SwerveModuleState(0.0, orientations[1]),
                 new SwerveModuleState(0.0, orientations[2]),
                 new SwerveModuleState(0.0, orientations[3])
-              }
-            );
+              });
         });
   }
 
