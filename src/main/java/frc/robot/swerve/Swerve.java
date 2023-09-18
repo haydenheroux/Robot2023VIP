@@ -45,6 +45,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
     tab.addDoubleArray("Module States", () -> TelemetryData.asDoubleArray(getStates()));
+    tab.addDoubleArray("Module Setpoints", () -> TelemetryData.asDoubleArray(getSetpoints()));
 
     for (var module : modules) {
       module.initializeDashboard();
@@ -79,6 +80,21 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     for (int i = 0; i < 4; i++) {
       states[i] = modules[i].getState();
+    }
+
+    return states;
+  }
+
+  /**
+   * Gets the setpoint of each module.
+   *
+   * @return the setpoint of each module.
+   */
+  public SwerveModuleState[] getSetpoints() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getSetpoint();
     }
 
     return states;

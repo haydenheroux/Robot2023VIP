@@ -166,6 +166,10 @@ public class Module implements TelemetryOutputter {
         Rotation2d.fromRotations(steerMotorValues.angleRotations));
   }
 
+  public SwerveModuleState getSetpoint() {
+    return setpoint;
+  }
+
   /**
    * Gets the module position relative to the initial position.
    *
