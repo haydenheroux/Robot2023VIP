@@ -72,32 +72,29 @@ public class Module implements TelemetryOutputter {
   public void initializeDashboard() {
     ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
 
-    ShuffleboardLayout valuesLayout =
-        tab.getLayout(this.config.name + " Values", BuiltInLayouts.kList);
+    ShuffleboardLayout layout =
+        tab.getLayout(this.config.name, BuiltInLayouts.kList).withSize(2, 4);
 
-    valuesLayout.addNumber(
+    layout.addNumber(
         "Azimuth Encoder Absolute Angle (deg)",
         () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
-    valuesLayout.addNumber("Steer Motor Angle (deg)", () -> getState().angle.getDegrees());
+    layout.addNumber("Steer Motor Angle (deg)", () -> getState().angle.getDegrees());
 
-    valuesLayout.addNumber(
+    layout.addNumber(
         "Steer Motor Omega (dps)",
         () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
-    valuesLayout.addNumber("Drive Motor Velocity (mps)", () -> getState().speedMetersPerSecond);
+    layout.addNumber("Drive Motor Velocity (mps)", () -> getState().speedMetersPerSecond);
 
-    ShuffleboardLayout setpointLayout =
-        tab.getLayout(this.config.name + " Setpoints", BuiltInLayouts.kList);
+    layout.addBoolean("At Setpoint?", this::atSetpoint);
 
-    setpointLayout.addBoolean("At Setpoint?", this::atSetpoint);
-
-    setpointLayout.addDouble(
+    layout.addDouble(
         "Steer Motor Setpoint (deg)",
         () -> Units.rotationsToDegrees(steerMotorSetpointAngleRotations));
-    setpointLayout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
+    layout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
 
-    setpointLayout.addDouble(
+    layout.addDouble(
         "Drive Motor Setpoint (mps)", () -> driveMotorSetpointVelocityMetersPerSecond);
-    setpointLayout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
+    layout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
   }
 
   @Override
