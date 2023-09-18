@@ -117,7 +117,14 @@ public class Module implements TelemetryOutputter {
    * @param setpoint
    * @param force true if module should skip optimization.
    */
-  public void setSetpoint(SwerveModuleState setpoint, boolean force) {
+  public void setSetpoint(SwerveModuleState setpoint) {
+    final SwerveModuleState optimizedSetpoint = optimizeSetpoint(setpoint);
+
+    setSteerMotorSetpoint(optimizedSetpoint.angle);
+    setDriveMotorSetpoint(optimizedSetpoint.speedMetersPerSecond);
+  }
+
+  private SwerveModuleState optimizeSetpoint(SwerveModuleState setpoint) {
     setpoint =
         SwerveModuleState.optimize(
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
@@ -126,8 +133,7 @@ public class Module implements TelemetryOutputter {
     double steerMotorErrorRadians = Units.rotationsToRadians(getSteerMotorErrorRotations());
     setpoint.speedMetersPerSecond *= Math.cos(steerMotorErrorRadians);
 
-    setSteerMotorSetpoint(setpoint.angle);
-    setDriveMotorSetpoint(setpoint.speedMetersPerSecond);
+    return setpoint;
   }
 
   private void setSteerMotorSetpoint(Rotation2d angle) {
@@ -152,7 +158,7 @@ public class Module implements TelemetryOutputter {
     return driveMotorSetpointVelocityMetersPerSecond - driveMotorValues.velocityMetersPerSecond;
   }
 
-  public boolean atSetpoint() {
+  private boolean atSetpoint() {
     return atSteerMotorSetpoint() && atDriveMotorSetpoint();
   }
 

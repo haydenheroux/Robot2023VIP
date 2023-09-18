@@ -161,7 +161,7 @@ public class Drive extends CommandBase {
 
     SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-    swerve.setSetpoints(setpoints, false);
+    swerve.setSetpoints(setpoints);
 
     translationModePublisher.set(translationMode.toString());
     rotationModePublisher.set(rotationMode.toString());
