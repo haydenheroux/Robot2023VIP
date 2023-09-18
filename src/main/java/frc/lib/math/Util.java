@@ -16,6 +16,10 @@ public class Util {
     return approximatelyEqual(a, 0);
   }
 
+  public static boolean approximatelyZero(double a, double epsilon) {
+    return approximatelyEqual(a, 0, epsilon);
+  }
+
   public static Rotation2d snapToNearest(Rotation2d angle, Rotation2d multiple) {
     double snappedRadians = snapToNearest(angle.getRadians(), multiple.getRadians());
 

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants.Swerve;
 import frc.robot.Robot;
@@ -29,14 +30,14 @@ public class Module implements TelemetryOutputter {
 
   private final SteerMotorIO steerMotor;
   private final SteerMotorValues steerMotorValues = new SteerMotorValues();
-  private double steerMotorSetpointAngleRotations = 0.0;
 
   private final DriveMotorIO driveMotor;
   private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
-  private double driveMotorSetpointVelocityMetersPerSecond = 0.0;
 
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
+
+  private SwerveModuleState setpoint = new SwerveModuleState();
 
   /**
    * Constructs a new module using the provided configuration.
@@ -89,11 +90,11 @@ public class Module implements TelemetryOutputter {
 
     layout.addDouble(
         "Steer Motor Setpoint (deg)",
-        () -> Units.rotationsToDegrees(steerMotorSetpointAngleRotations));
+        () -> setpoint.angle.getDegrees());
     layout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
 
     layout.addDouble(
-        "Drive Motor Setpoint (mps)", () -> driveMotorSetpointVelocityMetersPerSecond);
+        "Drive Motor Setpoint (mps)", () -> setpoint.speedMetersPerSecond);
     layout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
   }
 
@@ -117,8 +118,10 @@ public class Module implements TelemetryOutputter {
   public void setSetpoint(SwerveModuleState setpoint) {
     final SwerveModuleState optimizedSetpoint = optimizeSetpoint(setpoint);
 
-    setSteerMotorSetpoint(optimizedSetpoint.angle);
-    setDriveMotorSetpoint(optimizedSetpoint.speedMetersPerSecond);
+    this.setpoint = optimizedSetpoint;
+
+    steerMotor.setSetpoint(optimizedSetpoint.angle.getRotations());
+    driveMotor.setVelocitySetpoint(optimizedSetpoint.speedMetersPerSecond);
   }
 
   private SwerveModuleState optimizeSetpoint(SwerveModuleState setpoint) {
@@ -127,32 +130,17 @@ public class Module implements TelemetryOutputter {
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
     // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117
-    double steerMotorErrorRadians = Units.rotationsToRadians(getSteerMotorErrorRotations());
-    setpoint.speedMetersPerSecond *= Math.cos(steerMotorErrorRadians);
+    setpoint.speedMetersPerSecond *= getSteerMotorError().getCos();
 
     return setpoint;
   }
 
-  private void setSteerMotorSetpoint(Rotation2d angle) {
-    final double angleRotations = angle.getRotations();
-
-    steerMotorSetpointAngleRotations = angleRotations;
-
-    steerMotor.setSetpoint(steerMotorSetpointAngleRotations);
+  private Rotation2d getSteerMotorError() {
+    return setpoint.angle.minus(getState().angle);
   }
 
-  private void setDriveMotorSetpoint(double velocityMetersPerSecond) {
-    driveMotorSetpointVelocityMetersPerSecond = velocityMetersPerSecond;
-
-    driveMotor.setVelocitySetpoint(driveMotorSetpointVelocityMetersPerSecond);
-  }
-
-  private double getSteerMotorErrorRotations() {
-    return steerMotorSetpointAngleRotations - steerMotorValues.angleRotations;
-  }
-
-  private double getDriveMotorErrorMetersPerSecond() {
-    return driveMotorSetpointVelocityMetersPerSecond - driveMotorValues.velocityMetersPerSecond;
+  private double getDriveMotorError() {
+    return setpoint.speedMetersPerSecond - getState().speedMetersPerSecond;
   }
 
   private boolean atSetpoint() {
@@ -160,11 +148,11 @@ public class Module implements TelemetryOutputter {
   }
 
   private boolean atSteerMotorSetpoint() {
-    return Math.abs(getSteerMotorErrorRotations()) <= Swerve.STEER_TOLERANCE;
+    return Util.approximatelyZero(getSteerMotorError().getRotations(), Swerve.STEER_TOLERANCE);
   }
 
   private boolean atDriveMotorSetpoint() {
-    return Math.abs(getDriveMotorErrorMetersPerSecond()) <= Swerve.DRIVE_TOLERANCE;
+    return Util.approximatelyZero(getDriveMotorError(), Swerve.DRIVE_TOLERANCE);
   }
 
   /**
