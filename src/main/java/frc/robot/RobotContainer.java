@@ -66,9 +66,9 @@ public class RobotContainer {
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
-    driver.a().whileTrue(swerve.checkForwards().repeatedly());
-    driver.b().whileTrue(swerve.checkSideways().repeatedly());
-    driver.x().whileTrue(swerve.cross().repeatedly());
+    driver.a().whileTrue(swerve.checkForwards());
+    driver.b().whileTrue(swerve.checkSideways());
+    driver.x().whileTrue(swerve.cross());
     driver.y().whileTrue(new PrintCommand("TODO"));
 
     DoubleSupplier extensionAxis =

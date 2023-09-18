@@ -106,7 +106,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
    * @return a command that orients all swerve modules to an arbitrary orientation.
    */
   public Command orientModules(Rotation2d[] orientations) {
-    return this.runOnce(
+    return this.run(
         () -> {
           setSetpoints(
               new SwerveModuleState[] {
