@@ -148,7 +148,7 @@ public class Module implements TelemetryOutputter {
   }
 
   private boolean atSteerMotorSetpoint() {
-    return Util.approximatelyZero(getSteerMotorError().getRotations(), Swerve.STEER_TOLERANCE);
+    return Util.approximatelyZero(getSteerMotorError(), Swerve.STEER_TOLERANCE);
   }
 
   private boolean atDriveMotorSetpoint() {

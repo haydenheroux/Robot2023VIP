@@ -317,7 +317,7 @@ public class Constants {
       STEER_CONFIG.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
     }
 
-    public static final double STEER_TOLERANCE = Units.degreesToRotations(1.0);
+    public static final Rotation2d STEER_TOLERANCE = Rotation2d.fromDegrees(1.0);
 
     public static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
 
