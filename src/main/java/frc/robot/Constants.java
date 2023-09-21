@@ -343,11 +343,11 @@ public class Constants {
     public static class Theta {
       public static final double KP = 24.0;
 
-      public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED.times(0.5);
+      public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED;
     }
 
     public static class Drift {
-      public static final double KP = 48.0;
+      public static final double KP = 0.0;
 
       public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED.times(0.5);
     }
