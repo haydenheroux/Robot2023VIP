@@ -63,7 +63,7 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   @Override
   public void setPosition(double angleRotations) {
-    motor.setRotorPosition(angleRotations);
+    motor.setPosition(angleRotations);
     position.waitForUpdate(0.1);
   }
 

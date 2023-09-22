@@ -47,8 +47,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
     for (int i = 0; i < 4; i++) {
       var module = modules[i];
-      ShuffleboardLayout layout =
-          tab.getLayout("Module " + i, BuiltInLayouts.kList).withSize(2, 4);
+      ShuffleboardLayout layout = tab.getLayout("Module " + i, BuiltInLayouts.kList).withSize(2, 4);
 
       layout.addNumber("Steer Motor Angle (deg)", () -> module.getState().angle.getDegrees());
       layout.addNumber("Drive Motor Velocity (mps)", () -> module.getState().speedMetersPerSecond);

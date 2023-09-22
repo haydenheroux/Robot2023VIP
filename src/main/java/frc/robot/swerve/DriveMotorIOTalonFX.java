@@ -63,7 +63,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     double rotations =
         Conversions.General.toRotations(distanceMeters, Physical.WHEEL_CIRCUMFERENCE);
 
-    motor.setRotorPosition(rotations);
+    motor.setPosition(rotations);
   }
 
   @Override
