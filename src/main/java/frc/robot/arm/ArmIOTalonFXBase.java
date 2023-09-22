@@ -53,7 +53,7 @@ public class ArmIOTalonFXBase implements ArmIO {
     double rotations =
         Conversions.General.toRotations(lengthMeters, Telescoping.DISTANCE_PER_ROTATION);
 
-    telescopingMotor.setRotorPosition(rotations);
+    telescopingMotor.setPosition(rotations);
   }
 
   @Override
@@ -83,7 +83,7 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   @Override
   public void setPivotPosition(double angleRotations) {
-    pivotMotor.setRotorPosition(angleRotations);
+    pivotMotor.setPosition(angleRotations);
   }
 
   @Override
