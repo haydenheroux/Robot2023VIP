@@ -13,13 +13,6 @@ public interface ModuleIO {
   public void setSetpoint(SwerveModuleState setpoint);
 
   /**
-   * Returns true if the module is at the setpoint.
-   *
-   * @return
-   */
-  public boolean atSetpoint();
-
-  /**
    * Gets the most recently set setpoint
    *
    * @return the most recently set setpoint.

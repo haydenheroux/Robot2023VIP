@@ -3,8 +3,6 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.lib.math.Util;
-import frc.robot.Constants.Swerve;
 import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
@@ -92,29 +90,9 @@ public class ModuleIOCustom implements ModuleIO {
             setpoint, Rotation2d.fromRotations(steerMotorValues.angleRotations));
 
     // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117
-    setpoint.speedMetersPerSecond *= getSteerMotorError().getCos();
+    setpoint.speedMetersPerSecond *= setpoint.angle.minus(getState().angle).getCos();
 
     return setpoint;
-  }
-
-  private Rotation2d getSteerMotorError() {
-    return setpoint.angle.minus(getState().angle);
-  }
-
-  private double getDriveMotorError() {
-    return setpoint.speedMetersPerSecond - getState().speedMetersPerSecond;
-  }
-
-  public boolean atSetpoint() {
-    return atSteerMotorSetpoint() && atDriveMotorSetpoint();
-  }
-
-  private boolean atSteerMotorSetpoint() {
-    return Util.approximatelyZero(getSteerMotorError(), Swerve.STEER_TOLERANCE);
-  }
-
-  private boolean atDriveMotorSetpoint() {
-    return Util.approximatelyZero(getDriveMotorError(), Swerve.DRIVE_TOLERANCE);
   }
 
   /**

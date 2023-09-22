@@ -52,7 +52,6 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
       layout.addNumber("Steer Motor Angle (deg)", () -> module.getState().angle.getDegrees());
       layout.addNumber("Drive Motor Velocity (mps)", () -> module.getState().speedMetersPerSecond);
 
-      layout.addBoolean("At Setpoint?", module::atSetpoint);
       layout.addDouble("Steer Motor Setpoint (deg)", () -> module.getSetpoint().angle.getDegrees());
       layout.addDouble(
           "Drive Motor Setpoint (mps)", () -> module.getSetpoint().speedMetersPerSecond);
