@@ -18,14 +18,14 @@ import frc.robot.Constants;
 public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private static Swerve instance = null;
 
-  private final Module[] modules = new Module[4];
+  private final ModuleIO[] modules = new ModuleIO[4];
 
   /** Constructs a new swerve. */
   private Swerve() {
-    modules[0] = new Module(Constants.Swerve.NORTH_WEST); // FL
-    modules[1] = new Module(Constants.Swerve.NORTH_EAST); // FR
-    modules[2] = new Module(Constants.Swerve.SOUTH_EAST); // BR
-    modules[3] = new Module(Constants.Swerve.SOUTH_WEST); // BL
+    modules[0] = new ModuleIOCustom(Constants.Swerve.NORTH_WEST); // FL
+    modules[1] = new ModuleIOCustom(Constants.Swerve.NORTH_EAST); // FR
+    modules[2] = new ModuleIOCustom(Constants.Swerve.SOUTH_EAST); // BR
+    modules[3] = new ModuleIOCustom(Constants.Swerve.SOUTH_WEST); // BL
   }
 
   public static Swerve getInstance() {
@@ -36,11 +36,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   @Override
-  public void periodic() {
-    for (var module : modules) {
-      module.update();
-    }
-  }
+  public void periodic() {}
 
   @Override
   public void initializeDashboard() {
@@ -49,9 +45,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     tab.addDoubleArray("Module States", () -> TelemetryData.asDoubleArray(getStates()));
     tab.addDoubleArray("Module Setpoints", () -> TelemetryData.asDoubleArray(getSetpoints()));
 
-    for (var module : modules) {
+    for (int i = 0; i < 4; i++) {
+      var module = modules[i];
       ShuffleboardLayout layout =
-          tab.getLayout(module.config.name, BuiltInLayouts.kList).withSize(2, 4);
+          tab.getLayout("Module " + i, BuiltInLayouts.kList).withSize(2, 4);
 
       layout.addNumber("Steer Motor Angle (deg)", () -> module.getState().angle.getDegrees());
       layout.addNumber("Drive Motor Velocity (mps)", () -> module.getState().speedMetersPerSecond);

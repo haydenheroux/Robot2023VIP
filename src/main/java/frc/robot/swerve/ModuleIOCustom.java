@@ -18,7 +18,7 @@ import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
  * position of the angle motor will be set to the position of the wheel, and the position of the
  * drive motor will be set to zero.
  */
-public class Module {
+public class ModuleIOCustom implements ModuleIO {
 
   public final ModuleConfiguration config;
 
@@ -38,7 +38,7 @@ public class Module {
    *
    * @param config the configuration to use to construct the module.
    */
-  public Module(ModuleConfiguration config) {
+  public ModuleIOCustom(ModuleConfiguration config) {
     this.config = config;
 
     if (Robot.isSimulation()) {
