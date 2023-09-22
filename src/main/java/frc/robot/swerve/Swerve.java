@@ -4,7 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,7 +50,16 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     tab.addDoubleArray("Module Setpoints", () -> TelemetryData.asDoubleArray(getSetpoints()));
 
     for (var module : modules) {
-      module.initializeDashboard();
+      ShuffleboardLayout layout =
+          tab.getLayout(module.config.name, BuiltInLayouts.kList).withSize(2, 4);
+
+      layout.addNumber("Steer Motor Angle (deg)", () -> module.getState().angle.getDegrees());
+      layout.addNumber("Drive Motor Velocity (mps)", () -> module.getState().speedMetersPerSecond);
+
+      layout.addBoolean("At Setpoint?", module::atSetpoint);
+      layout.addDouble("Steer Motor Setpoint (deg)", () -> module.getSetpoint().angle.getDegrees());
+      layout.addDouble(
+          "Drive Motor Setpoint (mps)", () -> module.getSetpoint().speedMetersPerSecond);
     }
   }
 

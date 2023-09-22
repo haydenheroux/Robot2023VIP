@@ -3,13 +3,7 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.math.Util;
-import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants.Swerve;
 import frc.robot.Robot;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
@@ -24,7 +18,7 @@ import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
  * position of the angle motor will be set to the position of the wheel, and the position of the
  * drive motor will be set to zero.
  */
-public class Module implements TelemetryOutputter {
+public class Module {
 
   public final ModuleConfiguration config;
 
@@ -69,35 +63,6 @@ public class Module implements TelemetryOutputter {
     steerMotor.setPosition(azimuthEncoderValues.angleRotations);
   }
 
-  @Override
-  public void initializeDashboard() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Swerve");
-
-    ShuffleboardLayout layout =
-        tab.getLayout(this.config.name, BuiltInLayouts.kList).withSize(2, 4);
-
-    layout.addNumber(
-        "Azimuth Encoder Absolute Angle (deg)",
-        () -> Units.rotationsToDegrees(azimuthEncoderValues.angleRotations));
-    layout.addNumber("Steer Motor Angle (deg)", () -> getState().angle.getDegrees());
-
-    layout.addNumber(
-        "Steer Motor Omega (dps)",
-        () -> Units.rotationsToDegrees(steerMotorValues.omegaRotationsPerSecond));
-    layout.addNumber("Drive Motor Velocity (mps)", () -> getState().speedMetersPerSecond);
-
-    layout.addBoolean("At Setpoint?", this::atSetpoint);
-
-    layout.addDouble("Steer Motor Setpoint (deg)", () -> setpoint.angle.getDegrees());
-    layout.addBoolean("Steer Motor At Setpoint?", this::atSteerMotorSetpoint);
-
-    layout.addDouble("Drive Motor Setpoint (mps)", () -> setpoint.speedMetersPerSecond);
-    layout.addBoolean("Drive Motor At Setpoint?", this::atDriveMotorSetpoint);
-  }
-
-  @Override
-  public void outputTelemetry() {}
-
   /** Updates values with sensor information. */
   public void update() {
     azimuthEncoder.updateValues(azimuthEncoderValues);
@@ -140,7 +105,7 @@ public class Module implements TelemetryOutputter {
     return setpoint.speedMetersPerSecond - getState().speedMetersPerSecond;
   }
 
-  private boolean atSetpoint() {
+  public boolean atSetpoint() {
     return atSteerMotorSetpoint() && atDriveMotorSetpoint();
   }
 
