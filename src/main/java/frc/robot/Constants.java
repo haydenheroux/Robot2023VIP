@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -236,6 +237,8 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
+    public static final SwerveModuleConstantsFactory FACTORY = new SwerveModuleConstantsFactory();
+
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 

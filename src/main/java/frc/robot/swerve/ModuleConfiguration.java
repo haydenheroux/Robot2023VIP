@@ -1,56 +1,15 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
 
 /** Records the configuration of a swerve module. */
 public class ModuleConfiguration {
-
-  public final ModuleCAN can;
-  public double azimuthOffsetRotations = 0.0;
-  public String name = "";
-  public final Translation2d location;
-
-  /**
-   * Constructs a new module configuration for a corner swerve module.
-   *
-   * @param north true if constructing the configuration for a module on the north side.
-   * @param west true if constructing the configuration for a module on the west side.
-   * @see <a
-   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
-   *     Coordinate System</a>
-   */
-  public ModuleConfiguration(boolean north, boolean west) {
-    can = ModuleCAN.get(north, west);
-    location = ModuleLocation.get(north, west);
-  }
-
-  /**
-   * Sets the azimuthOffset record of a module configuration.
-   *
-   * @param azimuthOffset the value of the azimuthOffset record.
-   * @return the module configuration.
-   */
-  public ModuleConfiguration withAzimuthOffset(double azimuthOffset) {
-    this.azimuthOffsetRotations = azimuthOffset;
-    return this;
-  }
-
-  /**
-   * Sets the name record of a module configuration.
-   *
-   * <p>If the name record is not set and using swerve telemetry, the program will crash because of
-   * naming conflicts in Shuffleboard and NetworkTables.
-   *
-   * @param name the value of the name record.
-   * @return the module configuration.
-   */
-  public ModuleConfiguration withName(String name) {
-    this.name = name;
-    return this;
-  }
-
   /** Defines the location of a swerve module relative to the center of the robot. */
   public static class ModuleLocation {
     /**
@@ -118,4 +77,53 @@ public class ModuleConfiguration {
       }
     }
   }
+
+  public final ModuleCAN can;
+  public double azimuthOffsetRotations = 0.0;
+  public String name = "";
+  public final Translation2d location;
+
+  /**
+   * Constructs a new module configuration for a corner swerve module.
+   *
+   * @param north true if constructing the configuration for a module on the north side.
+   * @param west true if constructing the configuration for a module on the west side.
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
+   *     Coordinate System</a>
+   */
+  public ModuleConfiguration(boolean north, boolean west) {
+    can = ModuleCAN.get(north, west);
+    location = ModuleLocation.get(north, west);
+  }
+
+  /**
+   * Sets the azimuthOffset record of a module configuration.
+   *
+   * @param azimuthOffset the value of the azimuthOffset record.
+   * @return the module configuration.
+   */
+  public ModuleConfiguration withAzimuthOffset(double azimuthOffset) {
+    this.azimuthOffsetRotations = azimuthOffset;
+    return this;
+  }
+
+  /**
+   * Sets the name record of a module configuration.
+   *
+   * <p>If the name record is not set and using swerve telemetry, the program will crash because of
+   * naming conflicts in Shuffleboard and NetworkTables.
+   *
+   * @param name the value of the name record.
+   * @return the module configuration.
+   */
+  public ModuleConfiguration withName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public SwerveModuleConstants getSwerveModuleConstants() {
+    return Constants.Swerve.FACTORY.createModuleConstants(can.angle, can.drive, can.angle, Units.rotationsToDegrees(azimuthOffsetRotations), location.getX(), location.getY(), false);
+  }
+
 }

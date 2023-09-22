@@ -1,7 +1,6 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -12,7 +11,7 @@ public class ModuleIOPhoenix implements ModuleIO {
   private SwerveModuleState setpoint = new SwerveModuleState();
 
   public ModuleIOPhoenix(ModuleConfiguration config) {
-    module = new SwerveModule(new SwerveModuleConstants(), config.can.bus, true);
+    module = new SwerveModule(config.getSwerveModuleConstants(), config.can.bus, true);
   }
 
   @Override
