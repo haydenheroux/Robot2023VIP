@@ -5,6 +5,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface ModuleIO {
 
+  /** Synchronously poll hardware. */
+  public void update();
+
   /**
    * Sets the module setpoint.
    *
