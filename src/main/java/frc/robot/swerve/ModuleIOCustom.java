@@ -3,7 +3,7 @@ package frc.robot.swerve;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.Robot;
+import frc.robot.Constants.Swerve;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
@@ -39,17 +39,9 @@ public class ModuleIOCustom implements ModuleIO {
   public ModuleIOCustom(ModuleConfiguration config) {
     this.config = config;
 
-    if (Robot.isSimulation()) {
-      steerMotor = new SteerMotorIOSim();
-      driveMotor = new DriveMotorIOSim();
-      azimuthEncoder = new AzimuthEncoderIOSim();
-    } else {
-      steerMotor = new SteerMotorIOTalonFX(config.can.angle, config.can.azimuth, config.can.bus);
-      driveMotor = new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
-      azimuthEncoder =
-          new AzimuthEncoderIOCANcoder(
-              config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
-    }
+    steerMotor = Swerve.FACTORY.createSteerMotor(config);
+    driveMotor = Swerve.FACTORY.createDriveMotor(config);
+    azimuthEncoder = Swerve.FACTORY.createAzimuthEncoder(config);
 
     steerMotor.configure();
     driveMotor.configure();

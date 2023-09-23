@@ -3,7 +3,6 @@ package frc.robot;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +15,7 @@ import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConfiguration;
 import frc.robot.swerve.ModuleConfiguration.ModuleCAN;
 import frc.robot.swerve.ModuleConfiguration.ModuleLocation;
+import frc.robot.swerve.SwerveFactory;
 import frc.robot.swerve.SwerveMath;
 
 public class Constants {
@@ -26,6 +26,10 @@ public class Constants {
   public static final double ITERATIONS_PER_SECOND = 1.0 / LOOP_TIME;
   /** Expected nominal operating voltage of robot subsystems, in volts. */
   public static final double NOMINAL_VOLTAGE = 12.0;
+  /** True if the robot is simulated. */
+  public static final boolean IS_SIMULATION = Robot.isSimulation();
+  /** True if CTRE's Phoenix library should be used. */
+  public static final boolean USE_PHOENIX = false;
 
   public static class Ports {
 
@@ -237,7 +241,7 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
-    public static final SwerveModuleConstantsFactory FACTORY = new SwerveModuleConstantsFactory();
+    public static final SwerveFactory FACTORY = new SwerveFactory(IS_SIMULATION, USE_PHOENIX);
 
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);

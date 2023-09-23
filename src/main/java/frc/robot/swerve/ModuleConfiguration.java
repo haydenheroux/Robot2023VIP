@@ -1,10 +1,9 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
 
@@ -38,7 +37,7 @@ public class ModuleConfiguration {
    * <p>All CAN-networked devices must share the same CAN bus.
    */
   public static class ModuleCAN {
-    public final int angle, azimuth, drive;
+    public final int steer, azimuth, drive;
     public final String bus;
 
     /**
@@ -50,7 +49,7 @@ public class ModuleConfiguration {
      * @param bus the name of the CAN bus for the swerve module.
      */
     public ModuleCAN(int angle, int azimuth, int drive, String bus) {
-      this.angle = angle;
+      this.steer = angle;
       this.azimuth = azimuth;
       this.drive = drive;
       this.bus = bus;
@@ -77,6 +76,9 @@ public class ModuleConfiguration {
       }
     }
   }
+
+  private static final SwerveModuleConstantsFactory SWERVE_MODULE_CONSTANTS_FACTORY =
+      new SwerveModuleConstantsFactory();
 
   public final ModuleCAN can;
   public double azimuthOffsetRotations = 0.0;
@@ -123,7 +125,13 @@ public class ModuleConfiguration {
   }
 
   public SwerveModuleConstants getSwerveModuleConstants() {
-    return Constants.Swerve.FACTORY.createModuleConstants(can.angle, can.drive, can.angle, Units.rotationsToDegrees(azimuthOffsetRotations), location.getX(), location.getY(), false);
+    return SWERVE_MODULE_CONSTANTS_FACTORY.createModuleConstants(
+        can.steer,
+        can.drive,
+        can.steer,
+        Units.rotationsToDegrees(azimuthOffsetRotations),
+        location.getX(),
+        location.getY(),
+        false);
   }
-
 }
