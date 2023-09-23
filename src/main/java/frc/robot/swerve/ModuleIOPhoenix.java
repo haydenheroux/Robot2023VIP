@@ -19,6 +19,8 @@ public class ModuleIOPhoenix implements ModuleIO {
 
   @Override
   public void setSetpoint(SwerveModuleState setpoint) {
+    this.setpoint = setpoint;
+
     module.apply(setpoint, false);
   }
 

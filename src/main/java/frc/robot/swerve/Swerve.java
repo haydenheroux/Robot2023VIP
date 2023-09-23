@@ -36,7 +36,11 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    for (var module : modules) {
+      module.update();
+    }
+  }
 
   @Override
   public void initializeDashboard() {
