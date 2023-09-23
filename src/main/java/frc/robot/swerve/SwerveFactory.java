@@ -19,7 +19,7 @@ public class SwerveFactory {
   public AzimuthEncoderIO createAzimuthEncoder(ModuleConfiguration config) {
     if (isSimulation) return new AzimuthEncoderIOSim();
     return new AzimuthEncoderIOCANcoder(
-        config.can.azimuth, config.can.bus, config.azimuthOffsetRotations);
+        config.can.azimuth, config.can.bus, config.offset.getRotations());
   }
 
   public DriveMotorIO createDriveMotor(ModuleConfiguration config) {

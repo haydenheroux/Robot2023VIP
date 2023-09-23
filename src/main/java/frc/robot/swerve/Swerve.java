@@ -22,10 +22,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   /** Constructs a new swerve. */
   private Swerve() {
-    modules[0] = new ModuleIOCustom(Constants.Swerve.NORTH_WEST); // FL
-    modules[1] = new ModuleIOCustom(Constants.Swerve.NORTH_EAST); // FR
-    modules[2] = new ModuleIOCustom(Constants.Swerve.SOUTH_EAST); // BR
-    modules[3] = new ModuleIOCustom(Constants.Swerve.SOUTH_WEST); // BL
+    modules[0] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.NORTH_WEST); // FL
+    modules[1] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.NORTH_EAST); // FR
+    modules[2] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.SOUTH_EAST); // BR
+    modules[3] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.SOUTH_WEST); // BL
   }
 
   public static Swerve getInstance() {
@@ -46,7 +46,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     tab.addDoubleArray("Module Setpoints", () -> TelemetryData.asDoubleArray(getSetpoints()));
 
     for (int i = 0; i < 4; i++) {
-      var module = modules[i];
+      ModuleIO module = modules[i];
       ShuffleboardLayout layout = tab.getLayout("Module " + i, BuiltInLayouts.kList).withSize(2, 4);
 
       layout.addNumber("Steer Motor Angle (deg)", () -> module.getState().angle.getDegrees());

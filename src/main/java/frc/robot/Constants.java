@@ -248,42 +248,23 @@ public class Constants {
 
     /** Configuration for the north west swerve module. */
     public static final ModuleConfiguration NORTH_WEST =
-        new ModuleConfiguration(true, true).withName("North West");
-
-    static {
-      NORTH_WEST.azimuthOffsetRotations = -0.179688;
-    }
-
+        new ModuleConfiguration(true, true, Rotation2d.fromRotations(-0.179688));
     /** Configuration for the north east swerve module. */
     public static final ModuleConfiguration NORTH_EAST =
-        new ModuleConfiguration(true, false).withName("North East");
-
-    static {
-      NORTH_EAST.azimuthOffsetRotations = -0.951904;
-    }
-
+        new ModuleConfiguration(true, false, Rotation2d.fromRotations(-0.951904));
     /** Configuration for the south east swerve module. */
     public static final ModuleConfiguration SOUTH_EAST =
-        new ModuleConfiguration(false, false).withName("South East");
-
-    static {
-      SOUTH_EAST.azimuthOffsetRotations = -0.774568;
-    }
-
+        new ModuleConfiguration(false, false, Rotation2d.fromRotations(-0.774568));
     /** Configuration for the south west swerve module. */
     public static final ModuleConfiguration SOUTH_WEST =
-        new ModuleConfiguration(false, true).withName("South West");
-
-    static {
-      SOUTH_WEST.azimuthOffsetRotations = -0.954346;
-    }
+        new ModuleConfiguration(false, true, Rotation2d.fromRotations(-0.954346));
 
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(
-            ModuleLocation.get(true, true),
-            ModuleLocation.get(true, false),
-            ModuleLocation.get(false, false),
-            ModuleLocation.get(false, true));
+            ModuleLocation.of(true, true),
+            ModuleLocation.of(true, false),
+            ModuleLocation.of(false, false),
+            ModuleLocation.of(false, true));
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);
@@ -293,7 +274,7 @@ public class Constants {
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.get(true, true))
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
             .times(0.5);
     /** Velocity scalar applied while driving in sniper mode. */
     public static final double SNIPER_SCALAR = 0.25;

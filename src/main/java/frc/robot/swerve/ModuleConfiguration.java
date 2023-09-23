@@ -2,8 +2,8 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
 
@@ -11,6 +11,9 @@ import frc.robot.Constants.Swerve;
 public class ModuleConfiguration {
   /** Defines the location of a swerve module relative to the center of the robot. */
   public static class ModuleLocation {
+    public static final double FORWARD_TO_CENTER_DISTANCE = Swerve.FRONT_BACK_DISTANCE / 2;
+    public static final double SIDE_TO_CENTER_DISTANCE = Swerve.LEFT_RIGHT_DISTANCE / 2;
+
     /**
      * Gets the location of a corner swerve module.
      *
@@ -22,12 +25,20 @@ public class ModuleConfiguration {
      *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
      *     Coordinate System</a>
      */
-    public static Translation2d get(boolean north, boolean west) {
-      final double kNorthSouthCornerDistance = Swerve.FRONT_BACK_DISTANCE / 2;
-      final double kWestEastCornerDistance = Swerve.LEFT_RIGHT_DISTANCE / 2;
+    public static Translation2d of(boolean north, boolean west) {
       return new Translation2d(
-          north ? kNorthSouthCornerDistance : -kNorthSouthCornerDistance,
-          west ? kWestEastCornerDistance : -kWestEastCornerDistance);
+          north ? FORWARD_TO_CENTER_DISTANCE : -FORWARD_TO_CENTER_DISTANCE,
+          west ? SIDE_TO_CENTER_DISTANCE : -SIDE_TO_CENTER_DISTANCE);
+    }
+
+    /**
+     * Gets the location of the furthest swerve moodule.
+     *
+     * @return the location of the furthest swerve module, relative to the center of the robot, in
+     *     meters.
+     */
+    public static Translation2d furthest() {
+      return new Translation2d(FORWARD_TO_CENTER_DISTANCE, SIDE_TO_CENTER_DISTANCE);
     }
   }
 
@@ -43,13 +54,13 @@ public class ModuleConfiguration {
     /**
      * Constructs a new CAN record for a swerve module.
      *
-     * @param angle the CAN ID of an angle motor.
+     * @param steer the CAN ID of a steer motor.
      * @param azimuth the CAN ID of an azimuth encoder.
      * @param drive the CAN ID of a drive motor.
      * @param bus the name of the CAN bus for the swerve module.
      */
-    public ModuleCAN(int angle, int azimuth, int drive, String bus) {
-      this.steer = angle;
+    public ModuleCAN(int steer, int azimuth, int drive, String bus) {
+      this.steer = steer;
       this.azimuth = azimuth;
       this.drive = drive;
       this.bus = bus;
@@ -81,47 +92,23 @@ public class ModuleConfiguration {
       new SwerveModuleConstantsFactory();
 
   public final ModuleCAN can;
-  public double azimuthOffsetRotations = 0.0;
-  public String name = "";
   public final Translation2d location;
+  public final Rotation2d offset;
 
   /**
    * Constructs a new module configuration for a corner swerve module.
    *
    * @param north true if constructing the configuration for a module on the north side.
    * @param west true if constructing the configuration for a module on the west side.
+   * @param offset offset between azimuth encoder angle and actual angle.
    * @see <a
    *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
    *     Coordinate System</a>
    */
-  public ModuleConfiguration(boolean north, boolean west) {
+  public ModuleConfiguration(boolean north, boolean west, Rotation2d offset) {
     can = ModuleCAN.get(north, west);
-    location = ModuleLocation.get(north, west);
-  }
-
-  /**
-   * Sets the azimuthOffset record of a module configuration.
-   *
-   * @param azimuthOffset the value of the azimuthOffset record.
-   * @return the module configuration.
-   */
-  public ModuleConfiguration withAzimuthOffset(double azimuthOffset) {
-    this.azimuthOffsetRotations = azimuthOffset;
-    return this;
-  }
-
-  /**
-   * Sets the name record of a module configuration.
-   *
-   * <p>If the name record is not set and using swerve telemetry, the program will crash because of
-   * naming conflicts in Shuffleboard and NetworkTables.
-   *
-   * @param name the value of the name record.
-   * @return the module configuration.
-   */
-  public ModuleConfiguration withName(String name) {
-    this.name = name;
-    return this;
+    location = ModuleLocation.of(north, west);
+    this.offset = offset;
   }
 
   public SwerveModuleConstants getSwerveModuleConstants() {
@@ -129,7 +116,7 @@ public class ModuleConfiguration {
         can.steer,
         can.drive,
         can.steer,
-        Units.rotationsToDegrees(azimuthOffsetRotations),
+        offset.getDegrees(),
         location.getX(),
         location.getY(),
         false);

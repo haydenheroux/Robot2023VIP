@@ -53,20 +53,15 @@ public class ModuleIOCustom implements ModuleIO {
     steerMotor.setPosition(azimuthEncoderValues.angleRotations);
   }
 
+  // TODO call periodically
   /** Updates values with sensor information. */
-  public void update() {
+  private void update() {
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
     steerMotor.updateValues(steerMotorValues);
     driveMotor.updateValues(driveMotorValues);
   }
 
-  /**
-   * Sets the module setpoint.
-   *
-   * @param setpoint
-   * @param force true if module should skip optimization.
-   */
   public void setSetpoint(SwerveModuleState setpoint) {
     final SwerveModuleState optimizedSetpoint = optimizeSetpoint(setpoint);
 
@@ -87,11 +82,6 @@ public class ModuleIOCustom implements ModuleIO {
     return setpoint;
   }
 
-  /**
-   * Gets the state of the module.
-   *
-   * @return the state of the module.
-   */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         driveMotorValues.velocityMetersPerSecond,
@@ -102,11 +92,6 @@ public class ModuleIOCustom implements ModuleIO {
     return setpoint;
   }
 
-  /**
-   * Gets the module position relative to the initial position.
-   *
-   * @return the position relative to the initial position.
-   */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
         driveMotorValues.positionMeters, Rotation2d.fromRotations(steerMotorValues.angleRotations));
