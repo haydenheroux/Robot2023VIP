@@ -3,6 +3,7 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
+import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
 
@@ -17,12 +18,11 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
   /**
    * Constructs a new CANcoder azimuth encoder.
    *
-   * @param id the CAN ID of the CANcoder.
-   * @param canbus the name of the CAN bus for the CANcoder.
+   * @param can the CAN for the CANcoder.
    * @param offsetRotations the magnet offset to apply to the CANcoder, in rotations.
    */
-  public AzimuthEncoderIOCANcoder(int id, String canbus, double offsetRotations) {
-    encoder = new CANcoder(id, canbus);
+  public AzimuthEncoderIOCANcoder(CAN can, double offsetRotations) {
+    encoder = new CANcoder(can.id, can.bus);
 
     absolutePosition = encoder.getAbsolutePosition();
 

@@ -13,7 +13,8 @@ public class ModuleIOPhoenix implements ModuleIO {
   private SwerveModuleState setpoint = new SwerveModuleState();
 
   public ModuleIOPhoenix(ModuleConfiguration config) {
-    module = new SwerveModule(config.getSwerveModuleConstants(), config.can.bus, true);
+    // Add back module-level CAN bus, rather than assuming?
+    module = new SwerveModule(config.getSwerveModuleConstants(), config.can.azimuth.bus, true);
 
     ConfigurationApplier.apply(Swerve.AZIMUTH_CONFIG, module.getCANcoder());
     ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, module.getDriveMotor());

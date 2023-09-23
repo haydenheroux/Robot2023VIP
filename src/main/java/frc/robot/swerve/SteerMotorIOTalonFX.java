@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 
@@ -23,18 +24,18 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
   /**
    * Constructs a new TalonFX steer motor.
    *
-   * @param motorID the CAN ID of the TalonFX.
-   * @param encoderID the CAN ID of the CANcoder.
-   * @param canbus the name of the CAN bus for the TalonFX.
+   * @param motorCAN the CAN of the TalonFX.
+   * @param encoderCAN the CAN of the CANcoder.
    */
-  public SteerMotorIOTalonFX(int motorID, int encoderID, String canbus) {
-    motor = new TalonFX(motorID, canbus);
-    this.encoderID = encoderID;
+  public SteerMotorIOTalonFX(CAN motorCAN, CAN encoderCAN) {
+    motor = new TalonFX(motorCAN.id, motorCAN.bus);
 
     position = motor.getPosition();
     velocity = motor.getVelocity();
 
     positionController = new PositionVoltage(0);
+
+    encoderID = encoderCAN.id;
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.lib.hardware.CAN;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
 
@@ -48,22 +49,25 @@ public class ModuleConfiguration {
    * <p>All CAN-networked devices must share the same CAN bus.
    */
   public static class ModuleCAN {
-    public final int steer, azimuth, drive;
-    public final String bus;
+    public final CAN steer, azimuth, drive;
 
     /**
      * Constructs a new CAN record for a swerve module.
      *
-     * @param steer the CAN ID of a steer motor.
-     * @param azimuth the CAN ID of an azimuth encoder.
-     * @param drive the CAN ID of a drive motor.
-     * @param bus the name of the CAN bus for the swerve module.
+     * @param steer the CAN of a steer motor.
+     * @param azimuth the CAN of an azimuth encoder.
+     * @param drive the CAN of a drive motor.
      */
-    public ModuleCAN(int steer, int azimuth, int drive, String bus) {
+    public ModuleCAN(CAN steer, CAN azimuth, CAN drive) {
       this.steer = steer;
       this.azimuth = azimuth;
       this.drive = drive;
-      this.bus = bus;
+    }
+
+    public ModuleCAN(int steer, int azimuth, int drive, String bus) {
+      this.steer = new CAN(steer, bus);
+      this.azimuth = new CAN(azimuth, bus);
+      this.drive = new CAN(drive, bus);
     }
 
     /**
@@ -113,9 +117,9 @@ public class ModuleConfiguration {
 
   public SwerveModuleConstants getSwerveModuleConstants() {
     return SWERVE_MODULE_CONSTANTS_FACTORY.createModuleConstants(
-        can.steer,
-        can.drive,
-        can.steer,
+        can.steer.id,
+        can.drive.id,
+        can.steer.id,
         offset.getDegrees(),
         location.getX(),
         location.getY(),

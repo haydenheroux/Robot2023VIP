@@ -18,17 +18,16 @@ public class SwerveFactory {
 
   public AzimuthEncoderIO createAzimuthEncoder(ModuleConfiguration config) {
     if (isSimulation) return new AzimuthEncoderIOSim();
-    return new AzimuthEncoderIOCANcoder(
-        config.can.azimuth, config.can.bus, config.offset.getRotations());
+    return new AzimuthEncoderIOCANcoder(config.can.azimuth, config.offset.getRotations());
   }
 
   public DriveMotorIO createDriveMotor(ModuleConfiguration config) {
     if (isSimulation) return new DriveMotorIOSim();
-    return new DriveMotorIOTalonFX(config.can.drive, config.can.bus);
+    return new DriveMotorIOTalonFX(config.can.drive);
   }
 
   public SteerMotorIO createSteerMotor(ModuleConfiguration config) {
     if (isSimulation) return new SteerMotorIOSim();
-    return new SteerMotorIOTalonFX(config.can.steer, config.can.azimuth, config.can.bus);
+    return new SteerMotorIOTalonFX(config.can.steer, config.can.azimuth);
   }
 }

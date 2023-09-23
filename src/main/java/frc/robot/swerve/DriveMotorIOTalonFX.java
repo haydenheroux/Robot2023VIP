@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.Physical;
@@ -23,11 +24,10 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   /**
    * Constructs a new TalonFX drive motor.
    *
-   * @param id the CAN ID of the TalonFX.
-   * @param canbus the name of the CAN bus for the TalonFX.
+   * @param can the CAN of the TalonFX.
    */
-  public DriveMotorIOTalonFX(int id, String canbus) {
-    motor = new TalonFX(id, canbus);
+  public DriveMotorIOTalonFX(CAN can) {
+    motor = new TalonFX(can.id, can.bus);
 
     position = motor.getPosition();
     velocity = motor.getVelocity();
