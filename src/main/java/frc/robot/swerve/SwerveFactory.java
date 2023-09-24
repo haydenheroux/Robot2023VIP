@@ -34,17 +34,17 @@ public class SwerveFactory {
     return new DriveMotorIOTalonFX(constants.can.drive);
   }
 
-  public TalonFXConfiguration createDriveMotorConfig(boolean inverted, double currentLimit) {
+  public TalonFXConfiguration createDriveMotorConfig(
+      boolean inverted, double gearRatio, double kP, double currentLimit) {
     final TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    // TODO
     driveMotorConfig.MotorOutput.Inverted =
         inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-    // TODO
-    driveMotorConfig.Slot0.kP = 5.0;
+    driveMotorConfig.Feedback.SensorToMechanismRatio = gearRatio;
 
-    // TODO
+    driveMotorConfig.Slot0.kP = kP;
+
     if (currentLimit > 0.0) {
       driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = currentLimit;
       driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -currentLimit;
@@ -55,9 +55,6 @@ public class SwerveFactory {
       driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     }
 
-    // TODO
-    driveMotorConfig.Feedback.SensorToMechanismRatio = 6.75;
-
     return driveMotorConfig;
   }
 
@@ -66,18 +63,18 @@ public class SwerveFactory {
     return new SteerMotorIOTalonFX(constants.can.steer, constants.can.azimuth);
   }
 
-  public TalonFXConfiguration createSteerMotorConfig(boolean inverted) {
+  public TalonFXConfiguration createSteerMotorConfig(
+      boolean inverted, double gearRatio, double kP) {
     final TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
 
-    // TODO
     steerMotorConfig.MotorOutput.Inverted =
         inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-    steerMotorConfig.Slot0.kP = 4.0;
+    steerMotorConfig.Feedback.SensorToMechanismRatio = gearRatio;
+
+    steerMotorConfig.Slot0.kP = kP;
 
     steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
-
-    steerMotorConfig.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
 
     return steerMotorConfig;
   }

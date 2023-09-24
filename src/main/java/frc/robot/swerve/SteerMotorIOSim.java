@@ -18,7 +18,7 @@ public class SteerMotorIOSim implements SteerMotorIO {
 
   /** Constructs a new simulated steer motor. */
   public SteerMotorIOSim() {
-    angleController = new PIDController(Constants.Swerve.STEER_CONFIG.Slot0.kP, 0.0, 0.0);
+    angleController = new PIDController(Constants.Swerve.STEER_KP.getSimulated(), 0.0, 0.0);
 
     // From Phoenix 6 docs:
     // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous

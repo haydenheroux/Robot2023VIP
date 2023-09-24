@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.controllers.feedforward.TelescopingArmFeedforward;
+import frc.lib.math.SimulationConstant;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConstants;
 import frc.robot.swerve.ModuleConstants.ModuleCAN;
@@ -246,6 +247,14 @@ public class Constants {
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 
+    public static class MK4I {
+      public static final boolean IS_DRIVE_INVERTED = true;
+      public static final double DRIVE_RATIO = 6.75;
+
+      public static final boolean IS_STEER_INVERTED = true;
+      public static final double STEER_RATIO = 150.0 / 7.0;
+    }
+
     /** Configuration for the north west swerve module. */
     public static final ModuleConstants NORTH_WEST =
         new ModuleConstants(true, true, Rotation2d.fromRotations(-0.179688));
@@ -268,8 +277,6 @@ public class Constants {
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(20);
-    /** Minimum speed before applying dejittering algorithm, in meters per second. */
-    public static final double DEJITTER_SPEED = Units.inchesToMeters(4);
     /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
@@ -287,10 +294,17 @@ public class Constants {
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final TalonFXConfiguration DRIVE_CONFIG =
-        FACTORY.createDriveMotorConfig(true, 40.0);
+    public static final SimulationConstant DRIVE_KP = new SimulationConstant(5.0, 5.0);
 
-    public static final TalonFXConfiguration STEER_CONFIG = FACTORY.createSteerMotorConfig(true);
+    public static final TalonFXConfiguration DRIVE_CONFIG =
+        FACTORY.createDriveMotorConfig(
+            MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP.getReal(), 40.0);
+
+    public static final SimulationConstant STEER_KP = new SimulationConstant(4.0, 4.0);
+
+    public static final TalonFXConfiguration STEER_CONFIG =
+        FACTORY.createSteerMotorConfig(
+            MK4I.IS_STEER_INVERTED, MK4I.DRIVE_RATIO, STEER_KP.getReal());
 
     public static class Theta {
       public static final double KP = 24.0;
