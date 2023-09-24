@@ -294,13 +294,13 @@ public class Constants {
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final SimulationConstant DRIVE_KP = new SimulationConstant(5.0, 5.0);
+    public static final SimulationConstant DRIVE_KP = new SimulationConstant(5.0, 0.0);
 
     public static final TalonFXConfiguration DRIVE_CONFIG =
         FACTORY.createDriveMotorConfig(
             MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP.getReal(), 40.0);
 
-    public static final SimulationConstant STEER_KP = new SimulationConstant(4.0, 4.0);
+    public static final SimulationConstant STEER_KP = new SimulationConstant(100.0, 0.0);
 
     public static final TalonFXConfiguration STEER_CONFIG =
         FACTORY.createSteerMotorConfig(

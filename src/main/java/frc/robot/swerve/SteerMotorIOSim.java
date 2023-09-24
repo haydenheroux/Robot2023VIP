@@ -2,6 +2,7 @@ package frc.robot.swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
+import frc.robot.Constants.Swerve.MK4I;
 
 /**
  * Implements steer motor behaviors for a simulated steer motor.
@@ -12,7 +13,8 @@ public class SteerMotorIOSim implements SteerMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
-  private final double kOmegaRotationsPerSecondPerVolt = 1.0;
+  private final double kMaxRotationsPerSecondAt12Volts = ((6380.0 / 60.0) / MK4I.STEER_RATIO);
+  private final double kRotationsPerSecondPerVolt = kMaxRotationsPerSecondAt12Volts / 12.0;
 
   private final PIDController angleController;
 
@@ -45,6 +47,6 @@ public class SteerMotorIOSim implements SteerMotorIO {
   @Override
   public void setSetpoint(double angleRotations) {
     double volts = angleController.calculate(this.angleRotations, angleRotations);
-    omegaRotationsPerSecond = volts * kOmegaRotationsPerSecondPerVolt;
+    omegaRotationsPerSecond = volts * kRotationsPerSecondPerVolt;
   }
 }
