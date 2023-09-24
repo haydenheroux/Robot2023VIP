@@ -285,48 +285,12 @@ public class Constants {
       GYRO_CONFIG.Pigeon2Features.EnableCompass = false;
     }
 
-    public static final CANcoderConfiguration AZIMUTH_CONFIG = new CANcoderConfiguration();
+    public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
+    public static final TalonFXConfiguration DRIVE_CONFIG =
+        FACTORY.createDriveMotorConfig(true, 40.0);
 
-    static {
-      STEER_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-      STEER_CONFIG.Slot0.kP = 40;
-      STEER_CONFIG.Slot0.kD = 0.0;
-
-      STEER_CONFIG.CurrentLimits.StatorCurrentLimit = 40.0;
-      STEER_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-
-      STEER_CONFIG.ClosedLoopGeneral.ContinuousWrap = true;
-
-      STEER_CONFIG.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.25;
-
-      STEER_CONFIG.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
-    }
-
-    public static final Rotation2d STEER_TOLERANCE = Rotation2d.fromDegrees(1.0);
-
-    public static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
-
-    static {
-      DRIVE_CONFIG.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-      // TODO
-      DRIVE_CONFIG.Slot0.kP = .00495964340175953;
-
-      // TODO
-      DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent = 400;
-      DRIVE_CONFIG.TorqueCurrent.PeakReverseTorqueCurrent =
-          -1 * DRIVE_CONFIG.TorqueCurrent.PeakForwardTorqueCurrent;
-
-      DRIVE_CONFIG.CurrentLimits.StatorCurrentLimit = 65.0;
-      DRIVE_CONFIG.CurrentLimits.StatorCurrentLimitEnable = true;
-
-      DRIVE_CONFIG.Feedback.SensorToMechanismRatio = 6.75;
-    }
-
-    public static final double DRIVE_TOLERANCE = 0.1;
+    public static final TalonFXConfiguration STEER_CONFIG = FACTORY.createSteerMotorConfig(true);
 
     public static class Theta {
       public static final double KP = 24.0;

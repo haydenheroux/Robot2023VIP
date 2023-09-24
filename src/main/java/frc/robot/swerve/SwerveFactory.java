@@ -1,5 +1,9 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 public class SwerveFactory {
 
   private final boolean isSimulation;
@@ -21,13 +25,60 @@ public class SwerveFactory {
     return new AzimuthEncoderIOCANcoder(constants.can.azimuth, constants.offset.getRotations());
   }
 
+  public CANcoderConfiguration createAzimuthEncoderConfig() {
+    return new CANcoderConfiguration();
+  }
+
   public DriveMotorIO createDriveMotor(ModuleConstants constants) {
     if (isSimulation) return new DriveMotorIOSim();
     return new DriveMotorIOTalonFX(constants.can.drive);
   }
 
+  public TalonFXConfiguration createDriveMotorConfig(boolean inverted, double currentLimit) {
+    final TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
+
+    // TODO
+    driveMotorConfig.MotorOutput.Inverted =
+        inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
+    // TODO
+    driveMotorConfig.Slot0.kP = 5.0;
+
+    // TODO
+    if (currentLimit > 0.0) {
+      driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = currentLimit;
+      driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -currentLimit;
+
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimit = currentLimit;
+      driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = currentLimit * 1.5;
+      driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 1.0;
+      driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    }
+
+    // TODO
+    driveMotorConfig.Feedback.SensorToMechanismRatio = 6.75;
+
+    return driveMotorConfig;
+  }
+
   public SteerMotorIO createSteerMotor(ModuleConstants constants) {
     if (isSimulation) return new SteerMotorIOSim();
     return new SteerMotorIOTalonFX(constants.can.steer, constants.can.azimuth);
+  }
+
+  public TalonFXConfiguration createSteerMotorConfig(boolean inverted) {
+    final TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
+
+    // TODO
+    steerMotorConfig.MotorOutput.Inverted =
+        inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
+    steerMotorConfig.Slot0.kP = 4.0;
+
+    steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
+    steerMotorConfig.Feedback.SensorToMechanismRatio = 150.0 / 7.0;
+
+    return steerMotorConfig;
   }
 }
