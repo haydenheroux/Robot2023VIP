@@ -9,7 +9,7 @@ import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
 
 /** Records the configuration of a swerve module. */
-public class ModuleConfiguration {
+public class ModuleConstants {
   /** Defines the location of a swerve module relative to the center of the robot. */
   public static class ModuleLocation {
     public static final double FORWARD_TO_CENTER_DISTANCE = Swerve.FRONT_BACK_DISTANCE / 2;
@@ -109,7 +109,7 @@ public class ModuleConfiguration {
    *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
    *     Coordinate System</a>
    */
-  public ModuleConfiguration(boolean north, boolean west, Rotation2d offset) {
+  public ModuleConstants(boolean north, boolean west, Rotation2d offset) {
     can = ModuleCAN.get(north, west);
     location = ModuleLocation.of(north, west);
     this.offset = offset;

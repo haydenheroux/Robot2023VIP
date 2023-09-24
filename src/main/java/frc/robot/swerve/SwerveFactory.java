@@ -10,24 +10,24 @@ public class SwerveFactory {
     this.shouldUsePhoenix = shouldUsePhoenix;
   }
 
-  public ModuleIO createModule(ModuleConfiguration config) {
-    if (isSimulation) return new ModuleIOCustom(config);
-    if (shouldUsePhoenix) return new ModuleIOPhoenix(config);
-    return new ModuleIOCustom(config);
+  public ModuleIO createModule(ModuleConstants constants) {
+    if (isSimulation) return new ModuleIOCustom(constants);
+    if (shouldUsePhoenix) return new ModuleIOPhoenix(constants);
+    return new ModuleIOCustom(constants);
   }
 
-  public AzimuthEncoderIO createAzimuthEncoder(ModuleConfiguration config) {
+  public AzimuthEncoderIO createAzimuthEncoder(ModuleConstants constants) {
     if (isSimulation) return new AzimuthEncoderIOSim();
-    return new AzimuthEncoderIOCANcoder(config.can.azimuth, config.offset.getRotations());
+    return new AzimuthEncoderIOCANcoder(constants.can.azimuth, constants.offset.getRotations());
   }
 
-  public DriveMotorIO createDriveMotor(ModuleConfiguration config) {
+  public DriveMotorIO createDriveMotor(ModuleConstants constants) {
     if (isSimulation) return new DriveMotorIOSim();
-    return new DriveMotorIOTalonFX(config.can.drive);
+    return new DriveMotorIOTalonFX(constants.can.drive);
   }
 
-  public SteerMotorIO createSteerMotor(ModuleConfiguration config) {
+  public SteerMotorIO createSteerMotor(ModuleConstants constants) {
     if (isSimulation) return new SteerMotorIOSim();
-    return new SteerMotorIOTalonFX(config.can.steer, config.can.azimuth);
+    return new SteerMotorIOTalonFX(constants.can.steer, constants.can.azimuth);
   }
 }

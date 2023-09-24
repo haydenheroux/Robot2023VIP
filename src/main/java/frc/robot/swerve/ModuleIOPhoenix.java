@@ -12,9 +12,10 @@ public class ModuleIOPhoenix implements ModuleIO {
 
   private SwerveModuleState setpoint = new SwerveModuleState();
 
-  public ModuleIOPhoenix(ModuleConfiguration config) {
-    // Add back module-level CAN bus, rather than assuming?
-    module = new SwerveModule(config.getSwerveModuleConstants(), config.can.azimuth.bus, true);
+  public ModuleIOPhoenix(ModuleConstants constants) {
+    // TODO Add back module-level CAN bus, rather than assuming?
+    module =
+        new SwerveModule(constants.getSwerveModuleConstants(), constants.can.azimuth.bus, true);
   }
 
   @Override

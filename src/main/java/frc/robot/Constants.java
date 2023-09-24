@@ -12,9 +12,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.controllers.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
-import frc.robot.swerve.ModuleConfiguration;
-import frc.robot.swerve.ModuleConfiguration.ModuleCAN;
-import frc.robot.swerve.ModuleConfiguration.ModuleLocation;
+import frc.robot.swerve.ModuleConstants;
+import frc.robot.swerve.ModuleConstants.ModuleCAN;
+import frc.robot.swerve.ModuleConstants.ModuleLocation;
 import frc.robot.swerve.SwerveFactory;
 import frc.robot.swerve.SwerveMath;
 
@@ -247,17 +247,17 @@ public class Constants {
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 
     /** Configuration for the north west swerve module. */
-    public static final ModuleConfiguration NORTH_WEST =
-        new ModuleConfiguration(true, true, Rotation2d.fromRotations(-0.179688));
+    public static final ModuleConstants NORTH_WEST =
+        new ModuleConstants(true, true, Rotation2d.fromRotations(-0.179688));
     /** Configuration for the north east swerve module. */
-    public static final ModuleConfiguration NORTH_EAST =
-        new ModuleConfiguration(true, false, Rotation2d.fromRotations(-0.951904));
+    public static final ModuleConstants NORTH_EAST =
+        new ModuleConstants(true, false, Rotation2d.fromRotations(-0.951904));
     /** Configuration for the south east swerve module. */
-    public static final ModuleConfiguration SOUTH_EAST =
-        new ModuleConfiguration(false, false, Rotation2d.fromRotations(-0.774568));
+    public static final ModuleConstants SOUTH_EAST =
+        new ModuleConstants(false, false, Rotation2d.fromRotations(-0.774568));
     /** Configuration for the south west swerve module. */
-    public static final ModuleConfiguration SOUTH_WEST =
-        new ModuleConfiguration(false, true, Rotation2d.fromRotations(-0.954346));
+    public static final ModuleConstants SOUTH_WEST =
+        new ModuleConstants(false, true, Rotation2d.fromRotations(-0.954346));
 
     public static final SwerveDriveKinematics KINEMATICS =
         new SwerveDriveKinematics(

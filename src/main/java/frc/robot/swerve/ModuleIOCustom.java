@@ -18,7 +18,7 @@ import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
  */
 public class ModuleIOCustom implements ModuleIO {
 
-  public final ModuleConfiguration config;
+  public final ModuleConstants constants;
 
   private final AzimuthEncoderIO azimuthEncoder;
   private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
@@ -34,14 +34,14 @@ public class ModuleIOCustom implements ModuleIO {
   /**
    * Constructs a new module using the provided configuration.
    *
-   * @param config the configuration to use to construct the module.
+   * @param constants the configuration to use to construct the module.
    */
-  public ModuleIOCustom(ModuleConfiguration config) {
-    this.config = config;
+  public ModuleIOCustom(ModuleConstants constants) {
+    this.constants = constants;
 
-    steerMotor = Swerve.FACTORY.createSteerMotor(config);
-    driveMotor = Swerve.FACTORY.createDriveMotor(config);
-    azimuthEncoder = Swerve.FACTORY.createAzimuthEncoder(config);
+    steerMotor = Swerve.FACTORY.createSteerMotor(constants);
+    driveMotor = Swerve.FACTORY.createDriveMotor(constants);
+    azimuthEncoder = Swerve.FACTORY.createAzimuthEncoder(constants);
   }
 
   @Override
