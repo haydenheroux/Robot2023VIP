@@ -15,7 +15,10 @@ public class ModuleIOPhoenix implements ModuleIO {
   public ModuleIOPhoenix(ModuleConfiguration config) {
     // Add back module-level CAN bus, rather than assuming?
     module = new SwerveModule(config.getSwerveModuleConstants(), config.can.azimuth.bus, true);
+  }
 
+  @Override
+  public void configure() {
     ConfigurationApplier.apply(Swerve.AZIMUTH_CONFIG, module.getCANcoder());
     ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, module.getDriveMotor());
     ConfigurationApplier.apply(Swerve.STEER_CONFIG, module.getSteerMotor());
@@ -26,6 +29,7 @@ public class ModuleIOPhoenix implements ModuleIO {
 
   @Override
   public void setSetpoint(SwerveModuleState setpoint) {
+    // FIXME Stores non-optimized setpoint
     this.setpoint = setpoint;
 
     module.apply(setpoint, false);

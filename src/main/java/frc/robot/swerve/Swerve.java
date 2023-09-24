@@ -26,6 +26,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     modules[1] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.NORTH_EAST); // FR
     modules[2] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.SOUTH_EAST); // BR
     modules[3] = Constants.Swerve.FACTORY.createModule(Constants.Swerve.SOUTH_WEST); // BL
+
+    for (var module : modules) {
+      module.configure();
+    }
   }
 
   public static Swerve getInstance() {

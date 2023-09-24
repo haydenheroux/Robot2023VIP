@@ -20,14 +20,14 @@ public class ModuleIOCustom implements ModuleIO {
 
   public final ModuleConfiguration config;
 
-  private final SteerMotorIO steerMotor;
-  private final SteerMotorValues steerMotorValues = new SteerMotorValues();
+  private final AzimuthEncoderIO azimuthEncoder;
+  private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
 
   private final DriveMotorIO driveMotor;
   private final DriveMotorIOValues driveMotorValues = new DriveMotorIOValues();
 
-  private final AzimuthEncoderIO azimuthEncoder;
-  private final AzimuthEncoderIOValues azimuthEncoderValues = new AzimuthEncoderIOValues();
+  private final SteerMotorIO steerMotor;
+  private final SteerMotorValues steerMotorValues = new SteerMotorValues();
 
   private SwerveModuleState setpoint = new SwerveModuleState();
 
@@ -42,11 +42,14 @@ public class ModuleIOCustom implements ModuleIO {
     steerMotor = Swerve.FACTORY.createSteerMotor(config);
     driveMotor = Swerve.FACTORY.createDriveMotor(config);
     azimuthEncoder = Swerve.FACTORY.createAzimuthEncoder(config);
+  }
 
-    steerMotor.configure();
-    driveMotor.configure();
-
+  @Override
+  public void configure() {
     azimuthEncoder.configure();
+
+    driveMotor.configure();
+    steerMotor.configure();
 
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
@@ -57,8 +60,8 @@ public class ModuleIOCustom implements ModuleIO {
   public void update() {
     azimuthEncoder.updateValues(azimuthEncoderValues);
 
-    steerMotor.updateValues(steerMotorValues);
     driveMotor.updateValues(driveMotorValues);
+    steerMotor.updateValues(steerMotorValues);
   }
 
   @Override

@@ -5,6 +5,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface ModuleIO {
 
+  /** Configure hardware. */
+  public void configure();
+
   /** Synchronously poll hardware. */
   public void update();
 
