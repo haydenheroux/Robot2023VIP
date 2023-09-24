@@ -23,9 +23,8 @@ public class SteerMotorIOSim implements SteerMotorIO {
     angleController = new PIDController(Constants.Swerve.STEER_KP.getSimulated(), 0.0, 0.0);
 
     // From Phoenix 6 docs:
-    // Wrap position error within [-0.5,+0.5) mechanism rotations. Typically used for continuous
-    // position closed-loops like swerve azimuth.
-    angleController.enableContinuousInput(-0.5, 0.5);
+    // Default azimuth encoder strategy is AbsoluteSensorRangeValue.Unsigned_0To1
+    angleController.enableContinuousInput(0, 1);
   }
 
   @Override
