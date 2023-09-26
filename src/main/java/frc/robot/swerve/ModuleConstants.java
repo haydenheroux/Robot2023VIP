@@ -119,7 +119,7 @@ public class ModuleConstants {
     return SWERVE_MODULE_CONSTANTS_FACTORY.createModuleConstants(
         can.steer.id,
         can.drive.id,
-        can.steer.id,
+        can.azimuth.id,
         offset.getDegrees(),
         location.getX(),
         location.getY(),
