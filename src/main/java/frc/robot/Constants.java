@@ -304,7 +304,7 @@ public class Constants {
 
     public static final TalonFXConfiguration STEER_CONFIG =
         FACTORY.createSteerMotorConfig(
-            MK4I.IS_STEER_INVERTED, STEER_KP.getReal());
+            MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP.getReal());
 
     public static class Theta {
       public static final double KP = 24.0;
