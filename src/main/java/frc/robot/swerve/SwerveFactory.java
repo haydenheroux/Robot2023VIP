@@ -64,13 +64,11 @@ public class SwerveFactory {
   }
 
   public TalonFXConfiguration createSteerMotorConfig(
-      boolean inverted, double gearRatio, double kP) {
+      boolean inverted, double kP) {
     final TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
 
     steerMotorConfig.MotorOutput.Inverted =
         inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-
-    steerMotorConfig.Feedback.SensorToMechanismRatio = gearRatio;
 
     steerMotorConfig.Slot0.kP = kP;
 

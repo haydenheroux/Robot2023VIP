@@ -300,11 +300,11 @@ public class Constants {
         FACTORY.createDriveMotorConfig(
             MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP.getReal(), 40.0);
 
-    public static final SimulationConstant STEER_KP = new SimulationConstant(100.0, 0.0);
+    public static final SimulationConstant STEER_KP = new SimulationConstant(100.0, 16.0);
 
     public static final TalonFXConfiguration STEER_CONFIG =
         FACTORY.createSteerMotorConfig(
-            MK4I.IS_STEER_INVERTED, MK4I.DRIVE_RATIO, STEER_KP.getReal());
+            MK4I.IS_STEER_INVERTED, STEER_KP.getReal());
 
     public static class Theta {
       public static final double KP = 24.0;
