@@ -45,10 +45,8 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
-    if (true) {
-      position.refresh();
-      velocity.refresh();
-    }
+    position.refresh();
+    velocity.refresh();
 
     values.positionMeters =
         Conversions.General.toMeters(

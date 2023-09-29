@@ -53,10 +53,8 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   @Override
   public void updateValues(SteerMotorValues values) {
-    if (true) {
-      position.refresh();
-      velocity.refresh();
-    }
+    position.refresh();
+    velocity.refresh();
 
     values.angleRotations = BaseStatusSignal.getLatencyCompensatedValue(position, velocity);
     values.omegaRotationsPerSecond = velocity.getValue();
