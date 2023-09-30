@@ -46,9 +46,6 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
     ConfigurationApplier.apply(motorConfig, motor);
-
-    position.setUpdateFrequency(100);
-    velocity.setUpdateFrequency(100);
   }
 
   @Override

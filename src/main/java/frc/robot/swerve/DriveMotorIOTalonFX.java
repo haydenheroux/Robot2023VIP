@@ -38,9 +38,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   @Override
   public void configure() {
     ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, motor);
-
-    position.setUpdateFrequency(100);
-    velocity.setUpdateFrequency(100);
   }
 
   @Override
