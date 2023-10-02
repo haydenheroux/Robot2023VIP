@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.lib.controllers.feedforward.TelescopingArmFeedforward;
-import frc.lib.math.SimulationConstant;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConstants;
 import frc.robot.swerve.ModuleConstants.ModuleCAN;
@@ -294,17 +293,15 @@ public class Constants {
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final SimulationConstant DRIVE_KP = new SimulationConstant(5.0, 0.0);
+    public static final double DRIVE_KP = 0.0;
 
     public static final TalonFXConfiguration DRIVE_CONFIG =
-        FACTORY.createDriveMotorConfig(
-            MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP.getReal(), 40.0);
+        FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP, 40.0);
 
-    public static final SimulationConstant STEER_KP = new SimulationConstant(100.0, 16.0);
+    public static final double STEER_KP = 16.0;
 
     public static final TalonFXConfiguration STEER_CONFIG =
-        FACTORY.createSteerMotorConfig(
-            MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP.getReal());
+        FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
 
     public static class Theta {
       public static final double KP = 24.0;

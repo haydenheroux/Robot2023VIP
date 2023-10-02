@@ -20,7 +20,7 @@ public class SteerMotorIOSim implements SteerMotorIO {
 
   /** Constructs a new simulated steer motor. */
   public SteerMotorIOSim() {
-    angleController = new PIDController(Constants.Swerve.STEER_KP.getSimulated(), 0.0, 0.0);
+    angleController = new PIDController(Constants.Swerve.STEER_KP, 0.0, 0.0);
 
     // From Phoenix 6 docs:
     // Default azimuth encoder strategy is AbsoluteSensorRangeValue.Unsigned_0To1
