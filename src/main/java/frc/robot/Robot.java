@@ -14,6 +14,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
 
+    auto = robotContainer.getAutonomousCommand();
+
     DriverStation.silenceJoystickConnectionWarning(true);
   }
 

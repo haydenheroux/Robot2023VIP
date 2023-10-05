@@ -275,7 +275,7 @@ public class Constants {
             ModuleLocation.of(false, true));
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(20);
+    public static final double MAX_SPEED = Units.feetToMeters(8);
     /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
@@ -293,12 +293,12 @@ public class Constants {
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final double DRIVE_KP = 0.0;
+    public static final double DRIVE_KP = 8.0;
 
     public static final TalonFXConfiguration DRIVE_CONFIG =
         FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP, 40.0);
 
-    public static final double STEER_KP = 16.0;
+    public static final double STEER_KP = 96.0; // 48.0 fallback
 
     public static final TalonFXConfiguration STEER_CONFIG =
         FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
