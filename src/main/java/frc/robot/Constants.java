@@ -275,7 +275,7 @@ public class Constants {
             ModuleLocation.of(false, true));
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(8);
+    public static final double MAX_SPEED = Units.feetToMeters(16);
     /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
@@ -304,13 +304,13 @@ public class Constants {
         FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
 
     public static class Theta {
-      public static final double KP = 24.0;
+      public static final double KP = 8.0;
 
       public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED;
     }
 
     public static class Drift {
-      public static final double KP = 0.0;
+      public static final double KP = 2.0;
 
       public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED.times(0.5);
     }
