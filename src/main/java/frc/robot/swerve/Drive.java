@@ -184,7 +184,7 @@ public class Drive extends CommandBase {
   }
 
   private TranslationMode determineTranslationMode(boolean isSniping) {
-    if (isSniping) return TranslationMode.ROBOT_CENTRIC;
+    if (isSniping) return TranslationMode.FIELD_CENTRIC;
 
     return TranslationMode.FIELD_CENTRIC;
   }

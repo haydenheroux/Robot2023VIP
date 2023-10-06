@@ -275,7 +275,7 @@ public class Constants {
             ModuleLocation.of(false, true));
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(16);
+    public static final double MAX_SPEED = Units.feetToMeters(8);
     /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
     public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
