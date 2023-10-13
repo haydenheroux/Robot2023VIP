@@ -5,7 +5,11 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -17,6 +21,7 @@ import frc.robot.swerve.ModuleConstants.ModuleCAN;
 import frc.robot.swerve.ModuleConstants.ModuleLocation;
 import frc.robot.swerve.SwerveFactory;
 import frc.robot.swerve.SwerveMath;
+import java.util.List;
 
 public class Constants {
 
@@ -103,7 +108,71 @@ public class Constants {
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double WHEEL_COF = 1.19;
+
     public static final double FIELD_LENGTH = Units.inchesToMeters(651.25);
+    public static final double FIELD_WIDTH = Units.inchesToMeters(315.5);
+
+    public static final AprilTagFieldLayout APRIL_TAGS =
+        new AprilTagFieldLayout(
+            List.of(
+                new AprilTag(
+                    1,
+                    new Pose3d(
+                        Units.inchesToMeters(610.77),
+                        Units.inchesToMeters(20.19 + 22.0 * 1),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d(0.0, 0.0, Math.PI))),
+                new AprilTag(
+                    2,
+                    new Pose3d(
+                        Units.inchesToMeters(610.77),
+                        Units.inchesToMeters(20.19 + 2.0 * 4),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d(0.0, 0.0, Math.PI))),
+                new AprilTag(
+                    3,
+                    new Pose3d(
+                        Units.inchesToMeters(610.77),
+                        Units.inchesToMeters(20.19 + 22.0 * 7),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d(0.0, 0.0, Math.PI))),
+                new AprilTag(
+                    4,
+                    new Pose3d(
+                        Units.inchesToMeters(636.96),
+                        Units.inchesToMeters(FIELD_WIDTH - Units.inchesToMeters(47.96)),
+                        Units.inchesToMeters(27.38),
+                        new Rotation3d(0.0, 0.0, Math.PI))),
+                new AprilTag(
+                    5,
+                    new Pose3d(
+                        Units.inchesToMeters(14.25),
+                        Units.inchesToMeters(FIELD_WIDTH - Units.inchesToMeters(47.96)),
+                        Units.inchesToMeters(27.38),
+                        new Rotation3d())),
+                new AprilTag(
+                    6,
+                    new Pose3d(
+                        Units.inchesToMeters(40.45),
+                        Units.inchesToMeters(20.19 + 22.0 * 7),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d())),
+                new AprilTag(
+                    7,
+                    new Pose3d(
+                        Units.inchesToMeters(40.45),
+                        Units.inchesToMeters(20.19 + 22.0 * 4),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d())),
+                new AprilTag(
+                    8,
+                    new Pose3d(
+                        Units.inchesToMeters(40.45),
+                        Units.inchesToMeters(20.19 + 22.0 * 1),
+                        Units.inchesToMeters(18.22),
+                        new Rotation3d()))),
+            FIELD_LENGTH,
+            FIELD_WIDTH);
   }
 
   /** Arm constants relating to the operation of the arm subsystem. */
