@@ -10,6 +10,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -56,6 +57,8 @@ public class Constants {
     public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, "Drivetrain");
     public static final ModuleCAN SOUTH_EAST = new ModuleCAN(8, 9, 10, "Drivetrain");
     public static final ModuleCAN SOUTH_WEST = new ModuleCAN(11, 12, 13, "Drivetrain");
+
+    public static final String CAMERA_NAME = "main";
   }
 
   /** Physical robot constants including masses, distances, and other critical measurements. */
@@ -108,6 +111,8 @@ public class Constants {
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double WHEEL_COF = 1.19;
+
+    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d();
 
     public static final double FIELD_LENGTH = Units.inchesToMeters(651.25);
     public static final double FIELD_WIDTH = Units.inchesToMeters(315.5);

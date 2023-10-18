@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
+import frc.robot.Constants.Ports;
 import frc.robot.Robot;
 import frc.robot.odometry.GyroIO.GyroIOValues;
 import frc.robot.swerve.Swerve;
@@ -49,6 +50,8 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final GyroIO gyro;
   private final GyroIOValues gyroValues = new GyroIOValues();
+
+  private final VisionIO vision;
 
   private final Supplier<SwerveModulePosition[]> positions;
 
@@ -88,8 +91,12 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
                   + driftOmegaRotationsPerSecond.getAsDouble();
 
       gyro = new GyroIOSim(omegaRotationsPerSecond);
+
+      vision = new VisionIOSim(Ports.CAMERA_NAME);
     } else {
       gyro = new GyroIOPigeon2(7, "Drivetrain");
+
+      vision = new VisionIOSim(Ports.CAMERA_NAME);
     }
 
     positions = () -> Swerve.getInstance().getPositions();
@@ -120,6 +127,15 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void periodic() {
     gyro.updateValues(gyroValues);
+
+    vision
+        .getEstimatedPose()
+        .ifPresent(
+            estimate -> {
+              Pose2d pose = estimate.pose.toPose2d();
+
+              poseEstimator.addVisionMeasurement(pose, estimate.timestampSeconds);
+            });
 
     poseEstimator.update(getYaw(), positions.get());
 
