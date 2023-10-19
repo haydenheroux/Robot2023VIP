@@ -2,8 +2,6 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
@@ -67,14 +65,5 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
         Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
 
     motor.setControl(velocityController.withVelocity(rotationsPerSecond));
-  }
-
-  @Override
-  public void setBrake(boolean isActive) {
-    if (isActive) {
-      motor.setControl(new StaticBrake());
-    } else {
-      motor.setControl(new NeutralOut());
-    }
   }
 }

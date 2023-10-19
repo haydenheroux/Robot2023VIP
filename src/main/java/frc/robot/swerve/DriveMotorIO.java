@@ -32,11 +32,4 @@ public interface DriveMotorIO {
    * @param velocityMetersPerSecond
    */
   public void setVelocitySetpoint(double velocityMetersPerSecond);
-
-  /**
-   * Sets the drive motor's neutral mode to either coast or brake.
-   *
-   * @param isActive
-   */
-  public void setBrake(boolean isActive);
 }
