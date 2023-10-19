@@ -38,7 +38,6 @@ public class Constants {
   public static final boolean USE_PHOENIX = false;
 
   public static class Ports {
-
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
     public static final int PNEUMATICS_MODULE = 30;
 
@@ -53,10 +52,12 @@ public class Constants {
     public static final int BOTTOM_ROLLER = 6;
     public static final int TOP_ROLLER = 5;
 
-    public static final ModuleCAN NORTH_WEST = new ModuleCAN(1, 2, 3, "Drivetrain");
-    public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, "Drivetrain");
-    public static final ModuleCAN SOUTH_EAST = new ModuleCAN(8, 9, 10, "Drivetrain");
-    public static final ModuleCAN SOUTH_WEST = new ModuleCAN(11, 12, 13, "Drivetrain");
+    public static final String CANIVORE = "Drivetrain";
+
+    public static final ModuleCAN NORTH_WEST = new ModuleCAN(1, 2, 3, CANIVORE);
+    public static final ModuleCAN NORTH_EAST = new ModuleCAN(4, 5, 6, CANIVORE);
+    public static final ModuleCAN SOUTH_EAST = new ModuleCAN(8, 9, 10, CANIVORE);
+    public static final ModuleCAN SOUTH_WEST = new ModuleCAN(11, 12, 13, CANIVORE);
 
     public static final String CAMERA_NAME = "main";
   }

@@ -94,7 +94,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
       vision = new VisionIOSim(Ports.CAMERA_NAME);
     } else {
-      gyro = new GyroIOPigeon2(7, "Drivetrain");
+      gyro = new GyroIOPigeon2(7, Ports.CANIVORE);
 
       vision = new VisionIOSim(Ports.CAMERA_NAME);
     }
