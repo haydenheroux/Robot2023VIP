@@ -103,6 +103,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // return Auto.BUILDER.fullAuto(pathChooser.getSelected());
-    return Auto.driveOdometryTestY(4.0, 1.0);
+    return Auto.driveOdometryTestY(1.0, 0.5);
   }
 }
