@@ -379,7 +379,7 @@ public class Constants {
         FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
 
     public static class Theta {
-      public static final double KP = 8.0;
+      public static final double KP = 7.0;
 
       public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED;
     }
