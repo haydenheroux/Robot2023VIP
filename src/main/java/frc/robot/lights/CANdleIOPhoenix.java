@@ -35,6 +35,7 @@ public class CANdleIOPhoenix implements CANdleIO {
 
   @Override
   public void setColor(Color color) {
+    // TODO Broken
     final int red = (int) color.red * 255;
     final int green = (int) color.green * 255;
     final int blue = (int) color.blue * 255;
