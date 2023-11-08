@@ -59,6 +59,8 @@ public class Constants {
     public static final ModuleCAN SOUTH_EAST = new ModuleCAN(8, 9, 10, CANIVORE);
     public static final ModuleCAN SOUTH_WEST = new ModuleCAN(11, 12, 13, CANIVORE);
 
+    public static final int CANDLE = 20;
+
     public static final String CAMERA_NAME = "main";
   }
 

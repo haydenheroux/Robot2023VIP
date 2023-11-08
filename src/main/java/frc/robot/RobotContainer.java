@@ -4,7 +4,9 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.lib.CustomXboxController;
 import frc.lib.mechanism.Mechanisms;
@@ -14,6 +16,7 @@ import frc.robot.arm.ArmPosition;
 import frc.robot.auto.Auto;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
+import frc.robot.lights.Lights;
 import frc.robot.odometry.Odometry;
 import frc.robot.swerve.Drive;
 import frc.robot.swerve.Swerve;
@@ -24,6 +27,7 @@ public class RobotContainer {
   private final SideIntake sideIntake;
   private final Swerve swerve;
   private final Odometry odometry;
+  private final Lights lights;
 
   private final CustomXboxController driver = new CustomXboxController(0);
   private final CustomXboxController operator = new CustomXboxController(1);
@@ -37,9 +41,10 @@ public class RobotContainer {
     sideIntake = SideIntake.getInstance();
     swerve = Swerve.getInstance();
     odometry = Odometry.getInstance();
+    lights = Lights.getInstance();
 
     TelemetryManager.getInstance()
-        .register(arm, claw, sideIntake, swerve, odometry)
+        .register(arm, claw, sideIntake, swerve, odometry, lights)
         .initializeDashboards();
 
     SmartDashboard.putData("Arm Mechanism", Mechanisms.getInstance().getArmMechanism());
@@ -64,6 +69,9 @@ public class RobotContainer {
     driver.b().whileTrue(swerve.checkSideways());
     driver.x().whileTrue(swerve.cross());
     driver.y().whileTrue(new PrintCommand("TODO"));
+
+    driver.leftBumper().onTrue(Commands.runOnce(() -> lights.setColor(Color.kGold)));
+    driver.rightBumper().onTrue(Commands.runOnce(() -> lights.setColor(Color.kPurple)));
 
     operator.leftY().whileTrue(arm.manualRotate(operator::getLeftY));
     operator.rightY().whileTrue(arm.manualExtend(operator::getRightY));
