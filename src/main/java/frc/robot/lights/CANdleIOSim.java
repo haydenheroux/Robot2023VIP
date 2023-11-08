@@ -1,23 +1,23 @@
 package frc.robot.lights;
 
-import edu.wpi.first.wpilibj.util.Color;
-
 public class CANdleIOSim implements CANdleIO {
 
-  private Color color = Color.kBlack;
+  private int red, green, blue;
 
   @Override
   public void configure() {}
 
   @Override
   public void updateValues(CANdleIOValues values) {
-    values.red = color.red;
-    values.green = color.green;
-    values.blue = color.blue;
+    values.red = this.red;
+    values.green = this.green;
+    values.blue = this.blue;
   }
 
   @Override
-  public void setColor(Color color) {
-    this.color = color;
+  public void setColor(int red, int green, int blue) {
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
   }
 }

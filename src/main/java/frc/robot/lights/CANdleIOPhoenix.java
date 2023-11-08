@@ -3,14 +3,13 @@ package frc.robot.lights;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.Ports;
 
 public class CANdleIOPhoenix implements CANdleIO {
 
   private final CANdle candle;
 
-  private Color color = Color.kBlack;
+  private int red, green, blue;
 
   public CANdleIOPhoenix() {
     candle = new CANdle(Ports.CANDLE);
@@ -28,20 +27,17 @@ public class CANdleIOPhoenix implements CANdleIO {
 
   @Override
   public void updateValues(CANdleIOValues values) {
-    values.red = color.red;
-    values.green = color.green;
-    values.blue = color.blue;
+    values.red = this.red;
+    values.green = this.green;
+    values.blue = this.blue;
   }
 
   @Override
-  public void setColor(Color color) {
-    // TODO Broken
-    final int red = (int) (color.red * 255);
-    final int green = (int) (color.green * 255);
-    final int blue = (int) (color.blue * 255);
-
+  public void setColor(int red, int green, int blue) {
     candle.setLEDs(red, green, blue);
 
-    this.color = color;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
   }
 }

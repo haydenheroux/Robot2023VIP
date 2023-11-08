@@ -53,7 +53,11 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
    * @param color the main color of the lights.
    */
   public void setColor(Color color) {
-    candle.setColor(color);
+    final double red = color.red * 255;
+    final double green = color.green * 255;
+    final double blue = color.blue * 255;
+
+    candle.setColor((int) red, (int) green, (int) blue);
   }
 
   /**
@@ -62,6 +66,6 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
    * @return the main color of the lights.
    */
   public Color getColor() {
-    return new Color(candleValues.red, candleValues.green, candleValues.blue);
+    return new Color(candleValues.red / 255, candleValues.green / 255, candleValues.blue / 255);
   }
 }

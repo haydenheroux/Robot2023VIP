@@ -1,18 +1,16 @@
 package frc.robot.lights;
 
-import edu.wpi.first.wpilibj.util.Color;
-
 public interface CANdleIO {
 
   public static class CANdleIOValues {
-    public double red = 0.0;
-    public double green = 0.0;
-    public double blue = 0.0;
+    public int red = 0;
+    public int green = 0;
+    public int blue = 0;
   }
 
   public void configure();
 
   public void updateValues(CANdleIOValues values);
 
-  public void setColor(Color color);
+  public void setColor(int red, int green, int blue);
 }
