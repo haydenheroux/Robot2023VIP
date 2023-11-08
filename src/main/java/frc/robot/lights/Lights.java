@@ -20,7 +20,7 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
     if (Robot.isSimulation()) {
       candle = new CANdleIOSim();
     } else {
-      candle = new CANdleIOSim();
+      candle = new CANdleIOPhoenix();
     }
   }
 
