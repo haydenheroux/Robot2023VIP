@@ -5,15 +5,24 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryOutputter;
+import frc.robot.Robot;
+import frc.robot.lights.CANdleIO.CANdleIOValues;
 
 /** Controls the lights used to signal drivers, report errors, and play animations. */
 public class Lights extends SubsystemBase implements TelemetryOutputter {
   private static Lights instance = null;
 
-  private Color color = Color.kRed;
+  private final CANdleIO candle;
+  private final CANdleIOValues candleValues = new CANdleIOValues();
 
   /** Constructs a new lights subsystem. */
-  private Lights() {}
+  private Lights() {
+    if (Robot.isSimulation()) {
+      candle = new CANdleIOSim();
+    } else {
+      candle = new CANdleIOSim();
+    }
+  }
 
   public static Lights getInstance() {
     if (instance == null) {
@@ -24,7 +33,9 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    candle.updateValues(candleValues);
+  }
 
   @Override
   public void initializeDashboard() {
@@ -42,7 +53,7 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
    * @param color the main color of the lights.
    */
   public void setColor(Color color) {
-    this.color = color;
+    candle.setColor(color);
   }
 
   /**
@@ -51,7 +62,6 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
    * @return the main color of the lights.
    */
   public Color getColor() {
-    // TODO
-    return color;
+    return new Color(candleValues.red, candleValues.green, candleValues.blue);
   }
 }
