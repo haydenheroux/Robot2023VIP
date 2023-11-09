@@ -1,0 +1,116 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm/Lock Both": "Command",
+      "/Shuffleboard/Arm/Unlock Both": "Command",
+      "/Shuffleboard/Claw/State Overrides/Accepting": "Command",
+      "/Shuffleboard/Claw/State Overrides/Disabled": "Command",
+      "/Shuffleboard/Claw/State Overrides/Ejecting": "Command",
+      "/Shuffleboard/Claw/State Overrides/Holding": "Command",
+      "/Shuffleboard/Odometry/Field": "Field2d",
+      "/Shuffleboard/Odometry/Trip Meter/Reset Trip Meter": "Command",
+      "/Shuffleboard/SideIntake/State Overrides/Accepting": "Command",
+      "/Shuffleboard/SideIntake/State Overrides/Disabled": "Command",
+      "/Shuffleboard/SideIntake/State Overrides/Ejecting": "Command",
+      "/Shuffleboard/SideIntake/State Overrides/Holding": "Command",
+      "/Shuffleboard/Swerve/North East/Coarse Steer": "Command",
+      "/Shuffleboard/Swerve/North East/Drive Backwards": "Command",
+      "/Shuffleboard/Swerve/North East/Drive Forwards": "Command",
+      "/Shuffleboard/Swerve/North East/Fine Steer": "Command",
+      "/Shuffleboard/Swerve/North East/RunCommand": "Command",
+      "/Shuffleboard/Swerve/North East/Spin Steer Motor": "Command",
+      "/Shuffleboard/Swerve/North East/Zero Steer": "Command",
+      "/Shuffleboard/Swerve/North West/Coarse Steer": "Command",
+      "/Shuffleboard/Swerve/North West/Drive Backwards": "Command",
+      "/Shuffleboard/Swerve/North West/Drive Forwards": "Command",
+      "/Shuffleboard/Swerve/North West/Fine Steer": "Command",
+      "/Shuffleboard/Swerve/North West/RunCommand": "Command",
+      "/Shuffleboard/Swerve/North West/Spin Steer Motor": "Command",
+      "/Shuffleboard/Swerve/North West/Zero Steer": "Command",
+      "/Shuffleboard/Swerve/South East/Coarse Steer": "Command",
+      "/Shuffleboard/Swerve/South East/Drive Backwards": "Command",
+      "/Shuffleboard/Swerve/South East/Drive Forwards": "Command",
+      "/Shuffleboard/Swerve/South East/Fine Steer": "Command",
+      "/Shuffleboard/Swerve/South East/RunCommand": "Command",
+      "/Shuffleboard/Swerve/South East/Spin Steer Motor": "Command",
+      "/Shuffleboard/Swerve/South East/Zero Steer": "Command",
+      "/Shuffleboard/Swerve/South West/Coarse Steer": "Command",
+      "/Shuffleboard/Swerve/South West/Drive Backwards": "Command",
+      "/Shuffleboard/Swerve/South West/Drive Forwards": "Command",
+      "/Shuffleboard/Swerve/South West/Fine Steer": "Command",
+      "/Shuffleboard/Swerve/South West/RunCommand": "Command",
+      "/Shuffleboard/Swerve/South West/Spin Steer Motor": "Command",
+      "/Shuffleboard/Swerve/South West/Zero Steer": "Command",
+      "/SmartDashboard/Arm Mechanism": "Mechanism2d",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/main Sim Field": "Field2d"
+    },
+    "windows": {
+      "/Shuffleboard/Odometry/Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Arm Mechanism": {
+        "image": "C:\\Users\\hayden\\Documents\\Robot2023VIP\\MechanismGridOverlay.png",
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "LiveWindow": {
+        ".status": {
+          "open": true
+        }
+      },
+      "Shuffleboard": {
+        "Lights": {
+          "open": true
+        },
+        "Odometry": {
+          "Position": {
+            "open": true
+          },
+          "Rotation": {
+            "open": true
+          },
+          "Trip Meter": {
+            "open": true
+          }
+        },
+        "Swerve": {
+          "Module 0": {
+            "open": true
+          },
+          "North East Setpoints": {
+            "open": true
+          },
+          "North East Values": {
+            "open": true
+          },
+          "South West": {
+            "open": true
+          }
+        },
+        "open": true
+      },
+      "drive": {
+        "open": true
+      }
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
+  }
+}

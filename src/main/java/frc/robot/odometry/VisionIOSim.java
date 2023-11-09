@@ -6,37 +6,27 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.SimVisionSystem;
+import org.photonvision.simulation.VisionSystemSim;
 
 public class VisionIOSim implements VisionIO {
 
   private final PhotonCamera camera;
 
-  private final SimVisionSystem visionSim;
+  private final VisionSystemSim visionSim;
 
   private final PhotonPoseEstimator photonEstimator;
 
   public VisionIOSim(String cameraName) {
     camera = new PhotonCamera(cameraName);
 
-    double cameraDiagonalFOV = 170.0;
-    double maxLEDRange = 20;
-    double minTargetArea = 10;
-
     visionSim =
-        new SimVisionSystem(
-            cameraName,
-            cameraDiagonalFOV,
-            Physical.ROBOT_TO_CAMERA,
-            maxLEDRange,
-            640,
-            480,
-            minTargetArea);
-    visionSim.addVisionTargets(Physical.APRIL_TAGS);
+        new VisionSystemSim(
+            cameraName);
+    visionSim.addAprilTags(Physical.APRIL_TAGS);
 
     photonEstimator =
         new PhotonPoseEstimator(
-            Physical.APRIL_TAGS, PoseStrategy.MULTI_TAG_PNP, camera, Physical.ROBOT_TO_CAMERA);
+            Physical.APRIL_TAGS, PoseStrategy.AVERAGE_BEST_TARGETS, camera, Physical.ROBOT_TO_CAMERA);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
@@ -45,7 +35,7 @@ public class VisionIOSim implements VisionIO {
 
   @Override
   public Optional<VisionPoseEstimate> getEstimatedPose() {
-    visionSim.processFrame(Odometry.getInstance().getPose());
+    visionSim.update(Odometry.getInstance().getPose());
 
     Optional<EstimatedRobotPose> optional = photonEstimator.update();
 

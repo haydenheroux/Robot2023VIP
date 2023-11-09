@@ -1,6 +1,7 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -68,6 +69,12 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
 
   @Override
   public void outputTelemetry() {}
+
+  public void setSpeeds(ChassisSpeeds speeds) {
+    SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speeds);
+
+    setSetpoints(setpoints);
+  }
 
   /**
    * Sets the module setpoints.

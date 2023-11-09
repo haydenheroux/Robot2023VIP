@@ -2,11 +2,11 @@ package frc.robot.arm;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.arm.Arm.Selector;
 import java.util.function.DoubleSupplier;
 
-public class Characterize extends CommandBase {
+public class Characterize extends Command {
 
   private final Arm arm;
   private final Selector selector;

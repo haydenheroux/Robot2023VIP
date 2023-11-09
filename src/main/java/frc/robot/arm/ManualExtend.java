@@ -1,11 +1,11 @@
 package frc.robot.arm;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.arm.Arm.Selector;
 import java.util.function.DoubleSupplier;
 
-public class ManualExtend extends CommandBase {
+public class ManualExtend extends Command {
 
   private final Arm arm;
   private final DoubleSupplier percentSupplier;

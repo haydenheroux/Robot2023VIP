@@ -1,9 +1,9 @@
 package frc.robot.arm;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.arm.Arm.Selector;
 
-public class ToGoal extends CommandBase {
+public class ToGoal extends Command {
 
   private final Arm arm;
   private final ArmPosition goal;

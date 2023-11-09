@@ -1,7 +1,8 @@
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -32,8 +33,8 @@ public class RobotContainer {
   private final CustomXboxController driver = new CustomXboxController(0);
   private final CustomXboxController operator = new CustomXboxController(1);
 
-  private final SendableChooser<PathPlannerTrajectory> pathChooser =
-      new SendableChooser<PathPlannerTrajectory>();
+  private SendableChooser<Command> autoChooser =
+      new SendableChooser<Command>();
 
   public RobotContainer() {
     arm = Arm.getInstance();
@@ -57,10 +58,12 @@ public class RobotContainer {
 
   /** Configures the autonomous chooser with autonomous routines. */
   private void configureAutonomous() {
-    pathChooser.setDefaultOption("2 Piece Bump", PathPlanner.loadPath("2 Piece Bump", Auto.SPEEDS));
-    pathChooser.addOption("2 Piece Clean", PathPlanner.loadPath("2 Piece Clean", Auto.SPEEDS));
+    AutoBuilder.buildAuto("2 Piece Bump");
+    AutoBuilder.buildAuto("2 Piece Clean");
 
-    SmartDashboard.putData(pathChooser);
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData(autoChooser);
   }
 
   /** Configures bindings for driver and operator controllers. */
@@ -110,7 +113,6 @@ public class RobotContainer {
    * @return the command to run during autonomous.
    */
   public Command getAutonomousCommand() {
-    // return Auto.BUILDER.fullAuto(pathChooser.getSelected());
-    return Auto.driveOdometryTestY(1.0, 0.5);
+    return autoChooser.getSelected();
   }
 }

@@ -1,8 +1,5 @@
 package frc.robot.auto;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,9 +12,17 @@ import frc.robot.arm.Arm;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.odometry.Odometry;
+import frc.robot.swerve.ModuleConstants;
 import frc.robot.swerve.Swerve;
+import frc.robot.swerve.ModuleConstants.ModuleLocation;
+
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Auto {
   private static final Arm arm = Arm.getInstance();
@@ -25,7 +30,6 @@ public class Auto {
   private static final Swerve swerve = Swerve.getInstance();
   private static final Odometry odometry = Odometry.getInstance();
 
-  public static final PathConstraints SPEEDS = new PathConstraints(4, 3);
   public static final HashMap<String, Command> EVENT_MAP = new HashMap<>();
 
   static {
@@ -34,19 +38,9 @@ public class Auto {
     EVENT_MAP.put("toStow", toStow());
     EVENT_MAP.put("accept", accept());
     EVENT_MAP.put("scoreTop", scoreTop());
-  }
 
-  public static final SwerveAutoBuilder BUILDER =
-      new SwerveAutoBuilder(
-          odometry::getPose,
-          odometry::setPose,
-          Constants.Swerve.KINEMATICS,
-          new PIDConstants(1.0, 0, 0),
-          new PIDConstants(Theta.KP, 0, 0),
-          swerve::setSetpoints,
-          Auto.EVENT_MAP,
-          true,
-          swerve);
+    AutoBuilder.configureHolonomic(odometry::getPose, odometry::setPose, odometry::getRobotVelocity, swerve::setSpeeds, new HolonomicPathFollowerConfig(new PIDConstants(1.0), new PIDConstants(1), 4.5, ModuleLocation.furthest().getNorm(), new ReplanningConfig()), swerve);
+  }
 
   public static Command toFloor() {
     return arm.toGoal(ArmPosition.SCORE_GROUND);

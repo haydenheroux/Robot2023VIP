@@ -353,7 +353,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *     Reference Frame</a>
    * @return the velocity of the robot in the robot reference frame.
    */
-  private ChassisSpeeds getRobotVelocity() {
+  public ChassisSpeeds getRobotVelocity() {
     return Constants.Swerve.KINEMATICS.toChassisSpeeds(Swerve.getInstance().getStates());
   }
 
@@ -365,7 +365,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *     Reference Frame</a>
    * @return the velocity of the robot in the field reference frame.
    */
-  private Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
+  public Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
     final Rotation2d rotation = getRotation();
 
     // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19

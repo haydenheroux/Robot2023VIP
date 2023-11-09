@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.controllers.pid.SaturatedPIDController;
 import frc.lib.math.Util;
 import frc.robot.Constants;
@@ -50,7 +50,7 @@ import java.util.function.DoubleSupplier;
  * <p>Heading requests cause the chassis to rotate until at the requested heading. Heading requests
  * are snapped to a nearby multiple to allow for aligning to common angles.
  */
-public class Drive extends CommandBase {
+public class Drive extends Command {
   private final Swerve swerve;
 
   private final DoubleSupplier forwardsVelocity, sidewaysVelocity, forwardsHeading, sidewaysHeading;
