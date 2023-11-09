@@ -1,9 +1,8 @@
 package frc.robot.lights;
 
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
-
+import com.ctre.phoenix.led.CANdleConfiguration;
 import frc.robot.Constants.Ports;
 
 public class CANdleIOPhoenix implements CANdleIO {

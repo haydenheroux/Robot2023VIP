@@ -1,8 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -14,7 +12,6 @@ import frc.lib.mechanism.Mechanisms;
 import frc.lib.telemetry.TelemetryManager;
 import frc.robot.arm.Arm;
 import frc.robot.arm.ArmPosition;
-import frc.robot.auto.Auto;
 import frc.robot.intake.Claw;
 import frc.robot.intake.SideIntake;
 import frc.robot.lights.Lights;
@@ -33,8 +30,7 @@ public class RobotContainer {
   private final CustomXboxController driver = new CustomXboxController(0);
   private final CustomXboxController operator = new CustomXboxController(1);
 
-  private SendableChooser<Command> autoChooser =
-      new SendableChooser<Command>();
+  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
     arm = Arm.getInstance();

@@ -1,5 +1,9 @@
 package frc.robot.auto;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
@@ -7,22 +11,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.DelayedBoolean;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve.Theta;
 import frc.robot.arm.Arm;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
 import frc.robot.odometry.Odometry;
-import frc.robot.swerve.ModuleConstants;
-import frc.robot.swerve.Swerve;
 import frc.robot.swerve.ModuleConstants.ModuleLocation;
-
+import frc.robot.swerve.Swerve;
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Auto {
   private static final Arm arm = Arm.getInstance();
@@ -39,7 +35,18 @@ public class Auto {
     EVENT_MAP.put("accept", accept());
     EVENT_MAP.put("scoreTop", scoreTop());
 
-    AutoBuilder.configureHolonomic(odometry::getPose, odometry::setPose, odometry::getRobotVelocity, swerve::setSpeeds, new HolonomicPathFollowerConfig(new PIDConstants(1.0), new PIDConstants(1), 4.5, ModuleLocation.furthest().getNorm(), new ReplanningConfig()), swerve);
+    AutoBuilder.configureHolonomic(
+        odometry::getPose,
+        odometry::setPose,
+        odometry::getRobotVelocity,
+        swerve::setSpeeds,
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(1.0),
+            new PIDConstants(1),
+            4.5,
+            ModuleLocation.furthest().getNorm(),
+            new ReplanningConfig()),
+        swerve);
   }
 
   public static Command toFloor() {

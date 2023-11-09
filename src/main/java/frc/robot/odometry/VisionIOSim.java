@@ -19,14 +19,15 @@ public class VisionIOSim implements VisionIO {
   public VisionIOSim(String cameraName) {
     camera = new PhotonCamera(cameraName);
 
-    visionSim =
-        new VisionSystemSim(
-            cameraName);
+    visionSim = new VisionSystemSim(cameraName);
     visionSim.addAprilTags(Physical.APRIL_TAGS);
 
     photonEstimator =
         new PhotonPoseEstimator(
-            Physical.APRIL_TAGS, PoseStrategy.AVERAGE_BEST_TARGETS, camera, Physical.ROBOT_TO_CAMERA);
+            Physical.APRIL_TAGS,
+            PoseStrategy.AVERAGE_BEST_TARGETS,
+            camera,
+            Physical.ROBOT_TO_CAMERA);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
