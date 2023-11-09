@@ -1,5 +1,6 @@
 package frc.robot.lights;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
@@ -35,6 +36,10 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void periodic() {
     candle.updateValues(candleValues);
+
+    if (RobotController.getRSLState()) {
+      setColor(Color.kOrange);
+    }
   }
 
   @Override
