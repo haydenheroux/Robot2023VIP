@@ -39,6 +39,8 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
 
     if (RobotController.getRSLState()) {
       setColor(Color.kOrange);
+    } else {
+      setColor(Color.kBlack);
     }
   }
 
