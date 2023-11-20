@@ -38,7 +38,7 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
     candle.updateValues(candleValues);
 
     if (RobotController.getRSLState()) {
-      setColor(Color.kOrange);
+      setColor(Color.kOrangeRed);
     } else {
       setColor(Color.kBlack);
     }

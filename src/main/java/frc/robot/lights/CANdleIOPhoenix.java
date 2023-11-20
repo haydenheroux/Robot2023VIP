@@ -20,7 +20,7 @@ public class CANdleIOPhoenix implements CANdleIO {
     CANdleConfiguration config = new CANdleConfiguration();
 
     config.stripType = LEDStripType.RGB;
-    config.brightnessScalar = 0.5;
+    config.brightnessScalar = 1.0;
 
     candle.configAllSettings(config);
   }
