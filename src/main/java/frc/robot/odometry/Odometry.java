@@ -92,11 +92,11 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
       gyro = new GyroIOSim(omegaRotationsPerSecond);
 
-      vision = new VisionIOSim(Ports.CAMERA_NAME);
+      vision = new VisionIONull();
     } else {
       gyro = new GyroIOPigeon2(7, Ports.CANIVORE);
 
-      vision = new VisionIOSim(Ports.CAMERA_NAME);
+      vision = new VisionIONull();
     }
 
     positions = () -> Swerve.getInstance().getPositions();
