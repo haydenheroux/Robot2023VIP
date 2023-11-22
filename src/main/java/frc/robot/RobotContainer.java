@@ -48,8 +48,7 @@ public class RobotContainer {
   }
 
   /** Configures the autonomous chooser with autonomous routines. */
-  private void configureAutonomous() {
-  }
+  private void configureAutonomous() {}
 
   /** Configures bindings for driver and operator controllers. */
   private void configureBindings() {
