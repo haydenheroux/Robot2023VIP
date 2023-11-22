@@ -40,7 +40,7 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    absolutePosition.refresh();
+    absolutePosition.waitForUpdate(Constants.LOOP_TIME);
 
     values.angleRotations = absolutePosition.getValue();
   }

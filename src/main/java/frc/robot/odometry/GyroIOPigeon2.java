@@ -3,6 +3,7 @@ package frc.robot.odometry;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;
 import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants;
 import frc.robot.Constants.Swerve;
 
 public class GyroIOPigeon2 implements GyroIO {
@@ -20,13 +21,13 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void updateValues(GyroIOValues values) {
-    values.rollAngleRotations = Units.degreesToRotations(gyro.getRoll().refresh().getValue());
-    values.pitchAngleRotations = Units.degreesToRotations(gyro.getPitch().refresh().getValue());
-    values.yawAngleRotations = Units.degreesToRotations(gyro.getYaw().refresh().getValue());
+    values.rollAngleRotations = Units.degreesToRotations(gyro.getRoll().waitForUpdate(Constants.LOOP_TIME).getValue());
+    values.pitchAngleRotations = Units.degreesToRotations(gyro.getPitch().waitForUpdate(Constants.LOOP_TIME).getValue());
+    values.yawAngleRotations = Units.degreesToRotations(gyro.getYaw().waitForUpdate(Constants.LOOP_TIME).getValue());
 
-    values.rollAccelerationG = gyro.getAccelerationX().getValue();
-    values.pitchAccelerationG = gyro.getAccelerationY().getValue();
-    values.yawAccelerationG = gyro.getAccelerationZ().getValue();
+    values.rollAccelerationG = gyro.getAccelerationX().waitForUpdate(Constants.LOOP_TIME).getValue();
+    values.pitchAccelerationG = gyro.getAccelerationY().waitForUpdate(Constants.LOOP_TIME).getValue();
+    values.yawAccelerationG = gyro.getAccelerationZ().waitForUpdate(Constants.LOOP_TIME).getValue();
   }
 
   @Override

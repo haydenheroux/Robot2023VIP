@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
+import frc.robot.Constants;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.Swerve;
 
@@ -40,8 +41,8 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
-    position.refresh();
-    velocity.refresh();
+    position.waitForUpdate(Constants.LOOP_TIME);
+    velocity.waitForUpdate(Constants.LOOP_TIME);
 
     values.positionMeters =
         Conversions.General.toMeters(
