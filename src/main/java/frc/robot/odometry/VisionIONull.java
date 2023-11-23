@@ -4,8 +4,7 @@ import java.util.Optional;
 
 public class VisionIONull implements VisionIO {
 
-  public VisionIONull() {
-  }
+  public VisionIONull() {}
 
   @Override
   public void configure() {}
