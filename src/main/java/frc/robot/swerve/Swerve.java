@@ -70,7 +70,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   @Override
   public void outputTelemetry() {}
 
-  public void setSpeeds(ChassisSpeeds speeds) {
+  public void setChassisSpeeds(ChassisSpeeds speeds) {
     SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speeds);
 
     setSetpoints(setpoints);

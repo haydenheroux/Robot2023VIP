@@ -74,15 +74,7 @@ public class RobotContainer {
 
   /** Configures default commands for each subsystem. */
   public void configureDefaultCommands() {
-    swerve.setDefaultCommand(
-        new Drive(
-            swerve,
-            () -> -driver.getLeftY(),
-            () -> -driver.getLeftX(),
-            () -> -driver.getRightY(),
-            () -> -driver.getRightX(),
-            () -> driver.rightTrigger().getAsBoolean(),
-            () -> driver.leftTrigger().getAsBoolean()));
+    swerve.setDefaultCommand(new Drive(swerve, driver));
   }
 
   /** Configures triggers for arbitrary events. */

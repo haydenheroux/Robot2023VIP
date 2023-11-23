@@ -39,7 +39,7 @@ public class Auto {
         odometry::getPose,
         odometry::setPose,
         odometry::getRobotVelocity,
-        swerve::setSpeeds,
+        swerve::setChassisSpeeds,
         new HolonomicPathFollowerConfig(
             new PIDConstants(1.0),
             new PIDConstants(1),
