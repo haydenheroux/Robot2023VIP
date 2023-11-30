@@ -77,10 +77,10 @@ public class Drive extends Command {
 
     Translation2d velocity = request.getRequestedVelocity();
 
-    final Rotation2d yaw = odometry.getRotation();
+    final Rotation2d rotation = odometry.getPose().getRotation();
 
     if (DriveRequest.startedDrifting(previousRequest, request)) {
-      heading = yaw;
+      heading = rotation;
     }
 
     double omegaRadiansPerSecond = 0.0;
@@ -91,10 +91,10 @@ public class Drive extends Command {
         break;
       case SNAPPING:
         heading = request.getRequestedSnapAngle();
-        omegaRadiansPerSecond = thetaController.calculate(yaw, heading);
+        omegaRadiansPerSecond = thetaController.calculate(rotation, heading);
         break;
       case DRIFTING:
-        omegaRadiansPerSecond = driftController.calculate(yaw, heading);
+        omegaRadiansPerSecond = driftController.calculate(rotation, heading);
         break;
     }
 
@@ -105,7 +105,7 @@ public class Drive extends Command {
     } else {
       chassisSpeeds =
           ChassisSpeeds.fromFieldRelativeSpeeds(
-              velocity.getX(), velocity.getY(), omegaRadiansPerSecond, yaw);
+              velocity.getX(), velocity.getY(), omegaRadiansPerSecond, rotation);
     }
 
     swerve.setChassisSpeeds(chassisSpeeds);

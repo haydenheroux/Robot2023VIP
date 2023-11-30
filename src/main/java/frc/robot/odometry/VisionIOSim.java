@@ -10,6 +10,8 @@ import org.photonvision.simulation.VisionSystemSim;
 
 public class VisionIOSim implements VisionIO {
 
+  private final Odometry odometry;
+
   private final PhotonCamera camera;
 
   private final VisionSystemSim visionSim;
@@ -17,6 +19,8 @@ public class VisionIOSim implements VisionIO {
   private final PhotonPoseEstimator photonEstimator;
 
   public VisionIOSim(String cameraName) {
+    odometry = Odometry.getInstance();
+
     camera = new PhotonCamera(cameraName);
 
     visionSim = new VisionSystemSim(cameraName);
@@ -36,7 +40,7 @@ public class VisionIOSim implements VisionIO {
 
   @Override
   public Optional<VisionPoseEstimate> getEstimatedPose() {
-    visionSim.update(Odometry.getInstance().getPose());
+    visionSim.update(odometry.getPose());
 
     Optional<EstimatedRobotPose> optional = photonEstimator.update();
 

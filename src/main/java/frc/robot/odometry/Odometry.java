@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.math.CustomRotation3d;
 import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
@@ -137,7 +138,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
               poseEstimator.addVisionMeasurement(pose, estimate.timestampSeconds);
             });
 
-    poseEstimator.update(getYaw(), positions.get());
+    poseEstimator.update(getGyro().getYaw(), positions.get());
 
     field.setRobotPose(getPose());
   }
@@ -149,11 +150,11 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     tab.add(field);
 
     ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
-    rotation.addNumber("Gyro Roll (deg)", () -> getRoll().getDegrees());
-    rotation.addNumber("Gyro Pitch (deg)", () -> getPitch().getDegrees());
-    rotation.addNumber("Gyro Yaw (deg)", () -> getYaw().getDegrees());
+    rotation.addNumber("Gyro Roll (deg)", () -> getGyro().getRoll().getDegrees());
+    rotation.addNumber("Gyro Pitch (deg)", () -> getGyro().getPitch().getDegrees());
+    rotation.addNumber("Gyro Yaw (deg)", () -> getGyro().getYaw().getDegrees());
     rotation.addNumber("Gyro Tilt (deg)", () -> getTilt().getDegrees());
-    rotation.addNumber("Rotation (deg)", () -> getRotation().getDegrees());
+    rotation.addNumber("Rotation (deg)", () -> getPose().getRotation().getDegrees());
 
     ShuffleboardLayout platform = tab.getLayout("Platform", BuiltInLayouts.kList);
     platform.addBoolean("Is Level?", this::isLevel);
@@ -217,14 +218,14 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @param pose tne position of the robot on the field.
    */
   public void setPose(Pose2d pose) {
-    poseEstimator.resetPosition(getYaw(), positions.get(), pose);
+    poseEstimator.resetPosition(getGyro().getYaw(), positions.get(), pose);
   }
 
   /**
    * Gets the relative distance between the estimated position of the robot on the field and a
    * previously set position.
    *
-   * @return the relative distance between the restimated position of the robot on the field and a
+   * @return the relative distance between the estimated position of the robot on the field and a
    *     previously set position.
    */
   public Transform2d getTripDistance() {
@@ -258,51 +259,18 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *
    * @return the angle of the robot relative to the robot X axis.
    */
-  public Rotation2d getRoll() {
-    return Rotation2d.fromRotations(gyroValues.rollAngleRotations);
-  }
-
-  /**
-   * Gets the angle of the robot relative to the robot Y axis.
-   *
-   * @return the angle of the robot relative to the robot Y axis.
-   */
-  public Rotation2d getPitch() {
-    return Rotation2d.fromRotations(gyroValues.pitchAngleRotations);
-  }
-
-  /**
-   * Gets the angle of the robot relative to the robot Z axis.
-   *
-   * @return the angle of the robot relative to the robot Z axis.
-   */
-  private Rotation2d getYaw() {
-    return Rotation2d.fromRotations(gyroValues.yawAngleRotations);
-  }
-
-  /**
-   * Gets the rotation of the robot on the field.
-   *
-   * @return the rotation of the robot on the field.
-   */
-  public Rotation2d getRotation() {
-    return getPose().getRotation();
+  public CustomRotation3d getGyro() {
+    return new CustomRotation3d(
+        Rotation2d.fromRotations(gyroValues.rollAngleRotations),
+        Rotation2d.fromRotations(gyroValues.pitchAngleRotations),
+        Rotation2d.fromRotations(gyroValues.yawAngleRotations));
   }
 
   public Rotation2d getTilt() {
     // https://github.com/Mechanical-Advantage/RobotCode2023/blob/81a63b84a29d67d62154e4af02631a525014eafa/src/main/java/org/littletonrobotics/frc2023/commands/AutoBalance.java#L49
-    double pitch = getRotation().getCos() * getPitch().getRadians();
-    double roll = getRotation().getSin() * getRoll().getRadians();
-    return new Rotation2d(pitch + roll);
-  }
-
-  /**
-   * Sets the rotation of the robot on the field.
-   *
-   * @param rotation the rotation of the robot on the field.
-   */
-  public void setRotation(Rotation2d rotation) {
-    setPose(new Pose2d(getPose().getTranslation(), rotation));
+    final Rotation2d pitch = getGyro().getPitch().times(getPose().getRotation().getCos());
+    final Rotation2d roll = getGyro().getRoll().times(getPose().getRotation().getSin());
+    return pitch.plus(roll);
   }
 
   public boolean tiltedBelow(Rotation2d tilt) {
@@ -325,8 +293,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   private final Rotation2d TILT_THRESHOLD = Rotation2d.fromDegrees(3.0);
 
   public boolean tiltedAt(Rotation2d tilt) {
-    return Util.approximatelyEqual(
-        getTilt().getDegrees(), tilt.getDegrees(), TILT_THRESHOLD.getDegrees());
+    return tiltedAt(tilt, TILT_THRESHOLD);
   }
 
   public boolean onFlap() {
@@ -366,7 +333,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    * @return the velocity of the robot in the field reference frame.
    */
   public Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
-    final Rotation2d rotation = getRotation();
+    final Rotation2d rotation = getPose().getRotation();
 
     // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
     double vxMetersPerSecond =
