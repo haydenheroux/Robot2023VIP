@@ -55,7 +55,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final Supplier<SwerveModulePosition[]> positions;
 
-  private final Field2d field;
+  private final Field2d field = new Field2d();
 
   private final TripTracker tripTracker = new TripTracker();
 
@@ -111,8 +111,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
             visionStandardDeviations);
 
     gyro.configure();
-
-    field = new Field2d();
   }
 
   public static Odometry getInstance() {
@@ -142,36 +140,38 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   @Override
   public void initializeDashboard() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Odometry");
+    ShuffleboardTab odometryTab = Shuffleboard.getTab("Odometry");
 
-    tab.add(field);
-
-    ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
+    ShuffleboardLayout position = odometryTab.getLayout("Position", BuiltInLayouts.kList).withPosition(0, 0).withSize(2, 4);
     position.addNumber("X (m)", () -> getPose().getX());
     position.addNumber("Y (m)", () -> getPose().getY());
     position.addNumber("Rotation (deg)", () -> getPose().getRotation().getDegrees());
 
-    ShuffleboardLayout velocity = tab.getLayout("Velocity", BuiltInLayouts.kList);
+    ShuffleboardLayout velocity = odometryTab.getLayout("Velocity", BuiltInLayouts.kList).withPosition(2, 0).withSize(2, 4);
     velocity.addNumber("X Velocity (mps)", () -> getVelocity().getX());
     velocity.addNumber("Y Velocity (mps)", () -> getVelocity().getY());
     velocity.addNumber("Velocity (mps)", () -> getVelocity().getTranslation().getNorm());
 
-    ShuffleboardLayout trip = tab.getLayout("Trip Meter", BuiltInLayouts.kList);
+    ShuffleboardLayout trip = odometryTab.getLayout("Trip Meter", BuiltInLayouts.kList).withPosition(4, 0).withSize(2, 4);
     trip.addNumber("Trip Distance X (m)", () -> tripTracker.getDistance().getX());
     trip.addNumber("Trip Distance Y (m)", () -> tripTracker.getDistance().getY());
     trip.addNumber("Trip Distance (m)", () -> tripTracker.getDistance().getTranslation().getNorm());
     trip.add(Commands.runOnce(tripTracker::start).withName("Reset Trip Meter"));
 
-    ShuffleboardLayout gyro = tab.getLayout("Gyro", BuiltInLayouts.kList);
+    ShuffleboardLayout gyro = odometryTab.getLayout("Gyro", BuiltInLayouts.kList).withPosition(6, 0).withSize(2, 4);
     gyro.addNumber("Roll (deg)", () -> getGyro().getRoll().getDegrees());
     gyro.addNumber("Pitch (deg)", () -> getGyro().getPitch().getDegrees());
     gyro.addNumber("Yaw (deg)", () -> getGyro().getYaw().getDegrees());
     gyro.addNumber("Tilt (deg)", () -> getTilt().getDegrees());
 
-    ShuffleboardLayout platform = tab.getLayout("Platform", BuiltInLayouts.kList);
+    ShuffleboardLayout platform = odometryTab.getLayout("Platform", BuiltInLayouts.kList).withPosition(8, 0).withSize(2, 4);
     platform.addBoolean("Is Level?", this::isLevel);
     platform.addBoolean("On Flap?", this::onFlap);
     platform.addBoolean("On Platform?", this::onPlatform);
+
+    ShuffleboardTab fieldTab = Shuffleboard.getTab("Field");
+
+    fieldTab.add(field).withPosition(0, 0).withSize(10, 4);
   }
 
   @Override
