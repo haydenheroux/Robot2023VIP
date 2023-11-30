@@ -57,7 +57,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final Field2d field;
 
-  private Pose2d tripStart;
+  private final TripTracker tripTracker;
 
   private Odometry() {
     if (Robot.isSimulation()) {
@@ -114,7 +114,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
     field = new Field2d();
 
-    tripStart = getPose();
+    tripTracker = new TripTracker();
   }
 
   public static Odometry getInstance() {
@@ -159,10 +159,10 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     velocity.addNumber("Velocity (mps)", () -> getVelocity().getTranslation().getNorm());
 
     ShuffleboardLayout trip = tab.getLayout("Trip Meter", BuiltInLayouts.kList);
-    trip.addNumber("Trip Distance X (m)", () -> getTripDistance().getX());
-    trip.addNumber("Trip Distance Y (m)", () -> getTripDistance().getY());
-    trip.addNumber("Trip Distance (m)", () -> getTripDistance().getTranslation().getNorm());
-    trip.add(Commands.runOnce(this::resetTripStart).withName("Reset Trip Meter"));
+    trip.addNumber("Trip Distance X (m)", () -> tripTracker.getDistance().getX());
+    trip.addNumber("Trip Distance Y (m)", () -> tripTracker.getDistance().getY());
+    trip.addNumber("Trip Distance (m)", () -> tripTracker.getDistance().getTranslation().getNorm());
+    trip.add(Commands.runOnce(tripTracker::start).withName("Reset Trip Meter"));
 
     ShuffleboardLayout gyro = tab.getLayout("Gyro", BuiltInLayouts.kList);
     gyro.addNumber("Roll (deg)", () -> getGyro().getRoll().getDegrees());
@@ -179,6 +179,18 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   @Override
   public void outputTelemetry() {}
+
+  public void startTrip() {
+    tripTracker.start();
+  }
+
+  public void stopTrip() {
+    tripTracker.stop();
+  }
+
+  public Transform2d getTripDistance() {
+    return tripTracker.getDistance();
+  }
 
   /**
    * Gets the estimated position of the robot on the field.
@@ -243,22 +255,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     Translation2d velocity = new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
 
     return new Transform2d(velocity, Rotation2d.fromRadians(robotVelocity.omegaRadiansPerSecond));
-  }
-
-  /**
-   * Gets the relative distance between the estimated position of the robot on the field and a
-   * previously set position.
-   *
-   * @return the relative distance between the estimated position of the robot on the field and a
-   *     previously set position.
-   */
-  public Transform2d getTripDistance() {
-    return new Transform2d(tripStart, getPose());
-  }
-
-  /** Sets the position for {@link #getTripDistance()}. */
-  public void resetTripStart() {
-    tripStart = getPose();
   }
 
   /**

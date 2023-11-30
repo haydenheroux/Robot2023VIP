@@ -5,12 +5,10 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.lib.DelayedBoolean;
-import frc.robot.Constants;
 import frc.robot.arm.Arm;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
@@ -83,10 +81,7 @@ public class Auto {
           ChassisSpeeds fieldRelative =
               ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, 0.0, odometry.getPose().getRotation());
 
-          SwerveModuleState[] setpoints =
-              Constants.Swerve.KINEMATICS.toSwerveModuleStates(fieldRelative);
-
-          swerve.setSetpoints(setpoints);
+          swerve.setChassisSpeeds(fieldRelative);
         },
         swerve);
   }
@@ -95,16 +90,16 @@ public class Auto {
     final BooleanSupplier tripXExceeded =
         () -> Math.abs(odometry.getTripDistance().getX()) >= Math.abs(dX);
 
-    return Commands.runOnce(() -> odometry.resetTripStart())
-        .andThen(drive(vX, 0).until(tripXExceeded));
+    return Commands.runOnce(odometry::startTrip)
+        .andThen(drive(vX, 0).until(tripXExceeded)).andThen(Commands.runOnce(odometry::stopTrip));
   }
 
   public static Command driveDistanceY(double dY, double vY) {
     final BooleanSupplier tripYExceeded =
         () -> Math.abs(odometry.getTripDistance().getY()) >= Math.abs(dY);
 
-    return Commands.runOnce(() -> odometry.resetTripStart())
-        .andThen(drive(0, vY).until(tripYExceeded));
+    return Commands.runOnce(odometry::startTrip)
+        .andThen(drive(0, vY).until(tripYExceeded)).andThen(Commands.runOnce(odometry::stopTrip));
   }
 
   public static Command driveOdometryTestX(double dX, double vX) {
