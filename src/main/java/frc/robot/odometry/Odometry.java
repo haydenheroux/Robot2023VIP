@@ -174,7 +174,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     platform.addBoolean("Is Level?", this::isLevel);
     platform.addBoolean("On Flap?", this::onFlap);
     platform.addBoolean("On Platform?", this::onPlatform);
-
   }
 
   @Override
@@ -229,7 +228,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
           pose, timestamp, visionStandardDeviations.times(1.0 / confidence));
     }
   }
-
 
   /**
    * Gets the velocity of the robot in the field reference frame.
@@ -314,5 +312,4 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   public boolean isLevel() {
     return tiltedAt(Rotation2d.fromDegrees(0));
   }
-
 }

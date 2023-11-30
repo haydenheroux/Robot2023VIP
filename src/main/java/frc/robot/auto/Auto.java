@@ -91,7 +91,8 @@ public class Auto {
         () -> Math.abs(odometry.getTripDistance().getX()) >= Math.abs(dX);
 
     return Commands.runOnce(odometry::startTrip)
-        .andThen(drive(vX, 0).until(tripXExceeded)).andThen(Commands.runOnce(odometry::stopTrip));
+        .andThen(drive(vX, 0).until(tripXExceeded))
+        .andThen(Commands.runOnce(odometry::stopTrip));
   }
 
   public static Command driveDistanceY(double dY, double vY) {
@@ -99,7 +100,8 @@ public class Auto {
         () -> Math.abs(odometry.getTripDistance().getY()) >= Math.abs(dY);
 
     return Commands.runOnce(odometry::startTrip)
-        .andThen(drive(0, vY).until(tripYExceeded)).andThen(Commands.runOnce(odometry::stopTrip));
+        .andThen(drive(0, vY).until(tripYExceeded))
+        .andThen(Commands.runOnce(odometry::stopTrip));
   }
 
   public static Command driveOdometryTestX(double dX, double vX) {
