@@ -38,7 +38,7 @@ public class Auto {
     AutoBuilder.configureHolonomic(
         odometry::getPose,
         odometry::setPose,
-        odometry::getRobotVelocity,
+        swerve::getChassisSpeeds,
         swerve::setChassisSpeeds,
         new HolonomicPathFollowerConfig(
             new PIDConstants(1.0),
