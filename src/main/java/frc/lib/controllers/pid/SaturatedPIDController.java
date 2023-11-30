@@ -13,18 +13,11 @@ public class SaturatedPIDController extends PIDController {
     super(kp, ki, kd);
   }
 
-  public SaturatedPIDController(double kp, double ki, double kd, double period) {
-    super(kp, ki, kd, period);
-  }
-
   public void setSaturation(double range) {
-    this.min = -range;
-    this.max = range;
-
-    hasRange = true;
+    setSaturation(-range, range);
   }
 
-  public void setSaturation(double min, double max) {
+  private void setSaturation(double min, double max) {
     this.min = min;
     this.max = max;
 

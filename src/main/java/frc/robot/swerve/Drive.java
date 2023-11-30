@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.CustomXboxController;
-import frc.lib.controllers.pid.SaturatedPIDController;
+import frc.lib.controllers.pid.RotationPIDController;
 import frc.robot.Constants.Swerve.Drift;
 import frc.robot.Constants.Swerve.Theta;
 import frc.robot.odometry.Odometry;
@@ -43,29 +43,29 @@ import frc.robot.swerve.DriveRequest.TranslationMode;
  */
 public class Drive extends Command {
   private final Swerve swerve;
+  private final Odometry odometry;
 
   private final CustomXboxController controller;
 
   private DriveRequest request, previousRequest;
-  public final SaturatedPIDController driftThetaController, thetaController;
+  public final RotationPIDController driftController, thetaController;
 
-  private Rotation2d setHeading = new Rotation2d();
+  private Rotation2d heading = new Rotation2d();
 
-  public Drive(Swerve swerve, CustomXboxController controller) {
-    addRequirements(swerve);
+  public Drive(CustomXboxController controller) {
+    this.swerve = Swerve.getInstance();
+    this.odometry = Odometry.getInstance();
 
-    this.swerve = swerve;
+    addRequirements(this.swerve);
 
     this.controller = controller;
     this.previousRequest = DriveRequest.fromController(controller);
 
-    driftThetaController = new SaturatedPIDController(Drift.KP, 0, 0);
-    driftThetaController.enableContinuousInput(-Math.PI, Math.PI);
-    driftThetaController.setSaturation(Drift.SATURATION.getRadians());
+    driftController = new RotationPIDController(Drift.KP, 0, 0);
+    driftController.setSaturation(Drift.SATURATION);
 
-    thetaController = new SaturatedPIDController(Theta.KP, 0, 0);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setSaturation(Theta.SATURATION.getRadians());
+    thetaController = new RotationPIDController(Theta.KP, 0, 0);
+    thetaController.setSaturation(Theta.SATURATION);
   }
 
   @Override
@@ -77,11 +77,11 @@ public class Drive extends Command {
 
     Translation2d velocity = request.getRequestedVelocity();
 
-    if (DriveRequest.startedDrifting(previousRequest, request)) {
-      setHeading = Odometry.getInstance().getRotation();
-    }
+    final Rotation2d yaw = odometry.getRotation();
 
-    final Rotation2d yaw = Odometry.getInstance().getRotation();
+    if (DriveRequest.startedDrifting(previousRequest, request)) {
+      heading = yaw;
+    }
 
     double omegaRadiansPerSecond = 0.0;
 
@@ -90,10 +90,11 @@ public class Drive extends Command {
         omegaRadiansPerSecond = request.getRequestedSpinRate().getRadians();
         break;
       case SNAPPING:
-        setHeading = request.getRequestedSnapAngle();
+        heading = request.getRequestedSnapAngle();
+        omegaRadiansPerSecond = thetaController.calculate(yaw, heading);
+        break;
       case DRIFTING:
-        omegaRadiansPerSecond =
-            driftThetaController.calculate(yaw.getRadians(), setHeading.getRadians());
+        omegaRadiansPerSecond = driftController.calculate(yaw, heading);
         break;
     }
 
