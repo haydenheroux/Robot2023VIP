@@ -12,13 +12,9 @@ public class TripTracker {
     public boolean hasEnded;
   }
 
-  private final Odometry odometry;
-
   private final Stack<Trip> trips;
 
   public TripTracker() {
-    this.odometry = Odometry.getInstance();
-
     this.trips = new Stack<Trip>();
   }
 
@@ -27,7 +23,7 @@ public class TripTracker {
 
     Trip next = new Trip();
 
-    next.start = odometry.getPose();
+    next.start = Odometry.getInstance().getPose();
 
     trips.push(next);
   }
@@ -37,7 +33,7 @@ public class TripTracker {
 
     Trip previous = trips.pop();
 
-    previous.end = odometry.getPose();
+    previous.end = Odometry.getInstance().getPose();
     previous.hasEnded = true;
 
     trips.push(previous);
@@ -54,7 +50,7 @@ public class TripTracker {
 
     if (onTrip()) {
       Pose2d start = trips.peek().start;
-      Pose2d pose = odometry.getPose();
+      Pose2d pose = Odometry.getInstance().getPose();
 
       return new Transform2d(start, pose);
     } else {

@@ -57,7 +57,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
   private final Field2d field;
 
-  private final TripTracker tripTracker;
+  private final TripTracker tripTracker = new TripTracker();
 
   private Odometry() {
     if (Robot.isSimulation()) {
@@ -113,8 +113,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     gyro.configure();
 
     field = new Field2d();
-
-    tripTracker = new TripTracker();
   }
 
   public static Odometry getInstance() {
