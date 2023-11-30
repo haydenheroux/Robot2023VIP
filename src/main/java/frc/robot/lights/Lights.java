@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryOutputter;
+import frc.robot.Constants.Lights.Colors;
 import frc.robot.Robot;
 import frc.robot.lights.CANdleIO.CANdleIOValues;
 
@@ -38,9 +39,9 @@ public class Lights extends SubsystemBase implements TelemetryOutputter {
     candle.updateValues(candleValues);
 
     if (RobotController.getRSLState()) {
-      setColor(Color.kOrangeRed);
+      setColor(Colors.RSL_ON);
     } else {
-      setColor(Color.kBlack);
+      setColor(Colors.OFF);
     }
   }
 

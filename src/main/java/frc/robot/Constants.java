@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.controllers.feedforward.TelescopingArmFeedforward;
 import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConstants;
@@ -390,6 +391,15 @@ public class Constants {
       public static final double KP = 2.0;
 
       public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED.times(0.5);
+    }
+  }
+
+  public static class Lights {
+
+    public static class Colors {
+      public static final Color OFF = Color.kBlack;
+
+      public static final Color RSL_ON = Color.kOrangeRed;
     }
   }
 }
