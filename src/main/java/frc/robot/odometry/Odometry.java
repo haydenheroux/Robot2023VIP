@@ -64,7 +64,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       NetworkTable odometrySim = NetworkTableInstance.getDefault().getTable("odometrySim");
 
       DoubleSupplier odometryOmegaRotationsPerSecond =
-          () -> getFieldVelocity().getRotation().getRotations();
+          () -> getVelocity().getRotation().getRotations();
 
       DoubleEntry rotationsPerSecondPerMetersPerSecond =
           odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond").getEntry(0.0);
@@ -72,7 +72,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
       DoubleSupplier direction =
           () -> {
-            Transform2d velocity = getFieldVelocity();
+            Transform2d velocity = getVelocity();
             double signX = Math.signum(velocity.getX());
             double signY = Math.signum(velocity.getY());
 
@@ -83,7 +83,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
           () ->
               direction.getAsDouble()
                   * rotationsPerSecondPerMetersPerSecond.get()
-                  * getFieldVelocity().getTranslation().getNorm();
+                  * getVelocity().getTranslation().getNorm();
 
       DoubleSupplier omegaRotationsPerSecond =
           () ->
@@ -148,34 +148,33 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
     tab.add(field);
 
-    ShuffleboardLayout rotation = tab.getLayout("Rotation", BuiltInLayouts.kList);
-    rotation.addNumber("Gyro Roll (deg)", () -> getGyro().getRoll().getDegrees());
-    rotation.addNumber("Gyro Pitch (deg)", () -> getGyro().getPitch().getDegrees());
-    rotation.addNumber("Gyro Yaw (deg)", () -> getGyro().getYaw().getDegrees());
-    rotation.addNumber("Gyro Tilt (deg)", () -> getTilt().getDegrees());
-    rotation.addNumber("Rotation (deg)", () -> getPose().getRotation().getDegrees());
+    ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
+    position.addNumber("X (m)", () -> getPose().getX());
+    position.addNumber("Y (m)", () -> getPose().getY());
+    position.addNumber("Rotation (deg)", () -> getPose().getRotation().getDegrees());
+
+    ShuffleboardLayout velocity = tab.getLayout("Velocity", BuiltInLayouts.kList);
+    velocity.addNumber("X Velocity (mps)", () -> getVelocity().getX());
+    velocity.addNumber("Y Velocity (mps)", () -> getVelocity().getY());
+    velocity.addNumber("Velocity (mps)", () -> getVelocity().getTranslation().getNorm());
+
+    ShuffleboardLayout trip = tab.getLayout("Trip Meter", BuiltInLayouts.kList);
+    trip.addNumber("Trip Distance X (m)", () -> getTripDistance().getX());
+    trip.addNumber("Trip Distance Y (m)", () -> getTripDistance().getY());
+    trip.addNumber("Trip Distance (m)", () -> getTripDistance().getTranslation().getNorm());
+    trip.add(Commands.runOnce(this::resetTripStart).withName("Reset Trip Meter"));
+
+    ShuffleboardLayout gyro = tab.getLayout("Gyro", BuiltInLayouts.kList);
+    gyro.addNumber("Roll (deg)", () -> getGyro().getRoll().getDegrees());
+    gyro.addNumber("Pitch (deg)", () -> getGyro().getPitch().getDegrees());
+    gyro.addNumber("Yaw (deg)", () -> getGyro().getYaw().getDegrees());
+    gyro.addNumber("Tilt (deg)", () -> getTilt().getDegrees());
 
     ShuffleboardLayout platform = tab.getLayout("Platform", BuiltInLayouts.kList);
     platform.addBoolean("Is Level?", this::isLevel);
     platform.addBoolean("On Flap?", this::onFlap);
     platform.addBoolean("On Platform?", this::onPlatform);
 
-    ShuffleboardLayout position = tab.getLayout("Position", BuiltInLayouts.kList);
-    position.addNumber("X (m)", () -> getPose().getX());
-    position.addNumber("Y (m)", () -> getPose().getY());
-
-    ShuffleboardLayout trip = tab.getLayout("Trip Meter", BuiltInLayouts.kList);
-    trip.addNumber("Trip Start X (m)", () -> tripStart.getX());
-    trip.addNumber("Trip Start Y (m)", () -> tripStart.getY());
-    trip.addNumber("Trip Distance X (m)", () -> getTripDistance().getX());
-    trip.addNumber("Trip Distance Y (m)", () -> getTripDistance().getY());
-    trip.addNumber("Trip Distance (m)", () -> getTripDistance().getTranslation().getNorm());
-    trip.add(Commands.runOnce(this::resetTripStart).withName("Reset Trip Meter"));
-
-    ShuffleboardLayout fieldVelocity = tab.getLayout("Field Velocity", BuiltInLayouts.kList);
-    fieldVelocity.addNumber("X Velocity (mps)", () -> getFieldVelocity().getX());
-    fieldVelocity.addNumber("Y Velocity (mps)", () -> getFieldVelocity().getY());
-    fieldVelocity.addNumber("Velocity (mps)", () -> getFieldVelocity().getTranslation().getNorm());
   }
 
   @Override
@@ -203,22 +202,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Gets the relative distance between the estimated position of the robot on the field and a
-   * previously set position.
-   *
-   * @return the relative distance between the estimated position of the robot on the field and a
-   *     previously set position.
-   */
-  public Transform2d getTripDistance() {
-    return new Transform2d(tripStart, getPose());
-  }
-
-  /** Sets the position for {@link #getTripDistance()}. */
-  public void resetTripStart() {
-    tripStart = getPose();
-  }
-
-  /**
    * Sets the estimated position of the robot on the field.
    *
    * @param pose the estimated position of the robot on the field.
@@ -233,6 +216,49 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       poseEstimator.addVisionMeasurement(
           pose, timestamp, visionStandardDeviations.times(1.0 / confidence));
     }
+  }
+
+
+  /**
+   * Gets the velocity of the robot in the field reference frame.
+   *
+   * @see <a
+   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
+   *     Reference Frame</a>
+   * @return the velocity of the robot in the field reference frame.
+   */
+  private Transform2d getVelocity() {
+    final ChassisSpeeds robotVelocity = Swerve.getInstance().getChassisSpeeds();
+
+    final Rotation2d rotation = getPose().getRotation();
+
+    // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
+    double vxMetersPerSecond =
+        robotVelocity.vxMetersPerSecond * rotation.getCos()
+            - robotVelocity.vyMetersPerSecond * rotation.getSin();
+    double vyMetersPerSecond =
+        robotVelocity.vxMetersPerSecond * rotation.getSin()
+            + robotVelocity.vyMetersPerSecond * rotation.getCos();
+
+    Translation2d velocity = new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
+
+    return new Transform2d(velocity, Rotation2d.fromRadians(robotVelocity.omegaRadiansPerSecond));
+  }
+
+  /**
+   * Gets the relative distance between the estimated position of the robot on the field and a
+   * previously set position.
+   *
+   * @return the relative distance between the estimated position of the robot on the field and a
+   *     previously set position.
+   */
+  public Transform2d getTripDistance() {
+    return new Transform2d(tripStart, getPose());
+  }
+
+  /** Sets the position for {@link #getTripDistance()}. */
+  public void resetTripStart() {
+    tripStart = getPose();
   }
 
   /**
@@ -293,29 +319,4 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     return tiltedAt(Rotation2d.fromDegrees(0));
   }
 
-  /**
-   * Gets the velocity of the robot in the field reference frame.
-   *
-   * @see <a
-   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
-   *     Reference Frame</a>
-   * @return the velocity of the robot in the field reference frame.
-   */
-  private Transform2d getFieldVelocity() {
-    final ChassisSpeeds robotVelocity = Swerve.getInstance().getChassisSpeeds();
-
-    final Rotation2d rotation = getPose().getRotation();
-
-    // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
-    double vxMetersPerSecond =
-        robotVelocity.vxMetersPerSecond * rotation.getCos()
-            - robotVelocity.vyMetersPerSecond * rotation.getSin();
-    double vyMetersPerSecond =
-        robotVelocity.vxMetersPerSecond * rotation.getSin()
-            + robotVelocity.vyMetersPerSecond * rotation.getCos();
-
-    Translation2d velocity = new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
-
-    return new Transform2d(velocity, Rotation2d.fromRadians(robotVelocity.omegaRadiansPerSecond));
-  }
 }
