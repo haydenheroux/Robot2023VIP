@@ -43,6 +43,8 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
   public void configure() {
     TalonFXConfiguration motorConfig = Swerve.STEER_CONFIG;
 
+    // TODO Broken on non-Pro, fused CANcoder not available on Phoenix 6
+    // TODO Use remote CANcoder if non-Pro
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 

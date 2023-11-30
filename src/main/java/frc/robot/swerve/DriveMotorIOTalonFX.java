@@ -31,6 +31,8 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     position = motor.getPosition();
     velocity = motor.getVelocity();
 
+    // TODO Broken on non-Pro, FOC not available on Phoenix 6
+    // TODO Use VelocityVoltage if non-Pro
     velocityController = new VelocityTorqueCurrentFOC(0);
   }
 
