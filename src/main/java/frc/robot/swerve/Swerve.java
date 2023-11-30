@@ -91,6 +91,10 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return Constants.Swerve.KINEMATICS.toChassisSpeeds(getStates());
+  }
+
   /**
    * Gets the state of each module.
    *

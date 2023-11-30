@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -65,7 +64,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
       NetworkTable odometrySim = NetworkTableInstance.getDefault().getTable("odometrySim");
 
       DoubleSupplier odometryOmegaRotationsPerSecond =
-          () -> Units.radiansToRotations(getRobotVelocity().omegaRadiansPerSecond);
+          () -> getFieldVelocity().getRotation().getRotations();
 
       DoubleEntry rotationsPerSecondPerMetersPerSecond =
           odometrySim.getDoubleTopic("rotationsPerSecondPerMetersPerSecond").getEntry(0.0);
@@ -73,9 +72,9 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
       DoubleSupplier direction =
           () -> {
-            ChassisSpeeds robotVelocity = getRobotVelocity();
-            double signX = Math.signum(robotVelocity.vxMetersPerSecond);
-            double signY = Math.signum(robotVelocity.vyMetersPerSecond);
+            Transform2d velocity = getFieldVelocity();
+            double signX = Math.signum(velocity.getX());
+            double signY = Math.signum(velocity.getY());
 
             return (signX < 0 || signY < 0) ? -1.0 : 1.0;
           };
@@ -84,7 +83,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
           () ->
               direction.getAsDouble()
                   * rotationsPerSecondPerMetersPerSecond.get()
-                  * getFieldVelocity().getNorm();
+                  * getFieldVelocity().getTranslation().getNorm();
 
       DoubleSupplier omegaRotationsPerSecond =
           () ->
@@ -173,28 +172,10 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
     trip.addNumber("Trip Distance (m)", () -> getTripDistance().getTranslation().getNorm());
     trip.add(Commands.runOnce(this::resetTripStart).withName("Reset Trip Meter"));
 
-    ShuffleboardLayout robotVelocity = tab.getLayout("Robot Velocity", BuiltInLayouts.kList);
-    robotVelocity.addNumber("X Velocity (mps)", () -> getRobotVelocity().vxMetersPerSecond);
-    robotVelocity.addNumber("Y Velocity (mps)", () -> getRobotVelocity().vyMetersPerSecond);
-    robotVelocity.addNumber(
-        "Velocity (mps)",
-        () -> {
-          ChassisSpeeds robotVelocityChassisSpeeds = getRobotVelocity();
-          Translation2d robotVelocityTranslation =
-              new Translation2d(
-                  robotVelocityChassisSpeeds.vxMetersPerSecond,
-                  robotVelocityChassisSpeeds.vyMetersPerSecond);
-
-          return robotVelocityTranslation.getNorm();
-        });
-    robotVelocity.addNumber(
-        "Angular Velocity (dps)",
-        () -> Units.radiansToDegrees(getRobotVelocity().omegaRadiansPerSecond));
-
     ShuffleboardLayout fieldVelocity = tab.getLayout("Field Velocity", BuiltInLayouts.kList);
-    fieldVelocity.addNumber("X Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getX());
-    fieldVelocity.addNumber("Y Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getY());
-    fieldVelocity.addNumber("Velocity (mps)", () -> getFieldVelocity(getRobotVelocity()).getNorm());
+    fieldVelocity.addNumber("X Velocity (mps)", () -> getFieldVelocity().getX());
+    fieldVelocity.addNumber("Y Velocity (mps)", () -> getFieldVelocity().getY());
+    fieldVelocity.addNumber("Velocity (mps)", () -> getFieldVelocity().getTranslation().getNorm());
   }
 
   @Override
@@ -313,18 +294,6 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
   }
 
   /**
-   * Gets the velocity of the robot in the robot reference frame.
-   *
-   * @see <a
-   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#robot-coordinate-system">Robot
-   *     Reference Frame</a>
-   * @return the velocity of the robot in the robot reference frame.
-   */
-  public ChassisSpeeds getRobotVelocity() {
-    return Constants.Swerve.KINEMATICS.toChassisSpeeds(Swerve.getInstance().getStates());
-  }
-
-  /**
    * Gets the velocity of the robot in the field reference frame.
    *
    * @see <a
@@ -332,7 +301,9 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
    *     Reference Frame</a>
    * @return the velocity of the robot in the field reference frame.
    */
-  public Translation2d getFieldVelocity(ChassisSpeeds robotVelocity) {
+  private Transform2d getFieldVelocity() {
+    final ChassisSpeeds robotVelocity = Swerve.getInstance().getChassisSpeeds();
+
     final Rotation2d rotation = getPose().getRotation();
 
     // https://www.chiefdelphi.com/t/determining-robot-relative-velocity-with-odometry-field-relative-speeds-on-swerve/412233/19
@@ -343,20 +314,8 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
         robotVelocity.vxMetersPerSecond * rotation.getSin()
             + robotVelocity.vyMetersPerSecond * rotation.getCos();
 
-    return new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
-  }
+    Translation2d velocity = new Translation2d(vxMetersPerSecond, vyMetersPerSecond);
 
-  /**
-   * Gets the velocity of the robot in the field reference frame.
-   *
-   * @see <a
-   *     href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html#field-coordinate-system">Field
-   *     Reference Frame</a>
-   * @return the velocity of the robot in the field reference frame.
-   */
-  private Translation2d getFieldVelocity() {
-    final ChassisSpeeds robotVelocity = getRobotVelocity();
-
-    return getFieldVelocity(robotVelocity);
+    return new Transform2d(velocity, Rotation2d.fromRadians(robotVelocity.omegaRadiansPerSecond));
   }
 }
