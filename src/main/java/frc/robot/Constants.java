@@ -37,6 +37,8 @@ public class Constants {
   public static final boolean IS_SIMULATION = Robot.isSimulation();
   /** True if CTRE's Phoenix library should be used. */
   public static final boolean USE_PHOENIX = false;
+  /** True if CTRE's Phoenix pro license is active. */
+  public static final boolean USE_PRO = true;
 
   public static class Ports {
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;
@@ -376,7 +378,7 @@ public class Constants {
     public static final TalonFXConfiguration DRIVE_CONFIG =
         FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP, 40.0);
 
-    public static final double STEER_KP = 96.0; // 48.0 fallback
+    public static final double STEER_KP = 48.0; // 48.0 fallback
 
     public static final TalonFXConfiguration STEER_CONFIG =
         FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
