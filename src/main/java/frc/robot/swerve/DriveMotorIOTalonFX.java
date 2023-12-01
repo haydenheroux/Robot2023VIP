@@ -2,6 +2,7 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,7 +34,9 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void configure() {
-    ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, motor);
+    TalonFXConfiguration driveConfiguration = Swerve.FACTORY.createDriveMotorConfig();
+
+    ConfigurationApplier.apply(driveConfiguration, motor);
   }
 
   @Override

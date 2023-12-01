@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSteerFeedbackType;
@@ -118,7 +117,6 @@ public class Constants {
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-    public static final double WHEEL_COF = 1.19;
 
     public static final Transform3d ROBOT_TO_CAMERA = new Transform3d();
 
@@ -325,8 +323,6 @@ public class Constants {
   public static class Swerve {
     /** Maximum speed achievable by the swerve drive, in meters per second. */
     public static final double MAX_SPEED = Units.feetToMeters(12);
-    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
-    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
         SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
@@ -334,7 +330,8 @@ public class Constants {
     /** Velocity scalar applied while driving in sniper mode. */
     public static final double SNIPER_SCALAR = 0.25;
 
-    public static final SwerveFactory FACTORY = new SwerveFactory(IS_SIMULATION, USE_PHOENIX);
+    public static final SwerveFactory FACTORY =
+        new SwerveFactory(IS_SIMULATION, USE_PHOENIX, USE_PRO);
 
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
@@ -407,14 +404,6 @@ public class Constants {
                     : SwerveModuleSteerFeedbackType.RemoteCANcoder)
             .withCouplingGearRatio(MK4I.COUPLING_RATIO)
             .withSteerMotorInverted(MK4I.IS_STEER_INVERTED);
-
-    public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
-
-    public static final TalonFXConfiguration DRIVE_CONFIG =
-        FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_GAINS, 40.0);
-
-    public static final TalonFXConfiguration STEER_CONFIG =
-        FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_GAINS);
 
     public static class Theta {
       public static final double KP = 7.0;

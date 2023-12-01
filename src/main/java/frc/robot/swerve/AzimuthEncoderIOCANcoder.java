@@ -31,11 +31,12 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void configure() {
-    CANcoderConfiguration encoderConfig = Constants.Swerve.AZIMUTH_CONFIG;
+    CANcoderConfiguration encoderConfiguration =
+        Constants.Swerve.FACTORY.createAzimuthEncoderConfig();
 
-    encoderConfig.MagnetSensor.MagnetOffset = magnetOffset;
+    encoderConfiguration.MagnetSensor.MagnetOffset = magnetOffset;
 
-    ConfigurationApplier.apply(encoderConfig, encoder);
+    ConfigurationApplier.apply(encoderConfiguration, encoder);
   }
 
   @Override

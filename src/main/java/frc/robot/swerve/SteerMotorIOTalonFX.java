@@ -5,7 +5,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
@@ -41,15 +40,9 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration motorConfig = Swerve.STEER_CONFIG;
+    TalonFXConfiguration motorConfig = Swerve.FACTORY.createSteerMotorConfig();
 
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
-
-    if (Constants.USE_PRO) {
-      motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    } else {
-      motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    }
 
     ConfigurationApplier.apply(motorConfig, motor);
   }
