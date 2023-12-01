@@ -14,7 +14,9 @@ public class ModuleIOPhoenix implements ModuleIO {
   public ModuleIOPhoenix(ModuleConstants constants) {
     module =
         new SwerveModule(
-            constants.getModuleConstants(), constants.can.azimuth.bus, Constants.USE_PRO);
+            Constants.Swerve.FACTORY.createModuleConstants(constants),
+            constants.can.azimuth.bus,
+            Constants.USE_PRO);
   }
 
   @Override

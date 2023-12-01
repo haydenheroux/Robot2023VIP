@@ -2,8 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSteerFeedbackType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTag;
@@ -388,22 +386,6 @@ public class Constants {
       STEER_GAINS.kV = 1.5;
       STEER_GAINS.kA = 0;
     }
-
-    public static final SwerveModuleConstantsFactory CONSTANTS_FACTORY =
-        new SwerveModuleConstantsFactory()
-            .withDriveMotorGearRatio(MK4I.DRIVE_RATIO)
-            .withSteerMotorGearRatio(MK4I.STEER_RATIO)
-            .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
-            .withSlipCurrent(300.0) // TODO
-            .withSteerMotorGains(STEER_GAINS)
-            .withDriveMotorGains(DRIVE_GAINS)
-            .withSpeedAt12VoltsMps(MAX_SPEED)
-            .withFeedbackSource(
-                Constants.USE_PRO
-                    ? SwerveModuleSteerFeedbackType.FusedCANcoder
-                    : SwerveModuleSteerFeedbackType.RemoteCANcoder)
-            .withCouplingGearRatio(MK4I.COUPLING_RATIO)
-            .withSteerMotorInverted(MK4I.IS_STEER_INVERTED);
 
     public static class Theta {
       public static final double KP = 7.0;
