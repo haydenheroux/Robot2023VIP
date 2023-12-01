@@ -1,6 +1,7 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 
@@ -35,7 +36,7 @@ public class SwerveFactory {
   }
 
   public TalonFXConfiguration createDriveMotorConfig(
-      boolean inverted, double gearRatio, double kP, double currentLimit) {
+      boolean inverted, double gearRatio, Slot0Configs pidfGains, double currentLimit) {
     final TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
     driveMotorConfig.MotorOutput.Inverted =
@@ -43,7 +44,7 @@ public class SwerveFactory {
 
     driveMotorConfig.Feedback.SensorToMechanismRatio = gearRatio;
 
-    driveMotorConfig.Slot0.kP = kP;
+    driveMotorConfig.Slot0 = pidfGains;
 
     if (currentLimit > 0.0) {
       driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = currentLimit;
@@ -64,7 +65,7 @@ public class SwerveFactory {
   }
 
   public TalonFXConfiguration createSteerMotorConfig(
-      boolean inverted, double gearRatio, double kP) {
+      boolean inverted, double gearRatio, Slot0Configs pidfGains) {
     final TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
 
     steerMotorConfig.MotorOutput.Inverted =
@@ -72,7 +73,7 @@ public class SwerveFactory {
 
     steerMotorConfig.Feedback.RotorToSensorRatio = gearRatio;
 
-    steerMotorConfig.Slot0.kP = kP;
+    steerMotorConfig.Slot0 = pidfGains;
 
     steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
 

@@ -1,11 +1,11 @@
 package frc.robot.odometry;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
 
 public class GyroIOPigeon2 implements GyroIO {
 
@@ -27,7 +27,11 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void configure() {
-    ConfigurationApplier.apply(Swerve.GYRO_CONFIG, gyro);
+    Pigeon2Configuration gyroConfig = new Pigeon2Configuration();
+
+    gyroConfig.Pigeon2Features.EnableCompass = false;
+
+    ConfigurationApplier.apply(gyroConfig, gyro);
   }
 
   @Override

@@ -1,8 +1,10 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSteerFeedbackType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.apriltag.AprilTag;
@@ -321,6 +323,17 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
+    /** Maximum speed achievable by the swerve drive, in meters per second. */
+    public static final double MAX_SPEED = Units.feetToMeters(12);
+    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
+    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
+    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
+    public static final Rotation2d MAX_ANGULAR_SPEED =
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
+            .times(0.5);
+    /** Velocity scalar applied while driving in sniper mode. */
+    public static final double SNIPER_SCALAR = 0.25;
+
     public static final SwerveFactory FACTORY = new SwerveFactory(IS_SIMULATION, USE_PHOENIX);
 
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
@@ -328,10 +341,13 @@ public class Constants {
 
     public static class MK4I {
       public static final boolean IS_DRIVE_INVERTED = true;
-      public static final double DRIVE_RATIO = 6.75;
+      public static final double DRIVE_RATIO = 6.746031746031747;
 
       public static final boolean IS_STEER_INVERTED = true;
-      public static final double STEER_RATIO = 150.0 / 7.0;
+      public static final double STEER_RATIO = 21.428571428571427;
+
+      /** Each rotation of the azimuth results in this number of drive motor turns . */
+      public static final double COUPLING_RATIO = 3.5714285714285716; // TODO
     }
 
     /** Configuration for the north west swerve module. */
@@ -354,34 +370,51 @@ public class Constants {
             ModuleLocation.of(false, false),
             ModuleLocation.of(false, true));
 
-    /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(12);
-    /** Maximum acceleration achivable by the swerve drive, in meters per second per second. */
-    public static final double MAX_ACCELERATION = Physical.WHEEL_COF * 9.81;
-    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
-    public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
-            .times(0.5);
-    /** Velocity scalar applied while driving in sniper mode. */
-    public static final double SNIPER_SCALAR = 0.25;
-
-    public static final Pigeon2Configuration GYRO_CONFIG = new Pigeon2Configuration();
+    public static final Slot0Configs DRIVE_GAINS = new Slot0Configs();
 
     static {
-      GYRO_CONFIG.Pigeon2Features.EnableCompass = false;
+      DRIVE_GAINS.kP = 3;
+      DRIVE_GAINS.kI = 0;
+      DRIVE_GAINS.kD = 0;
+      DRIVE_GAINS.kS = 0;
+      DRIVE_GAINS.kV = 0;
+      DRIVE_GAINS.kA = 0;
     }
+
+    public static final Slot0Configs STEER_GAINS = new Slot0Configs();
+
+    static {
+      STEER_GAINS.kP = 50;
+      STEER_GAINS.kI = 0;
+      STEER_GAINS.kD = 0.05;
+      STEER_GAINS.kS = 0;
+      STEER_GAINS.kV = 1.5;
+      STEER_GAINS.kA = 0;
+    }
+
+    public static final SwerveModuleConstantsFactory CONSTANTS_FACTORY =
+        new SwerveModuleConstantsFactory()
+            .withDriveMotorGearRatio(MK4I.DRIVE_RATIO)
+            .withSteerMotorGearRatio(MK4I.STEER_RATIO)
+            .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
+            .withSlipCurrent(300.0) // TODO
+            .withSteerMotorGains(STEER_GAINS)
+            .withDriveMotorGains(DRIVE_GAINS)
+            .withSpeedAt12VoltsMps(MAX_SPEED)
+            .withFeedbackSource(
+                Constants.USE_PRO
+                    ? SwerveModuleSteerFeedbackType.FusedCANcoder
+                    : SwerveModuleSteerFeedbackType.RemoteCANcoder)
+            .withCouplingGearRatio(MK4I.COUPLING_RATIO)
+            .withSteerMotorInverted(MK4I.IS_STEER_INVERTED);
 
     public static final CANcoderConfiguration AZIMUTH_CONFIG = FACTORY.createAzimuthEncoderConfig();
 
-    public static final double DRIVE_KP = 8.0;
-
     public static final TalonFXConfiguration DRIVE_CONFIG =
-        FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_KP, 40.0);
-
-    public static final double STEER_KP = 48.0; // 48.0 fallback
+        FACTORY.createDriveMotorConfig(MK4I.IS_DRIVE_INVERTED, MK4I.DRIVE_RATIO, DRIVE_GAINS, 40.0);
 
     public static final TalonFXConfiguration STEER_CONFIG =
-        FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_KP);
+        FACTORY.createSteerMotorConfig(MK4I.IS_STEER_INVERTED, MK4I.STEER_RATIO, STEER_GAINS);
 
     public static class Theta {
       public static final double KP = 7.0;

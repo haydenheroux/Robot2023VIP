@@ -1,12 +1,12 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.lib.hardware.CAN;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Swerve;
+import frc.robot.Constants.Swerve.MK4I;
 
 /** Records the configuration of a swerve module. */
 public class ModuleConstants {
@@ -92,9 +92,6 @@ public class ModuleConstants {
     }
   }
 
-  private static final SwerveModuleConstantsFactory SWERVE_MODULE_CONSTANTS_FACTORY =
-      new SwerveModuleConstantsFactory();
-
   public final ModuleCAN can;
   public final Translation2d location;
   public final Rotation2d offset;
@@ -115,14 +112,14 @@ public class ModuleConstants {
     this.offset = offset;
   }
 
-  public SwerveModuleConstants getSwerveModuleConstants() {
-    return SWERVE_MODULE_CONSTANTS_FACTORY.createModuleConstants(
+  public SwerveModuleConstants getModuleConstants() {
+    return Swerve.CONSTANTS_FACTORY.createModuleConstants(
         can.steer.id,
         can.drive.id,
         can.azimuth.id,
-        offset.getDegrees(),
+        offset.getRotations(),
         location.getX(),
         location.getY(),
-        false);
+        MK4I.IS_DRIVE_INVERTED);
   }
 }

@@ -12,20 +12,9 @@ public class ModuleIOPhoenix implements ModuleIO {
   private SwerveModuleState setpoint = new SwerveModuleState();
 
   public ModuleIOPhoenix(ModuleConstants constants) {
-
-    if (constants.can.steer.id == 1) {
-      module =
-          new SwerveModule(TunerConstants.FrontLeft, constants.can.azimuth.bus, Constants.USE_PRO);
-    } else if (constants.can.steer.id == 4) {
-      module =
-          new SwerveModule(TunerConstants.FrontRight, constants.can.azimuth.bus, Constants.USE_PRO);
-    } else if (constants.can.steer.id == 8) {
-      module =
-          new SwerveModule(TunerConstants.BackRight, constants.can.azimuth.bus, Constants.USE_PRO);
-    } else {
-      module =
-          new SwerveModule(TunerConstants.BackLeft, constants.can.azimuth.bus, Constants.USE_PRO);
-    }
+    module =
+        new SwerveModule(
+            constants.getModuleConstants(), constants.can.azimuth.bus, Constants.USE_PRO);
   }
 
   @Override
