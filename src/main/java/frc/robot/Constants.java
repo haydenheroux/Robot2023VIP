@@ -36,9 +36,9 @@ public class Constants {
   /** True if the robot is simulated. */
   public static final boolean IS_SIMULATION = Robot.isSimulation();
   /** True if CTRE's Phoenix library should be used. */
-  public static final boolean USE_PHOENIX = false;
+  public static final boolean USE_PHOENIX = true;
   /** True if CTRE's Phoenix pro license is active. */
-  public static final boolean USE_PRO = true;
+  public static final boolean USE_PRO = false;
 
   public static class Ports {
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.REVPH;

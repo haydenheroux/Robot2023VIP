@@ -1,10 +1,10 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.lib.hardware.ConfigurationApplier;
-import frc.robot.Constants.Swerve;
+import frc.robot.Constants;
 
 public class ModuleIOPhoenix implements ModuleIO {
 
@@ -13,16 +13,24 @@ public class ModuleIOPhoenix implements ModuleIO {
   private SwerveModuleState setpoint = new SwerveModuleState();
 
   public ModuleIOPhoenix(ModuleConstants constants) {
-    // TODO Add back module-level CAN bus, rather than assuming?
-    module =
-        new SwerveModule(constants.getSwerveModuleConstants(), constants.can.azimuth.bus, true);
+
+    if (constants.can.steer.id == 1) {
+      module =
+          new SwerveModule(TunerConstants.FrontLeft, constants.can.azimuth.bus, Constants.USE_PRO);
+    } else if (constants.can.steer.id == 4) {
+      module =
+          new SwerveModule(TunerConstants.FrontRight, constants.can.azimuth.bus, Constants.USE_PRO);
+    } else if (constants.can.steer.id == 8) {
+      module =
+          new SwerveModule(TunerConstants.BackRight, constants.can.azimuth.bus, Constants.USE_PRO);
+    } else {
+      module =
+          new SwerveModule(TunerConstants.BackLeft, constants.can.azimuth.bus, Constants.USE_PRO);
+    }
   }
 
   @Override
   public void configure() {
-    ConfigurationApplier.apply(Swerve.AZIMUTH_CONFIG, module.getCANcoder());
-    ConfigurationApplier.apply(Swerve.DRIVE_CONFIG, module.getDriveMotor());
-    ConfigurationApplier.apply(Swerve.STEER_CONFIG, module.getSteerMotor());
   }
 
   @Override
