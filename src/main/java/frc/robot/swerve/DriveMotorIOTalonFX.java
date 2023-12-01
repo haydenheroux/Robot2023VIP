@@ -67,6 +67,5 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     } else {
       motor.setControl(new VelocityVoltage(rotationsPerSecond));
     }
-
   }
 }

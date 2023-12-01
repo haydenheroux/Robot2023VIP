@@ -1,7 +1,6 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
@@ -30,8 +29,7 @@ public class ModuleIOPhoenix implements ModuleIO {
   }
 
   @Override
-  public void configure() {
-  }
+  public void configure() {}
 
   @Override
   public void update() {}
