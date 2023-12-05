@@ -20,7 +20,6 @@ import frc.robot.arm.ArmPosition;
 import frc.robot.swerve.ModuleConstants;
 import frc.robot.swerve.ModuleConstants.ModuleCAN;
 import frc.robot.swerve.ModuleConstants.ModuleLocation;
-import frc.robot.swerve.SwerveFactory;
 import frc.robot.swerve.SwerveMath;
 import java.util.List;
 
@@ -327,9 +326,6 @@ public class Constants {
             .times(0.5);
     /** Velocity scalar applied while driving in sniper mode. */
     public static final double SNIPER_SCALAR = 0.25;
-
-    public static final SwerveFactory FACTORY =
-        new SwerveFactory(IS_SIMULATION, USE_PHOENIX, USE_PRO);
 
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);

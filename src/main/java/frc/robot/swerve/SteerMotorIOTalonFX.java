@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
-import frc.robot.Constants.Swerve;
 
 /** Implements asteer motor behaviors for a TalonFX. */
 public class SteerMotorIOTalonFX implements SteerMotorIO {
@@ -40,7 +39,7 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration motorConfig = Swerve.FACTORY.createSteerMotorConfig();
+    TalonFXConfiguration motorConfig = SwerveFactory.createSteerMotorConfig();
 
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
 

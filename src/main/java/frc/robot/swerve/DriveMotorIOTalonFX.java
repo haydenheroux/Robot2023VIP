@@ -11,7 +11,6 @@ import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Physical;
-import frc.robot.Constants.Swerve;
 
 /** Implements drive motor behaviors for a TalonFX. */
 public class DriveMotorIOTalonFX implements DriveMotorIO {
@@ -34,7 +33,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
 
   @Override
   public void configure() {
-    TalonFXConfiguration driveConfiguration = Swerve.FACTORY.createDriveMotorConfig();
+    TalonFXConfiguration driveConfiguration = SwerveFactory.createDriveMotorConfig();
 
     ConfigurationApplier.apply(driveConfiguration, motor);
   }

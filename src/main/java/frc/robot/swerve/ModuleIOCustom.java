@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.Swerve;
 import frc.robot.swerve.AzimuthEncoderIO.AzimuthEncoderIOValues;
 import frc.robot.swerve.DriveMotorIO.DriveMotorIOValues;
 import frc.robot.swerve.SteerMotorIO.SteerMotorValues;
@@ -40,9 +39,9 @@ public class ModuleIOCustom implements ModuleIO {
   public ModuleIOCustom(ModuleConstants constants) {
     this.constants = constants;
 
-    steerMotor = Swerve.FACTORY.createSteerMotor(constants);
-    driveMotor = Swerve.FACTORY.createDriveMotor(constants);
-    azimuthEncoder = Swerve.FACTORY.createAzimuthEncoder(constants);
+    steerMotor = SwerveFactory.createSteerMotor(constants);
+    driveMotor = SwerveFactory.createDriveMotor(constants);
+    azimuthEncoder = SwerveFactory.createAzimuthEncoder(constants);
   }
 
   @Override

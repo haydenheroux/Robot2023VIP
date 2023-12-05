@@ -7,60 +7,49 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSte
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.Constants;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.Swerve;
 
 public class SwerveFactory {
 
-  private final boolean isSimulation;
-  private final boolean shouldUsePhoenix;
-  private final boolean shouldUsePro;
+  private static final SwerveModuleConstantsFactory phoenixFactory =
+      new SwerveModuleConstantsFactory()
+          .withDriveMotorGearRatio(Swerve.MK4I.DRIVE_RATIO)
+          .withSteerMotorGearRatio(Swerve.MK4I.STEER_RATIO)
+          .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
+          .withSlipCurrent(300.0) // TODO
+          .withSteerMotorGains(Swerve.STEER_GAINS)
+          .withDriveMotorGains(Swerve.DRIVE_GAINS)
+          .withSpeedAt12VoltsMps(Swerve.MAX_SPEED)
+          .withFeedbackSource(
+              Constants.USE_PRO
+                  ? SwerveModuleSteerFeedbackType.FusedCANcoder
+                  : SwerveModuleSteerFeedbackType.RemoteCANcoder)
+          .withCouplingGearRatio(Swerve.MK4I.COUPLING_RATIO)
+          .withSteerMotorInverted(Swerve.MK4I.IS_STEER_INVERTED);
 
-  private final SwerveModuleConstantsFactory phoenixFactory;
-
-  public SwerveFactory(boolean isSimulation, boolean shouldUsePhoenix, boolean shouldUsePro) {
-    this.isSimulation = isSimulation;
-    this.shouldUsePhoenix = shouldUsePhoenix;
-    this.shouldUsePro = shouldUsePro;
-
-    phoenixFactory =
-        new SwerveModuleConstantsFactory()
-            .withDriveMotorGearRatio(Swerve.MK4I.DRIVE_RATIO)
-            .withSteerMotorGearRatio(Swerve.MK4I.STEER_RATIO)
-            .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
-            .withSlipCurrent(300.0) // TODO
-            .withSteerMotorGains(Swerve.STEER_GAINS)
-            .withDriveMotorGains(Swerve.DRIVE_GAINS)
-            .withSpeedAt12VoltsMps(Swerve.MAX_SPEED)
-            .withFeedbackSource(
-                this.shouldUsePro
-                    ? SwerveModuleSteerFeedbackType.FusedCANcoder
-                    : SwerveModuleSteerFeedbackType.RemoteCANcoder)
-            .withCouplingGearRatio(Swerve.MK4I.COUPLING_RATIO)
-            .withSteerMotorInverted(Swerve.MK4I.IS_STEER_INVERTED);
-  }
-
-  public ModuleIO createModule(ModuleConstants constants) {
-    if (isSimulation) return new ModuleIOCustom(constants);
-    if (shouldUsePhoenix) return new ModuleIOPhoenix(constants);
+  public static ModuleIO createModule(ModuleConstants constants) {
+    if (Constants.IS_SIMULATION) return new ModuleIOCustom(constants);
+    if (Constants.USE_PHOENIX) return new ModuleIOPhoenix(constants);
     return new ModuleIOCustom(constants);
   }
 
-  public AzimuthEncoderIO createAzimuthEncoder(ModuleConstants constants) {
-    if (isSimulation) return new AzimuthEncoderIOSim();
+  public static AzimuthEncoderIO createAzimuthEncoder(ModuleConstants constants) {
+    if (Constants.IS_SIMULATION) return new AzimuthEncoderIOSim();
     return new AzimuthEncoderIOCANcoder(constants.can.azimuth, constants.offset.getRotations());
   }
 
-  public CANcoderConfiguration createAzimuthEncoderConfig() {
+  public static CANcoderConfiguration createAzimuthEncoderConfig() {
     return new CANcoderConfiguration();
   }
 
-  public DriveMotorIO createDriveMotor(ModuleConstants constants) {
-    if (isSimulation) return new DriveMotorIOSim();
+  public static DriveMotorIO createDriveMotor(ModuleConstants constants) {
+    if (Constants.IS_SIMULATION) return new DriveMotorIOSim();
     return new DriveMotorIOTalonFX(constants.can.drive);
   }
 
-  public TalonFXConfiguration createDriveMotorConfig() {
+  public static TalonFXConfiguration createDriveMotorConfig() {
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
     driveMotorConfig.MotorOutput.Inverted =
@@ -83,12 +72,12 @@ public class SwerveFactory {
     return driveMotorConfig;
   }
 
-  public SteerMotorIO createSteerMotor(ModuleConstants constants) {
-    if (isSimulation) return new SteerMotorIOSim();
+  public static SteerMotorIO createSteerMotor(ModuleConstants constants) {
+    if (Constants.IS_SIMULATION) return new SteerMotorIOSim();
     return new SteerMotorIOTalonFX(constants.can.steer, constants.can.azimuth);
   }
 
-  public TalonFXConfiguration createSteerMotorConfig() {
+  public static TalonFXConfiguration createSteerMotorConfig() {
     TalonFXConfiguration steerMotorConfig = new TalonFXConfiguration();
 
     steerMotorConfig.MotorOutput.Inverted =
@@ -98,7 +87,7 @@ public class SwerveFactory {
 
     steerMotorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
     steerMotorConfig.Feedback.FeedbackSensorSource =
-        shouldUsePro
+        Constants.USE_PRO
             ? FeedbackSensorSourceValue.FusedCANcoder
             : FeedbackSensorSourceValue.RemoteCANcoder;
 
@@ -109,7 +98,7 @@ public class SwerveFactory {
     return steerMotorConfig;
   }
 
-  public SwerveModuleConstants createModuleConstants(ModuleConstants constants) {
+  public static SwerveModuleConstants createModuleConstants(ModuleConstants constants) {
     return phoenixFactory.createModuleConstants(
         constants.can.steer.id,
         constants.can.drive.id,

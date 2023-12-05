@@ -18,10 +18,13 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   public ArmIOTalonFXBase() {
     telescopingMotor = new TalonFX(Ports.TELESCOPING_MOTOR);
-    telescopingBrake = new Solenoid(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.TELESCOPING_BRAKE);
+    telescopingBrake =
+        new Solenoid(
+            Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.TELESCOPING_BRAKE);
 
     pivotMotor = new TalonFX(Ports.PIVOT_MOTOR);
-    pivotBrake = new Solenoid(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.PIVOT_BRAKE);
+    pivotBrake =
+        new Solenoid(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.PIVOT_BRAKE);
   }
 
   @Override
