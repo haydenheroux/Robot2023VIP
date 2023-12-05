@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.lib.CustomXboxController;
 import frc.lib.math.Util;
+import frc.robot.Constants.Physical;
 import frc.robot.Constants.Swerve;
 
 public class DriveRequest {
@@ -82,7 +83,7 @@ public class DriveRequest {
   }
 
   public Translation2d getRequestedVelocity() {
-    double scalar = Swerve.MAX_SPEED;
+    double scalar = Physical.MAX_SPEED;
 
     if (translationMode == TranslationMode.ROBOT_CENTRIC) {
       scalar *= Swerve.SNIPER_SCALAR;
@@ -92,7 +93,7 @@ public class DriveRequest {
   }
 
   public Rotation2d getRequestedSpinRate() {
-    return Swerve.MAX_ANGULAR_SPEED.times(this.heading.getY());
+    return Physical.MAX_ANGULAR_SPEED.times(this.heading.getY());
   }
 
   public Rotation2d getRequestedSnapAngle() {

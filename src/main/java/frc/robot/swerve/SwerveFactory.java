@@ -21,7 +21,7 @@ public class SwerveFactory {
           .withSlipCurrent(300.0) // TODO
           .withSteerMotorGains(Swerve.STEER_GAINS)
           .withDriveMotorGains(Swerve.DRIVE_GAINS)
-          .withSpeedAt12VoltsMps(Swerve.MAX_SPEED)
+          .withSpeedAt12VoltsMps(Physical.MAX_SPEED)
           .withFeedbackSource(
               Constants.USE_PRO
                   ? SwerveModuleSteerFeedbackType.FusedCANcoder

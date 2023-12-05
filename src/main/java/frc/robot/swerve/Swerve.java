@@ -84,7 +84,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
    * @param setpoints the module setpoints.
    */
   public void setSetpoints(SwerveModuleState[] setpoints) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Swerve.MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Physical.MAX_SPEED);
 
     for (int i = 0; i < 4; i++) {
       modules[i].setSetpoint(setpoints[i]);

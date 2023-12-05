@@ -112,6 +112,13 @@ public class Constants {
     /** Height from the floor to the top of the top cone node. */
     public static final double TOP_HEIGHT = Units.feetToMeters(3) + Units.inchesToMeters(10);
 
+    /** Maximum speed achievable by the swerve drive, in meters per second. */
+    public static final double MAX_SPEED = Units.feetToMeters(2);
+    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
+    public static final Rotation2d MAX_ANGULAR_SPEED =
+        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
+            .times(0.5);
+
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
@@ -318,12 +325,6 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
-    /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(12);
-    /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
-    public static final Rotation2d MAX_ANGULAR_SPEED =
-        SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
-            .times(0.5);
     /** Velocity scalar applied while driving in sniper mode. */
     public static final double SNIPER_SCALAR = 0.25;
 
@@ -386,13 +387,13 @@ public class Constants {
     public static class Theta {
       public static final double KP = 7.0;
 
-      public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED;
+      public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED;
     }
 
     public static class Drift {
       public static final double KP = 2.0;
 
-      public static final Rotation2d SATURATION = MAX_ANGULAR_SPEED.times(0.5);
+      public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED.times(0.5);
     }
   }
 
