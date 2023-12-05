@@ -1,12 +1,10 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.lib.CustomXboxController;
-import frc.lib.mechanism.Mechanisms;
-import frc.lib.telemetry.TelemetryManager;
+import frc.lib.telemetry.Telemetry;
 import frc.robot.arm.Arm;
 import frc.robot.arm.ArmPosition;
 import frc.robot.intake.Claw;
@@ -35,11 +33,12 @@ public class RobotContainer {
     odometry = Odometry.getInstance();
     lights = Lights.getInstance();
 
-    TelemetryManager.getInstance()
-        .register(arm, claw, sideIntake, swerve, odometry, lights)
-        .initializeDashboards();
-
-    SmartDashboard.putData("Arm Mechanism", Mechanisms.getInstance().getArmMechanism());
+    Telemetry.getInstance()
+        .register(Telemetry.Level.ODOMETRY, odometry)
+        .register(Telemetry.Level.DRIVE, swerve)
+        .register(Telemetry.Level.MECHANISMS, arm, claw, sideIntake, lights)
+        .initializeDashboards(Telemetry.Level.ODOMETRY)
+        .initializeDashboards(Telemetry.Level.DRIVE);
 
     configureAutonomous();
     configureBindings();
