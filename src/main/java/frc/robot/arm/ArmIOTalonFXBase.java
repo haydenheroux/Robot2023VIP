@@ -3,7 +3,6 @@ package frc.robot.arm;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.lib.hardware.ConfigurationApplier;
-import frc.lib.hardware.Hardware;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm.Pivot;
@@ -19,10 +18,10 @@ public class ArmIOTalonFXBase implements ArmIO {
 
   public ArmIOTalonFXBase() {
     telescopingMotor = new TalonFX(Ports.TELESCOPING_MOTOR);
-    telescopingBrake = Hardware.getSolenoid(Ports.TELESCOPING_BRAKE);
+    telescopingBrake = new Solenoid(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.TELESCOPING_BRAKE);
 
     pivotMotor = new TalonFX(Ports.PIVOT_MOTOR);
-    pivotBrake = Hardware.getSolenoid(Ports.PIVOT_BRAKE);
+    pivotBrake = new Solenoid(Ports.PNEUMATICS_MODULE, Ports.PNEUMATICS_MODULE_TYPE, Ports.PIVOT_BRAKE);
   }
 
   @Override
