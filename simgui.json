@@ -15,6 +15,7 @@
       "/Shuffleboard/Claw/State Overrides/Disabled": "Command",
       "/Shuffleboard/Claw/State Overrides/Ejecting": "Command",
       "/Shuffleboard/Claw/State Overrides/Holding": "Command",
+      "/Shuffleboard/Field/Field": "Field2d",
       "/Shuffleboard/Odometry/Field": "Field2d",
       "/Shuffleboard/Odometry/Trip Meter/Reset Trip Meter": "Command",
       "/Shuffleboard/SideIntake/State Overrides/Accepting": "Command",
@@ -54,16 +55,13 @@
       "/SmartDashboard/main Sim Field": "Field2d"
     },
     "windows": {
-      "/Shuffleboard/Odometry/Field": {
+      "/Shuffleboard/Field/Field": {
         "window": {
           "visible": true
         }
       },
       "/SmartDashboard/Arm Mechanism": {
-        "image": "C:\\Users\\hayden\\Documents\\Robot2023VIP\\MechanismGridOverlay.png",
-        "window": {
-          "visible": true
-        }
+        "image": "C:\\Users\\hayden\\Documents\\Robot2023VIP\\MechanismGridOverlay.png"
       }
     }
   },
@@ -87,7 +85,8 @@
           },
           "Trip Meter": {
             "open": true
-          }
+          },
+          "open": true
         },
         "Swerve": {
           "Module 0": {
@@ -109,8 +108,5 @@
         "open": true
       }
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }
