@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.lib.CustomXboxController;
 import frc.lib.math.Util;
 import frc.robot.Constants.Physical;
-import frc.robot.Constants.Swerve;
 
 public class DriveRequest {
 
@@ -86,7 +85,7 @@ public class DriveRequest {
     double scalar = Physical.MAX_SPEED;
 
     if (translationMode == TranslationMode.ROBOT_CENTRIC) {
-      scalar *= Swerve.SNIPER_SCALAR;
+      scalar *= 0.25;
     }
 
     return velocity.times(scalar);

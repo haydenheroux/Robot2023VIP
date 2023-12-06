@@ -325,9 +325,6 @@ public class Constants {
 
   /** Swerve drive subsystem constants. */
   public static class Swerve {
-    /** Velocity scalar applied while driving in sniper mode. */
-    public static final double SNIPER_SCALAR = 0.25;
-
     public static final double FRONT_BACK_DISTANCE = Units.inchesToMeters(22.75);
     public static final double LEFT_RIGHT_DISTANCE = Units.inchesToMeters(22.75);
 
