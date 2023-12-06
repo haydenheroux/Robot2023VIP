@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.CustomRotation3d;
 import frc.lib.math.Util;
 import frc.lib.telemetry.TelemetryOutputter;
-import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 import frc.robot.Robot;
 import frc.robot.odometry.GyroIO.GyroIOValues;
@@ -103,7 +102,7 @@ public class Odometry extends SubsystemBase implements TelemetryOutputter {
 
     poseEstimator =
         new SwerveDrivePoseEstimator(
-            Constants.Swerve.KINEMATICS,
+            Swerve.getInstance().getKinematics(),
             new Rotation2d(),
             positions.get(),
             new Pose2d(),

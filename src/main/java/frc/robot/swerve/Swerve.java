@@ -14,12 +14,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.telemetry.TelemetryData;
 import frc.lib.telemetry.TelemetryOutputter;
 import frc.robot.Constants;
+import frc.robot.swerve.ModuleConstants.ModuleLocation;
 
 /** Controls the four swerve modules used to drive the chassis. */
 public class Swerve extends SubsystemBase implements TelemetryOutputter {
   private static Swerve instance = null;
 
   private final ModuleIO[] modules = new ModuleIO[4];
+
+  private final SwerveDriveKinematics kinematics;
 
   /** Constructs a new swerve. */
   private Swerve() {
@@ -31,6 +34,13 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     for (var module : modules) {
       module.configure();
     }
+
+    kinematics =
+        new SwerveDriveKinematics(
+            ModuleLocation.of(true, true),
+            ModuleLocation.of(true, false),
+            ModuleLocation.of(false, false),
+            ModuleLocation.of(false, true));
   }
 
   public static Swerve getInstance() {
@@ -71,7 +81,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   public void outputTelemetry() {}
 
   public void setChassisSpeeds(ChassisSpeeds speeds) {
-    SwerveModuleState[] setpoints = Constants.Swerve.KINEMATICS.toSwerveModuleStates(speeds);
+    SwerveModuleState[] setpoints = kinematics.toSwerveModuleStates(speeds);
 
     setSetpoints(setpoints);
   }
@@ -91,8 +101,12 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
     }
   }
 
+  public SwerveDriveKinematics getKinematics() {
+    return kinematics;
+  }
+
   public ChassisSpeeds getChassisSpeeds() {
-    return Constants.Swerve.KINEMATICS.toChassisSpeeds(getStates());
+    return kinematics.toChassisSpeeds(getStates());
   }
 
   /**

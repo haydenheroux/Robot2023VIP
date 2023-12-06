@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.util.Color;
@@ -351,13 +350,6 @@ public class Constants {
     /** Configuration for the south west swerve module. */
     public static final ModuleConstants SOUTH_WEST =
         new ModuleConstants(false, true, Rotation2d.fromRotations(-0.954346));
-
-    public static final SwerveDriveKinematics KINEMATICS =
-        new SwerveDriveKinematics(
-            ModuleLocation.of(true, true),
-            ModuleLocation.of(true, false),
-            ModuleLocation.of(false, false),
-            ModuleLocation.of(false, true));
 
     public static final Slot0Configs DRIVE_GAINS = new Slot0Configs();
 
