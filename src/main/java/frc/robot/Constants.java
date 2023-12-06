@@ -365,7 +365,7 @@ public class Constants {
     public static final Slot0Configs DRIVE_GAINS = new Slot0Configs();
 
     static {
-      DRIVE_GAINS.kP = 3;
+      DRIVE_GAINS.kP = 0;
       DRIVE_GAINS.kI = 0;
       DRIVE_GAINS.kD = 0;
       DRIVE_GAINS.kS = 0;
@@ -376,22 +376,22 @@ public class Constants {
     public static final Slot0Configs STEER_GAINS = new Slot0Configs();
 
     static {
-      STEER_GAINS.kP = 50;
+      STEER_GAINS.kP = 16;
       STEER_GAINS.kI = 0;
-      STEER_GAINS.kD = 0.05;
+      STEER_GAINS.kD = 0;
       STEER_GAINS.kS = 0;
-      STEER_GAINS.kV = 1.5;
+      STEER_GAINS.kV = 0;
       STEER_GAINS.kA = 0;
     }
 
     public static class Theta {
-      public static final double KP = 7.0;
+      public static final double KP = 0.0;
 
       public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED;
     }
 
     public static class Drift {
-      public static final double KP = 2.0;
+      public static final double KP = 0.0;
 
       public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED.times(0.5);
     }

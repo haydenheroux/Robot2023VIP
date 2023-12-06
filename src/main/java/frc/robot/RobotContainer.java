@@ -37,7 +37,6 @@ public class RobotContainer {
         .register(Telemetry.Level.ODOMETRY, odometry)
         .register(Telemetry.Level.DRIVE, swerve)
         .register(Telemetry.Level.MECHANISMS, arm, claw, sideIntake, lights)
-        .initializeDashboards(Telemetry.Level.ODOMETRY)
         .initializeDashboards(Telemetry.Level.DRIVE);
 
     configureAutonomous();
