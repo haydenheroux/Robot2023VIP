@@ -12,13 +12,13 @@ import frc.robot.Constants;
 /** Implements asteer motor behaviors for a TalonFX. */
 public class SteerMotorIOTalonFX implements SteerMotorIO {
 
-  private final TalonFX motor;
+  protected final TalonFX motor;
 
-  private final StatusSignal<Double> position, velocity;
+  protected final StatusSignal<Double> position, velocity;
 
-  private final PositionVoltage positionController;
+  protected final PositionVoltage positionController;
 
-  private final int encoderID;
+  protected final int encoderID;
 
   /**
    * Constructs a new TalonFX steer motor.
@@ -58,7 +58,6 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
   @Override
   public void setPosition(double angleRotations) {
     motor.setPosition(angleRotations);
-    position.waitForUpdate(0.1);
   }
 
   @Override

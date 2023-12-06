@@ -3,7 +3,6 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
@@ -15,9 +14,9 @@ import frc.robot.Constants.Physical;
 /** Implements drive motor behaviors for a TalonFX. */
 public class DriveMotorIOTalonFX implements DriveMotorIO {
 
-  private final TalonFX motor;
+  protected final TalonFX motor;
 
-  private final StatusSignal<Double> position, velocity;
+  protected final StatusSignal<Double> position, velocity;
 
   /**
    * Constructs a new TalonFX drive motor.
@@ -64,10 +63,6 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
     double rotationsPerSecond =
         Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
 
-    if (Constants.USE_PRO) {
-      motor.setControl(new VelocityTorqueCurrentFOC(rotationsPerSecond));
-    } else {
-      motor.setControl(new VelocityVoltage(rotationsPerSecond));
-    }
+    motor.setControl(new VelocityVoltage(rotationsPerSecond));
   }
 }

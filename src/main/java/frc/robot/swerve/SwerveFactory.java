@@ -46,6 +46,7 @@ public class SwerveFactory {
 
   public static DriveMotorIO createDriveMotor(ModuleConstants constants) {
     if (Constants.IS_SIMULATION) return new DriveMotorIOSim();
+    if (Constants.USE_PRO) return new DriveMotorIOTalonFXPro(constants.can.drive);
     return new DriveMotorIOTalonFX(constants.can.drive);
   }
 
@@ -74,6 +75,8 @@ public class SwerveFactory {
 
   public static SteerMotorIO createSteerMotor(ModuleConstants constants) {
     if (Constants.IS_SIMULATION) return new SteerMotorIOSim();
+    if (Constants.USE_PRO)
+      return new SteerMotorIOTalonFXPro(constants.can.steer, constants.can.azimuth);
     return new SteerMotorIOTalonFX(constants.can.steer, constants.can.azimuth);
   }
 
