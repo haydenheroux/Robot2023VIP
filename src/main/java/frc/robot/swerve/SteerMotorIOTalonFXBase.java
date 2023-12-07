@@ -38,11 +38,7 @@ public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
   }
 
   @Override
-  public void configure() {
-    TalonFXConfiguration motorConfig = SwerveFactory.createSteerMotorConfig();
-
-    ConfigurationApplier.apply(motorConfig, motor);
-  }
+  public abstract void configure();
 
   @Override
   public void updateValues(SteerMotorValues values) {
