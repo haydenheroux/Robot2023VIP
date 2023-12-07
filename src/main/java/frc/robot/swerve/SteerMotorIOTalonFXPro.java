@@ -2,7 +2,6 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 

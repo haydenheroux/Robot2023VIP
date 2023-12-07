@@ -71,14 +71,14 @@ public class SwerveFactory {
   public static Slot0Configs createDriveMotorGains() {
     Slot0Configs driveGains = new Slot0Configs();
 
-      driveGains.kP = 0;
-      driveGains.kI = 0;
-      driveGains.kD = 0;
-      driveGains.kS = 0;
-      driveGains.kV = 0;
-      driveGains.kA = 0;
+    driveGains.kP = 0;
+    driveGains.kI = 0;
+    driveGains.kD = 0;
+    driveGains.kS = 0;
+    driveGains.kV = 0;
+    driveGains.kA = 0;
 
-      return driveGains;
+    return driveGains;
   }
 
   public static SteerMotorIO createSteerMotor(ModuleConstants constants) {
@@ -106,14 +106,14 @@ public class SwerveFactory {
   public static Slot0Configs createSteerMotorGains() {
     Slot0Configs steerGains = new Slot0Configs();
 
-      steerGains.kP = 16;
-      steerGains.kI = 0;
-      steerGains.kD = 0;
-      steerGains.kS = 0;
-      steerGains.kV = 0;
-      steerGains.kA = 0;
+    steerGains.kP = 16;
+    steerGains.kI = 0;
+    steerGains.kD = 0;
+    steerGains.kS = 0;
+    steerGains.kV = 0;
+    steerGains.kA = 0;
 
-      return steerGains;
+    return steerGains;
   }
 
   public static SwerveModuleConstants createModuleConstants(ModuleConstants constants) {

@@ -1,9 +1,7 @@
 package frc.robot.swerve;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.lib.hardware.CAN;
@@ -40,7 +38,8 @@ public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
         Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
 
     double feedforwardVolts = feedforward.calculate(velocityMetersPerSecond);
-    double feedbackVolts = feedback.calculate(previousVelocityMetersPerSecond, velocityMetersPerSecond);
+    double feedbackVolts =
+        feedback.calculate(previousVelocityMetersPerSecond, velocityMetersPerSecond);
 
     double volts = feedforwardVolts + feedbackVolts;
 

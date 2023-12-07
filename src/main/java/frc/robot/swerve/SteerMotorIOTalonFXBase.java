@@ -2,11 +2,9 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
-import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
 
 /** Implements asteer motor behaviors for a TalonFX. */

@@ -2,7 +2,6 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 
@@ -17,7 +16,6 @@ public class SteerMotorIOTalonFXIntegrated extends SteerMotorIOTalonFXBase {
    */
   public SteerMotorIOTalonFXIntegrated(CAN motorCAN, CAN encoderCAN) {
     super(motorCAN, encoderCAN);
-
   }
 
   @Override

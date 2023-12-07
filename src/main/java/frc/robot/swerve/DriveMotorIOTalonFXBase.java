@@ -2,10 +2,8 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
-import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.Physical;

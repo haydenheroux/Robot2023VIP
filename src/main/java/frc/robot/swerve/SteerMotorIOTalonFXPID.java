@@ -2,7 +2,6 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
-
 import edu.wpi.first.math.controller.PIDController;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
@@ -44,5 +43,4 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
 
     motor.setControl(new VoltageOut(volts));
   }
-
 }
