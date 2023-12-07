@@ -6,7 +6,7 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants.Physical;
 
 /** Implements drive motor behaviors for a TalonFX. */
-public class DriveMotorIOTalonFXPro extends DriveMotorIOTalonFXBase {
+public class DriveMotorIOTalonFXPro extends DriveMotorIOTalonFXIntegrated {
 
   /**
    * Constructs a new TalonFX drive motor.

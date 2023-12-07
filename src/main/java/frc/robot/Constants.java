@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -350,17 +349,6 @@ public class Constants {
     /** Configuration for the south west swerve module. */
     public static final ModuleConstants SOUTH_WEST =
         new ModuleConstants(false, true, Rotation2d.fromRotations(-0.954346));
-
-    public static final Slot0Configs DRIVE_GAINS = new Slot0Configs();
-
-    static {
-      DRIVE_GAINS.kP = 0;
-      DRIVE_GAINS.kI = 0;
-      DRIVE_GAINS.kD = 0;
-      DRIVE_GAINS.kS = 0;
-      DRIVE_GAINS.kV = 0;
-      DRIVE_GAINS.kA = 0;
-    }
 
     public static class Theta {
       public static final double KP = 0.0;

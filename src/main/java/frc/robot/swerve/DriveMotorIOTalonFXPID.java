@@ -31,8 +31,6 @@ public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
   public void configure() {
     TalonFXConfiguration driveConfiguration = SwerveFactory.createDriveMotorConfig();
 
-    driveConfiguration.Slot0 = new Slot0Configs();
-
     ConfigurationApplier.apply(driveConfiguration, motor);
   }
 

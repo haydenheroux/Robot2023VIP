@@ -1,7 +1,9 @@
 package frc.robot.swerve;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import frc.lib.hardware.CAN;
+import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.Physical;
 
@@ -15,6 +17,15 @@ public class DriveMotorIOTalonFXIntegrated extends DriveMotorIOTalonFXBase {
    */
   public DriveMotorIOTalonFXIntegrated(CAN can) {
     super(can);
+  }
+
+  @Override
+  public void configure() {
+    TalonFXConfiguration motorConfig = SwerveFactory.createDriveMotorConfig();
+
+    motorConfig.Slot0 = SwerveFactory.createDriveMotorGains();
+
+    ConfigurationApplier.apply(motorConfig, motor);
   }
 
   @Override

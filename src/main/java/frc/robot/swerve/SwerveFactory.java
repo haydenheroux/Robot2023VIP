@@ -20,7 +20,7 @@ public class SwerveFactory {
           .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
           .withSlipCurrent(300.0) // TODO
           .withSteerMotorGains(createSteerMotorGains())
-          .withDriveMotorGains(Swerve.DRIVE_GAINS)
+          .withDriveMotorGains(createDriveMotorGains())
           .withSpeedAt12VoltsMps(Physical.MAX_SPEED)
           .withFeedbackSource(
               Constants.USE_PRO
@@ -60,17 +60,25 @@ public class SwerveFactory {
 
     driveMotorConfig.Feedback.SensorToMechanismRatio = Swerve.MK4I.DRIVE_RATIO;
 
-    driveMotorConfig.Slot0 = Swerve.DRIVE_GAINS;
-
-    driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-    driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -40;
-
     driveMotorConfig.CurrentLimits.SupplyCurrentLimit = 40;
     driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = 60;
     driveMotorConfig.CurrentLimits.SupplyTimeThreshold = 1.0;
     driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     return driveMotorConfig;
+  }
+
+  public static Slot0Configs createDriveMotorGains() {
+    Slot0Configs driveGains = new Slot0Configs();
+
+      driveGains.kP = 0;
+      driveGains.kI = 0;
+      driveGains.kD = 0;
+      driveGains.kS = 0;
+      driveGains.kV = 0;
+      driveGains.kA = 0;
+
+      return driveGains;
   }
 
   public static SteerMotorIO createSteerMotor(ModuleConstants constants) {
