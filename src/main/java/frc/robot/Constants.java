@@ -362,17 +362,6 @@ public class Constants {
       DRIVE_GAINS.kA = 0;
     }
 
-    public static final Slot0Configs STEER_GAINS = new Slot0Configs();
-
-    static {
-      STEER_GAINS.kP = 16;
-      STEER_GAINS.kI = 0;
-      STEER_GAINS.kD = 0;
-      STEER_GAINS.kS = 0;
-      STEER_GAINS.kV = 0;
-      STEER_GAINS.kA = 0;
-    }
-
     public static class Theta {
       public static final double KP = 0.0;
 

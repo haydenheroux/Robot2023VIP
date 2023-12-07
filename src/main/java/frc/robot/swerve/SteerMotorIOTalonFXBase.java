@@ -10,7 +10,7 @@ import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
 
 /** Implements asteer motor behaviors for a TalonFX. */
-public class SteerMotorIOTalonFXBase implements SteerMotorIO {
+public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
 
   protected final TalonFX motor;
 
@@ -41,8 +41,6 @@ public class SteerMotorIOTalonFXBase implements SteerMotorIO {
   public void configure() {
     TalonFXConfiguration motorConfig = SwerveFactory.createSteerMotorConfig();
 
-    motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
-
     ConfigurationApplier.apply(motorConfig, motor);
   }
 
@@ -61,6 +59,5 @@ public class SteerMotorIOTalonFXBase implements SteerMotorIO {
   }
 
   @Override
-  public void setSetpoint(double angleRotations) {
-  }
+  public abstract void setSetpoint(double angleRotations);
 }

@@ -1,11 +1,11 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SwerveModuleSteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.Constants;
 import frc.robot.Constants.Physical;
@@ -19,7 +19,7 @@ public class SwerveFactory {
           .withSteerMotorGearRatio(Swerve.MK4I.STEER_RATIO)
           .withWheelRadius(0.5 * Physical.WHEEL_DIAMETER)
           .withSlipCurrent(300.0) // TODO
-          .withSteerMotorGains(Swerve.STEER_GAINS)
+          .withSteerMotorGains(createSteerMotorGains())
           .withDriveMotorGains(Swerve.DRIVE_GAINS)
           .withSpeedAt12VoltsMps(Physical.MAX_SPEED)
           .withFeedbackSource(
@@ -89,16 +89,23 @@ public class SwerveFactory {
             : InvertedValue.CounterClockwise_Positive;
 
     steerMotorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
-    steerMotorConfig.Feedback.FeedbackSensorSource =
-        Constants.USE_PRO
-            ? FeedbackSensorSourceValue.FusedCANcoder
-            : FeedbackSensorSourceValue.RemoteCANcoder;
-
-    steerMotorConfig.Slot0 = Swerve.STEER_GAINS;
 
     steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     return steerMotorConfig;
+  }
+
+  public static Slot0Configs createSteerMotorGains() {
+    Slot0Configs steerGains = new Slot0Configs();
+
+      steerGains.kP = 16;
+      steerGains.kI = 0;
+      steerGains.kD = 0;
+      steerGains.kS = 0;
+      steerGains.kV = 0;
+      steerGains.kA = 0;
+
+      return steerGains;
   }
 
   public static SwerveModuleConstants createModuleConstants(ModuleConstants constants) {
