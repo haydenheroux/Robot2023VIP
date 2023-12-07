@@ -2,7 +2,6 @@ package frc.robot.swerve;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 import frc.robot.Constants;
@@ -13,8 +12,6 @@ public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
   protected final TalonFX motor;
 
   protected final StatusSignal<Double> position, velocity;
-
-  protected final PositionVoltage positionController;
 
   protected final int encoderID;
 
@@ -29,8 +26,6 @@ public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
 
     position = motor.getPosition();
     velocity = motor.getVelocity();
-
-    positionController = new PositionVoltage(0);
 
     encoderID = encoderCAN.id;
   }

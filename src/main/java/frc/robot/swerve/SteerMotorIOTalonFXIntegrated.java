@@ -1,6 +1,7 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
@@ -32,6 +33,6 @@ public class SteerMotorIOTalonFXIntegrated extends SteerMotorIOTalonFXBase {
 
   @Override
   public void setSetpoint(double angleRotations) {
-    motor.setControl(positionController.withPosition(angleRotations));
+    motor.setControl(new PositionVoltage(angleRotations));
   }
 }
