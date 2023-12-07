@@ -10,7 +10,7 @@ import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants;
 
 /** Implements asteer motor behaviors for a TalonFX. */
-public class SteerMotorIOTalonFX implements SteerMotorIO {
+public class SteerMotorIOTalonFXBase implements SteerMotorIO {
 
   protected final TalonFX motor;
 
@@ -26,7 +26,7 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
    * @param motorCAN the CAN of the TalonFX.
    * @param encoderCAN the CAN of the CANcoder.
    */
-  public SteerMotorIOTalonFX(CAN motorCAN, CAN encoderCAN) {
+  public SteerMotorIOTalonFXBase(CAN motorCAN, CAN encoderCAN) {
     motor = new TalonFX(motorCAN.id, motorCAN.bus);
 
     position = motor.getPosition();
@@ -62,6 +62,5 @@ public class SteerMotorIOTalonFX implements SteerMotorIO {
 
   @Override
   public void setSetpoint(double angleRotations) {
-    motor.setControl(positionController.withPosition(angleRotations));
   }
 }

@@ -3,7 +3,6 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
@@ -12,7 +11,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Physical;
 
 /** Implements drive motor behaviors for a TalonFX. */
-public class DriveMotorIOTalonFX implements DriveMotorIO {
+public class DriveMotorIOTalonFXBase implements DriveMotorIO {
 
   protected final TalonFX motor;
 
@@ -23,7 +22,7 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
    *
    * @param can the CAN of the TalonFX.
    */
-  public DriveMotorIOTalonFX(CAN can) {
+  public DriveMotorIOTalonFXBase(CAN can) {
     motor = new TalonFX(can.id, can.bus);
 
     position = motor.getPosition();
@@ -59,10 +58,5 @@ public class DriveMotorIOTalonFX implements DriveMotorIO {
   }
 
   @Override
-  public void setVelocitySetpoint(double velocityMetersPerSecond) {
-    double rotationsPerSecond =
-        Conversions.General.toRotations(velocityMetersPerSecond, Physical.WHEEL_CIRCUMFERENCE);
-
-    motor.setControl(new VelocityVoltage(rotationsPerSecond));
-  }
+  public void setVelocitySetpoint(double velocityMetersPerSecond) {}
 }
