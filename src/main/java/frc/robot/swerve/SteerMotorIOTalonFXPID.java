@@ -24,6 +24,8 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
    */
   public SteerMotorIOTalonFXPID(CAN motorCAN, CAN encoderCAN) {
     super(motorCAN, encoderCAN);
+
+    feedback.enableContinuousInput(0, 1);
   }
 
   @Override
@@ -43,7 +45,7 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
     double previousAngleRotations = position.getValue();
 
     double feedbackVolts = feedback.calculate(previousAngleRotations, angleRotations);
-    double feedforwardVolts = Math.signum(feedbackVolts) * kS;
+    double feedforwardVolts = Math.signum(feedback.getPositionError()) * kS;
 
     double volts = feedforwardVolts + feedbackVolts;
 
