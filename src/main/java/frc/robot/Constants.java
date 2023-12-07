@@ -32,7 +32,7 @@ public class Constants {
   /** True if the robot is simulated. */
   public static final boolean IS_SIMULATION = Robot.isSimulation();
   /** True if CTRE's Phoenix library should be used. */
-  public static final boolean USE_PHOENIX = true;
+  public static final boolean USE_PHOENIX = false;
   /** True if CTRE's Phoenix pro license is active. */
   public static final boolean USE_PRO = false;
 
