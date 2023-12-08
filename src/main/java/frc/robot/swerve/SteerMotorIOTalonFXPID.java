@@ -3,15 +3,16 @@ package frc.robot.swerve;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 
 /** Implements asteer motor behaviors for a TalonFX. */
 public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
 
-  private final double kS = 0.0;
+  private final double kS = 0.14;
 
-  private final PIDController feedback = new PIDController(0, 0, 0);
+  private final PIDController feedback = new PIDController(4, 0, 0);
 
   /**
    * Constructs a new TalonFX steer motor.
@@ -23,6 +24,7 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
     super(motorCAN, encoderCAN);
 
     feedback.enableContinuousInput(0, 1);
+    feedback.setTolerance(Units.degreesToRotations(3));
   }
 
   @Override
@@ -37,9 +39,11 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
     double previousAngleRotations = position.getValue();
 
     double feedbackVolts = feedback.calculate(previousAngleRotations, angleRotations);
-    double feedforwardVolts = Math.signum(feedback.getPositionError()) * kS;
+    double feedforwardVolts = Math.signum(feedbackVolts) * kS;
 
     double volts = feedforwardVolts + feedbackVolts;
+
+    if (feedback.atSetpoint()) volts = 0;
 
     motor.setControl(new VoltageOut(volts));
   }
