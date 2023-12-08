@@ -1,6 +1,7 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
@@ -46,8 +47,10 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
 
     double volts = feedforwardVolts + feedbackVolts;
 
-    if (feedback.atSetpoint()) volts = 0;
-
-    motor.setControl(new VoltageOut(volts));
+    if (feedback.atSetpoint()) {
+      motor.setControl(new CoastOut());
+    } else {
+      motor.setControl(new VoltageOut(volts));
+    }
   }
 }
