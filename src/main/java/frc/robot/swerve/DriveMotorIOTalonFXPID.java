@@ -10,11 +10,13 @@ import frc.lib.hardware.ConfigurationApplier;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.Physical;
 
-/** Implements drive motor behaviors for a TalonFX. */
+/** Implements drive motor behaviors for a voltage-controlled TalonFX using an external PID controller. */
 public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
 
+  /* Feedforward, in volts. */
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.139, 0);
 
+  /* Velocity feedback controller. Outputs voltages to correct velocity error (in meters per second) */
   private final PIDController feedback = new PIDController(1, 0, 0);
 
   /**
@@ -35,19 +37,18 @@ public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
 
   @Override
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
-    if (velocityMetersPerSecond == 0) {
-      motor.setControl(new CoastOut());
-    }
-
     double previousVelocityMetersPerSecond =
         Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
 
-    double feedforwardVolts = feedforward.calculate(velocityMetersPerSecond);
     double feedbackVolts =
         feedback.calculate(previousVelocityMetersPerSecond, velocityMetersPerSecond);
 
-    double volts = feedforwardVolts + feedbackVolts;
+    double feedforwardVolts = feedforward.calculate(velocityMetersPerSecond);
 
-    motor.setControl(new VoltageOut(volts));
+    if (velocityMetersPerSecond == 0) {
+      motor.setControl(new CoastOut());
+    } else {
+      motor.setControl(new VoltageOut(feedbackVolts + feedforwardVolts));
+    }
   }
 }

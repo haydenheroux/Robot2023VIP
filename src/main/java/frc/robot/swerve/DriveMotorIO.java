@@ -9,7 +9,7 @@ public interface DriveMotorIO {
     public double velocityMetersPerSecond = 0.0;
   }
 
-  /** Configures the drive motor hardware to default. */
+  /** Configures the drive motor. */
   public void configure();
 
   /**
