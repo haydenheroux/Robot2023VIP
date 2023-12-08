@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.util.Units;
 import frc.lib.hardware.ConfigurationApplier;
-import frc.robot.Constants;
 
 public class GyroIOPigeon2 implements GyroIO {
 
@@ -36,14 +35,6 @@ public class GyroIOPigeon2 implements GyroIO {
 
   @Override
   public void updateValues(GyroIOValues values) {
-    roll.waitForUpdate(Constants.LOOP_TIME);
-    pitch.waitForUpdate(Constants.LOOP_TIME);
-    yaw.waitForUpdate(Constants.LOOP_TIME);
-
-    accelX.waitForUpdate(Constants.LOOP_TIME);
-    accelY.waitForUpdate(Constants.LOOP_TIME);
-    accelZ.waitForUpdate(Constants.LOOP_TIME);
-
     values.rollAngleRotations = Units.degreesToRotations(roll.getValue());
     values.pitchAngleRotations = Units.degreesToRotations(pitch.getValue());
     values.yawAngleRotations = Units.degreesToRotations(yaw.getValue());

@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
-import frc.robot.Constants;
 
 /** Implements asteer motor behaviors for a TalonFX. */
 public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
@@ -35,9 +34,6 @@ public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
 
   @Override
   public void updateValues(SteerMotorValues values) {
-    position.waitForUpdate(Constants.LOOP_TIME);
-    velocity.waitForUpdate(Constants.LOOP_TIME);
-
     values.angleRotations = BaseStatusSignal.getLatencyCompensatedValue(position, velocity);
     values.omegaRotationsPerSecond = velocity.getValue();
   }

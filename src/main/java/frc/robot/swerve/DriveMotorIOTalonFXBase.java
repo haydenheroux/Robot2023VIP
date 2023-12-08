@@ -5,7 +5,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 import frc.lib.math.Conversions;
-import frc.robot.Constants;
 import frc.robot.Constants.Physical;
 
 /** Implements drive motor behaviors for a TalonFX. */
@@ -32,9 +31,6 @@ public abstract class DriveMotorIOTalonFXBase implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
-    position.waitForUpdate(Constants.LOOP_TIME);
-    velocity.waitForUpdate(Constants.LOOP_TIME);
-
     values.positionMeters =
         Conversions.General.toMeters(
             BaseStatusSignal.getLatencyCompensatedValue(position, velocity),

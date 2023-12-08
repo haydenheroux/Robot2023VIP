@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
-import frc.robot.Constants;
 
 /** Implements azimuth encoder behaviors for a CANCoder. */
 public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
@@ -40,8 +39,6 @@ public class AzimuthEncoderIOCANcoder implements AzimuthEncoderIO {
 
   @Override
   public void updateValues(AzimuthEncoderIOValues values) {
-    absolutePosition.waitForUpdate(Constants.LOOP_TIME);
-
     values.angleRotations = absolutePosition.getValue();
   }
 }

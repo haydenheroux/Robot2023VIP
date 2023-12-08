@@ -80,7 +80,8 @@ public class ModuleIOCustom implements ModuleIO {
     //   setpoint.angle = getState().angle;
     // }
 
-    // // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117
+    // //
+    // https://github.com/Mechanical-Advantage/RobotCode2023/blob/bf960378bca7fe3f32c46d3d529925d960d1ff37/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/Module.java#L117
     // setpoint.speedMetersPerSecond *= setpoint.angle.minus(getState().angle).getCos();
 
     return setpoint;
