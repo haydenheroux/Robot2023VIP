@@ -1,6 +1,9 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.MK4I;
 
@@ -9,9 +12,8 @@ public class SteerMotorIOSim implements SteerMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
-  // TODO
-  private final double kMaxRotationsPerSecondAt12Volts = ((6380.0 / 60.0) / MK4I.STEER_RATIO);
-  private final double kRotationsPerSecondPerVolt = kMaxRotationsPerSecondAt12Volts / 12.0;
+  private final FlywheelSim motorSim =
+      new FlywheelSim(DCMotor.getFalcon500(1), MK4I.STEER_RATIO, 0.004);
 
   /* Position feedback controller. Outputs voltages to correct positional error (in rotations) of this steer motor. */
   private final PIDController angleController = new PIDController(16, 0, 0);
@@ -40,7 +42,12 @@ public class SteerMotorIOSim implements SteerMotorIO {
 
   @Override
   public void setSetpoint(double angleRotations) {
+    motorSim.update(Constants.LOOP_TIME);
+
     double volts = angleController.calculate(this.angleRotations, angleRotations);
-    omegaRotationsPerSecond = volts * kRotationsPerSecondPerVolt;
+
+    motorSim.setInputVoltage(volts);
+
+    omegaRotationsPerSecond = Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
   }
 }
