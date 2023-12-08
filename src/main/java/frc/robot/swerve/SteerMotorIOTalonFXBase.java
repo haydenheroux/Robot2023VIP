@@ -5,13 +5,16 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.lib.hardware.CAN;
 
-/** Implements asteer motor behaviors for a TalonFX. */
+/** Implements steer motor behaviors for a TalonFX. */
 public abstract class SteerMotorIOTalonFXBase implements SteerMotorIO {
 
+  /* The motor used for all strategies extending this class. */
   protected final TalonFX motor;
 
+  /* The status signals used for getting position and velocity data. */
   protected final StatusSignal<Double> position, velocity;
 
+  /* The CAN ID of the associated azimuth encoder, if applicable. */
   protected final int encoderID;
 
   /**

@@ -4,26 +4,21 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
 import frc.robot.Constants.Swerve.MK4I;
 
-/**
- * Implements steer motor behaviors for a simulated steer motor.
- *
- * <p>Approximates the behavior of a physical steer motor.
- */
+/** Implements steer motor behaviors for a simulated steer motor. */
 public class SteerMotorIOSim implements SteerMotorIO {
 
   private double angleRotations, omegaRotationsPerSecond;
 
+  // TODO
   private final double kMaxRotationsPerSecondAt12Volts = ((6380.0 / 60.0) / MK4I.STEER_RATIO);
   private final double kRotationsPerSecondPerVolt = kMaxRotationsPerSecondAt12Volts / 12.0;
 
-  private final PIDController angleController;
+  /* Position feedback controller. Outputs voltages to correct positional error (in rotations) of this steer motor. */
+  private final PIDController angleController = new PIDController(16, 0, 0);
 
   /** Constructs a new simulated steer motor. */
   public SteerMotorIOSim() {
-    angleController = new PIDController(16, 0.0, 0.0);
-
-    // From Phoenix 6 docs:
-    // Default azimuth encoder strategy is AbsoluteSensorRangeValue.Unsigned_0To1
+    // Emulates AbsoluteSensorRangeValue.Unsigned_0To1 azimuth encoder configuration
     angleController.enableContinuousInput(0, 1);
   }
 

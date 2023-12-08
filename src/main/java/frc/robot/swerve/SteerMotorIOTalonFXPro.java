@@ -25,8 +25,10 @@ public class SteerMotorIOTalonFXPro extends SteerMotorIOTalonFXIntegrated {
 
     motorConfig.Slot0 = SwerveFactory.createSteerMotorGains();
 
+    /* For this strategy, a remote azimuth encoder is used to periodically update the position of integrated controller. */
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    /* Since the feedback sensor is at the wheel, the gear ratio will be from the motor to the sensor. */
     motorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
 
     ConfigurationApplier.apply(motorConfig, motor);

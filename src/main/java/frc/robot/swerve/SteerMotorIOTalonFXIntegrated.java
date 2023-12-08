@@ -7,7 +7,10 @@ import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
 import frc.robot.Constants.Swerve;
 
-/** Implements asteer motor behaviors for a TalonFX. */
+/**
+ * Implements steer motor behaviors for a voltage-controlled TalonFX using the integrated
+ * controller.
+ */
 public class SteerMotorIOTalonFXIntegrated extends SteerMotorIOTalonFXBase {
 
   /**
@@ -26,8 +29,10 @@ public class SteerMotorIOTalonFXIntegrated extends SteerMotorIOTalonFXBase {
 
     motorConfig.Slot0 = SwerveFactory.createSteerMotorGains();
 
+    /* For this strategy, a remote azimuth encoder is used to periodically update the position of integrated controller. */
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    /* Since the feedback sensor is at the wheel, the gear ratio will be from the motor to the sensor. */
     motorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
 
     ConfigurationApplier.apply(motorConfig, motor);

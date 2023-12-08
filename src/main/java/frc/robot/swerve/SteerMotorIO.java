@@ -9,7 +9,7 @@ public interface SteerMotorIO {
     public double omegaRotationsPerSecond = 0.0;
   }
 
-  /** Configures the steer motor hardware to default. */
+  /** Configures steer motor. */
   public void configure();
 
   /**
