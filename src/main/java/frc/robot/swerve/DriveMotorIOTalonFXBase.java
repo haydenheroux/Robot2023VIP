@@ -31,6 +31,9 @@ public abstract class DriveMotorIOTalonFXBase implements DriveMotorIO {
 
   @Override
   public void updateValues(DriveMotorIOValues values) {
+    position.refresh();
+    velocity.refresh();
+
     values.positionMeters =
         Conversions.General.toMeters(
             BaseStatusSignal.getLatencyCompensatedValue(position, velocity),

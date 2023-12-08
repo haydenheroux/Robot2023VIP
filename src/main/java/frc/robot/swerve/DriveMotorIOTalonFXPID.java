@@ -1,6 +1,7 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -12,9 +13,9 @@ import frc.robot.Constants.Physical;
 /** Implements drive motor behaviors for a TalonFX. */
 public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
 
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.139, 0);
 
-  private final PIDController feedback = new PIDController(0, 0, 0);
+  private final PIDController feedback = new PIDController(1, 0, 0);
 
   /**
    * Constructs a new TalonFX drive motor.
@@ -34,6 +35,10 @@ public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
 
   @Override
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
+    if (velocityMetersPerSecond == 0) {
+      motor.setControl(new CoastOut());
+    }
+
     double previousVelocityMetersPerSecond =
         Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
 

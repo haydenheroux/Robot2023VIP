@@ -111,7 +111,7 @@ public class Constants {
     public static final double TOP_HEIGHT = Units.feetToMeters(3) + Units.inchesToMeters(10);
 
     /** Maximum speed achievable by the swerve drive, in meters per second. */
-    public static final double MAX_SPEED = Units.feetToMeters(2);
+    public static final double MAX_SPEED = Units.feetToMeters(8);
     /** Maximum angular speed achievable by the swerve drive, in rotations per second. */
     public static final Rotation2d MAX_ANGULAR_SPEED =
         SwerveMath.calculateTheoreticalMaxAngularSpeed(MAX_SPEED, ModuleLocation.furthest())
