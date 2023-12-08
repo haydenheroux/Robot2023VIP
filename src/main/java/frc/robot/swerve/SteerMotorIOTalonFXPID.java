@@ -19,7 +19,7 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
   private final double kS = 0.14;
 
   /* Position feedback controller. Outputs voltages to correct positional error (in rotations) of this steer motor. */
-  private final PIDController feedback = new PIDController(4, 0, 0);
+  private final PIDController feedback = new PIDController(32, 0, 0.25);
 
   /**
    * Constructs a new TalonFX steer motor.
@@ -33,8 +33,8 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
     /* Allow wrapping full rotations. */
     feedback.enableContinuousInput(0, 1);
 
-    // TODO Determine acceptable tolerance
-    feedback.setTolerance(Units.degreesToRotations(3));
+    // TODO Determine acceptable tolerance, 1 deg is sometimes too wide
+    feedback.setTolerance(Units.degreesToRotations(1));
   }
 
   /**
