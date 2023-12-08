@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants.Swerve;
 
 /** Implements asteer motor behaviors for a TalonFX. */
 public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
@@ -30,6 +31,8 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
   @Override
   public void configure() {
     TalonFXConfiguration motorConfig = SwerveFactory.createSteerMotorConfig();
+
+    motorConfig.Feedback.SensorToMechanismRatio = Swerve.MK4I.STEER_RATIO;
 
     ConfigurationApplier.apply(motorConfig, motor);
   }

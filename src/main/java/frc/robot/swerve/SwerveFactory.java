@@ -96,10 +96,6 @@ public class SwerveFactory {
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
 
-    // TODO
-    //steerMotorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
-    steerMotorConfig.Feedback.SensorToMechanismRatio = Swerve.MK4I.STEER_RATIO;
-
     steerMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     return steerMotorConfig;

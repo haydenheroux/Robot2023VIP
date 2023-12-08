@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import frc.lib.hardware.CAN;
 import frc.lib.hardware.ConfigurationApplier;
+import frc.robot.Constants.Swerve;
 
 /** Implements asteer motor behaviors for a TalonFX. */
 public class SteerMotorIOTalonFXPro extends SteerMotorIOTalonFXIntegrated {
@@ -26,6 +27,7 @@ public class SteerMotorIOTalonFXPro extends SteerMotorIOTalonFXIntegrated {
 
     motorConfig.Feedback.FeedbackRemoteSensorID = encoderID;
     motorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    motorConfig.Feedback.RotorToSensorRatio = Swerve.MK4I.STEER_RATIO;
 
     ConfigurationApplier.apply(motorConfig, motor);
   }
