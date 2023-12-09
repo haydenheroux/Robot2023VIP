@@ -349,18 +349,6 @@ public class Constants {
     /** Configuration for the south west swerve module. */
     public static final ModuleConstants SOUTH_WEST =
         new ModuleConstants(false, true, Rotation2d.fromRotations(-0.954346));
-
-    public static class Theta {
-      public static final double KP = 0.0;
-
-      public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED;
-    }
-
-    public static class Drift {
-      public static final double KP = 0.0;
-
-      public static final Rotation2d SATURATION = Physical.MAX_ANGULAR_SPEED.times(0.5);
-    }
   }
 
   public static class Lights {
