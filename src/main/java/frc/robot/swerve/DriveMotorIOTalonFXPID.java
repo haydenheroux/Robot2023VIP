@@ -40,18 +40,25 @@ public class DriveMotorIOTalonFXPID extends DriveMotorIOTalonFXBase {
 
   @Override
   public void setVelocitySetpoint(double velocityMetersPerSecond) {
-    double previousVelocityMetersPerSecond =
-        Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
-
-    double feedbackVolts =
-        feedback.calculate(previousVelocityMetersPerSecond, velocityMetersPerSecond);
-
-    double feedforwardVolts = feedforward.calculate(velocityMetersPerSecond);
-
     if (velocityMetersPerSecond == 0) {
       motor.setControl(new CoastOut());
     } else {
-      motor.setControl(new VoltageOut(feedbackVolts + feedforwardVolts));
+      motor.setControl(new VoltageOut(calculateVoltage(velocityMetersPerSecond)));
     }
+  }
+
+  private double calculateVoltage(double velocityMetersPerSecond) {
+    /* Store the previous measurement of the process variable (velocity, in meters per second) for calculating feedback. */
+    double previousVelocityMetersPerSecond =
+        Conversions.General.toMeters(velocity.getValue(), Physical.WHEEL_CIRCUMFERENCE);
+
+    /* Calculate feedback voltage to approach the requested velocity. */
+    double feedbackVolts =
+        feedback.calculate(previousVelocityMetersPerSecond, velocityMetersPerSecond);
+
+    /* Calculate feedforward voltage to apply on top of feedback voltage. */
+    double feedforwardVolts = feedforward.calculate(velocityMetersPerSecond);
+
+    return feedbackVolts + feedforwardVolts;
   }
 }

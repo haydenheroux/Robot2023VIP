@@ -55,15 +55,20 @@ public class SteerMotorIOTalonFXPID extends SteerMotorIOTalonFXBase {
 
   @Override
   public void setSetpoint(double angleRotations) {
-    double feedbackVolts = feedback.calculate(position.getValue(), angleRotations);
-
-    /* Apply static feedforward voltage on top of feedback voltage. */
-    double feedforwardVolts = Math.signum(feedbackVolts) * kS;
-
     if (feedback.atSetpoint()) {
       motor.setControl(new CoastOut());
     } else {
-      motor.setControl(new VoltageOut(feedbackVolts + feedforwardVolts));
+      motor.setControl(new VoltageOut(calculateVoltage(angleRotations)));
     }
+  }
+
+  private double calculateVoltage(double angleRotations) {
+    /* Calculate feedback voltage to approach the requested angle. */
+    double feedbackVolts = feedback.calculate(position.getValue(), angleRotations);
+
+    /* Calculate static feedforward voltage to apply on top of feedback voltage. */
+    double feedforwardVolts = Math.signum(feedbackVolts) * kS;
+
+    return feedbackVolts + feedforwardVolts;
   }
 }
