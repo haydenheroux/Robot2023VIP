@@ -27,7 +27,7 @@ public class ModuleIOPhoenix implements ModuleIO {
 
   @Override
   public void setSetpoint(SwerveModuleState setpoint, boolean force) {
-    // FIXME Forcing does nothing 
+    // FIXME Forcing does nothing
     // FIXME Stores non-optimized setpoint
     this.setpoint = setpoint;
 
