@@ -225,4 +225,18 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
           Rotation2d.fromDegrees(-45),
         });
   }
+
+  /**
+   * Commands all swerve modules to orient themselves around the center.
+   *
+   * @return a command that orients all swerve modules around the center.
+   */
+  public Command holonomic() {
+    return orientModules(new Rotation2d[] {
+      Rotation2d.fromDegrees(-45),
+      Rotation2d.fromDegrees(45),
+      Rotation2d.fromDegrees(-45),
+      Rotation2d.fromDegrees(45),
+    });
+  }
 }

@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.lib.CustomXboxController;
 import frc.lib.telemetry.Telemetry;
 import frc.robot.arm.Arm;
@@ -53,7 +52,7 @@ public class RobotContainer {
     driver.a().whileTrue(swerve.checkForwards());
     driver.b().whileTrue(swerve.checkSideways());
     driver.x().whileTrue(swerve.cross());
-    driver.y().whileTrue(new PrintCommand("TODO"));
+    driver.y().whileTrue(swerve.holonomic());
 
     operator.leftY().whileTrue(arm.manualRotate(operator::getLeftY));
     operator.rightY().whileTrue(arm.manualExtend(operator::getRightY));
