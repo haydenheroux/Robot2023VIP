@@ -83,7 +83,7 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     SwerveModuleState[] setpoints = kinematics.toSwerveModuleStates(speeds);
 
-    setSetpoints(setpoints);
+    setSetpoints(setpoints, false);
   }
 
   /**
@@ -92,12 +92,13 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
    * <p>Mutates setpoints if some are unreachable.
    *
    * @param setpoints the module setpoints.
+   * @param force if true, do not optimize the setpoints.
    */
-  public void setSetpoints(SwerveModuleState[] setpoints) {
+  public void setSetpoints(SwerveModuleState[] setpoints, boolean force) {
     SwerveDriveKinematics.desaturateWheelSpeeds(setpoints, Constants.Physical.MAX_SPEED);
 
     for (int i = 0; i < 4; i++) {
-      modules[i].setSetpoint(setpoints[i]);
+      modules[i].setSetpoint(setpoints[i], force);
     }
   }
 
@@ -169,7 +170,8 @@ public class Swerve extends SubsystemBase implements TelemetryOutputter {
                 new SwerveModuleState(0.0, orientations[1]),
                 new SwerveModuleState(0.0, orientations[2]),
                 new SwerveModuleState(0.0, orientations[3])
-              });
+              },
+              true);
         });
   }
 

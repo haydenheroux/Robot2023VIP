@@ -60,13 +60,15 @@ public class ModuleIOCustom implements ModuleIO {
   }
 
   @Override
-  public void setSetpoint(SwerveModuleState setpoint) {
-    final SwerveModuleState optimizedSetpoint = optimizeSetpoint(setpoint);
+  public void setSetpoint(SwerveModuleState setpoint, boolean force) {
+    if (force == false) {
+      setpoint = optimizeSetpoint(setpoint);
+    }
 
-    this.setpoint = optimizedSetpoint;
+    this.setpoint = setpoint;
 
-    steerMotor.setSetpoint(optimizedSetpoint.angle.getRotations());
-    driveMotor.setVelocitySetpoint(optimizedSetpoint.speedMetersPerSecond);
+    steerMotor.setSetpoint(setpoint.angle.getRotations());
+    driveMotor.setVelocitySetpoint(setpoint.speedMetersPerSecond);
   }
 
   private SwerveModuleState optimizeSetpoint(SwerveModuleState setpoint) {

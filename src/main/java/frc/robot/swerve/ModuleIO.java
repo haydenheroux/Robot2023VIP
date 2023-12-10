@@ -15,8 +15,9 @@ public interface ModuleIO {
    * Sets the module setpoint.
    *
    * @param setpoint the setpoint of the module.
+   * @param force if true, do not optimize the setpoint.
    */
-  public void setSetpoint(SwerveModuleState setpoint);
+  public void setSetpoint(SwerveModuleState setpoint, boolean force);
 
   /**
    * Gets the most recently set setpoint
